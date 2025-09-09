@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "title": "Semana do Chocolate",
+    "subtitle": "Até 30% OFF",
+    "bg": "linear-gradient(120deg,#111827,#1F2937)"
+  },
+  {
+    "id": 2,
+    "title": "Higiene + Limpeza",
+    "subtitle": "Leve 4, pague 3",
+    "bg": "linear-gradient(120deg,#0F766E,#0EA5E9)"
+  },
+  {
+    "id": 3,
+    "title": "Salgadinhos e Bebidas",
+    "subtitle": "Combo da tarde ❤️",
+    "bg": "linear-gradient(120deg,#6D28D9,#9333EA)"
+  }
+]
