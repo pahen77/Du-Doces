@@ -7,65 +7,114 @@ const BRAND = {
   textOnPrimary: "#FFFFFF",
 };
 
+const API_URL = import.meta.env.VITE_API_URL || ""; // ex: https://du-doces-production.up.railway.app
+
 function money(v) {
   return v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 }
 
 export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [activeCategory, setActiveCategory] = useState(null);
-  const [sort, setSort] = useState("asc");
+
+  // filtros
+  const [activeCategory, setActiveCategory] = useState(null); // usa slug da categoria
+  const [sort, setSort] = useState("asc"); // asc|desc (preço)
   const [promoOnly, setPromoOnly] = useState(false);
-  const [brand, setBrand] = useState("todas");
+  const [brand, setBrand] = useState("todas"); // slug da marca
+
+  // dados
   const [cartTotal, setCartTotal] = useState(0);
   const [banners, setBanners] = useState([]);
-  const [allProducts, setAllProducts] = useState([]);
+  const [brands, setBrands] = useState([]);           // [{id, name, slug}]
+  const [products, setProducts] = useState([]);       // já vem filtrados da API
+  const [loading, setLoading] = useState(false);
+
+  // ui
   const [slide, setSlide] = useState(0);
   const [cep, setCep] = useState("");
   const [frete, setFrete] = useState(null);
 
-  // Load JSONs from /public
+  // ---- BANNERS (estático no /public) ----
   useEffect(() => {
-    fetch("/banners.json").then(r => r.json()).then(setBanners).catch(() => setBanners([]));
-    fetch("/products.json").then(r => r.json()).then(setAllProducts).catch(() => setAllProducts([]));
+    fetch("/banners.json")
+      .then(r => r.json())
+      .then(setBanners)
+      .catch(() => setBanners([]));
   }, []);
 
-  // Banner auto-rotate
+  // rotaciona banner
   useEffect(() => {
     if (!banners.length) return;
     const id = setInterval(() => setSlide(s => (s + 1) % banners.length), 4000);
     return () => clearInterval(id);
   }, [banners]);
 
-  const brands = useMemo(() => {
-    const set = new Set(allProducts.map(p => p.brand));
-    return ["todas", ...Array.from(set)];
-  }, [allProducts]);
+  // ---- BRANDS (API) ----
+  useEffect(() => {
+    if (!API_URL) return;
+    fetch(`${API_URL}/brands`)
+      .then(r => r.json())
+      .then(list => setBrands(list || []))
+      .catch(() => setBrands([]));
+  }, []);
 
-  const filtered = useMemo(() => {
-    let data = [...allProducts];
-    if (activeCategory) data = data.filter(p => p.category === activeCategory);
-    else data = data.filter(p => p.promo || ["chocolate","salgadinhos","bebidas"].includes(p.category));
-    if (promoOnly) data = data.filter(p => p.promo);
-    if (brand !== "todas") data = data.filter(p => p.brand === brand);
-    data.sort((a,b) => sort === "asc" ? a.price - b.price : b.price - a.price);
-    return data;
-  }, [allProducts, activeCategory, promoOnly, brand, sort]);
+  // helper para exibir nome de marca pelo slug
+  const brandNameBySlug = (slug) =>
+    (brands.find(b => b.slug === slug)?.name) || slug;
+
+  // ---- PRODUCTS (API) ----
+  useEffect(() => {
+    if (!API_URL) return;
+
+    const params = new URLSearchParams();
+    if (activeCategory) params.set("category", activeCategory);
+    if (brand !== "todas") params.set("brand", brand);
+    if (promoOnly) params.set("promo", "true");
+    params.set("order", `price_${sort}`);
+    params.set("page", "1");
+    params.set("pageSize", "100");
+
+    const url = `${API_URL}/products?${params.toString()}`;
+
+    setLoading(true);
+    fetch(url)
+      .then(r => r.json())
+      .then((data) => {
+        const items = Array.isArray(data?.items) ? data.items : [];
+        // mapeia o shape do backend -> frontend
+        const mapped = items.map(p => ({
+          id: p.id,
+          name: p.name,
+          price: Number(p.price),
+          spec: p.spec,
+          image: p.imageUrl || "/images/placeholder.png",
+          promo: !!p.promo,
+          brandSlug: p.brand?.slug,
+          brandName: p.brand?.name,
+          categorySlug: p.category?.slug,
+        }));
+        setProducts(mapped);
+      })
+      .catch(() => setProducts([]))
+      .finally(() => setLoading(false));
+  }, [activeCategory, brand, promoOnly, sort]);
+
+  const brandOptions = useMemo(
+    () => ["todas", ...brands.map(b => b.slug)],
+    [brands]
+  );
 
   const addToCart = (price) => setCartTotal(t => t + price);
 
-  // Simple demo freight estimator (placeholder).
-  // Region-based by CEP first digit: cheaper for same-region (São Paulo ~ 0/1), more expensive distant.
   function estimateFrete(cep) {
     const clean = (cep || "").replace(/\D/g, "");
     if (clean.length !== 8) return { ok:false, msg:"CEP inválido. Use 8 dígitos." };
     const first = parseInt(clean[0],10);
-    // Base/variations
     const base = 12.90;
     const regionFactor = [1.0,1.0,1.05,1.10,1.15,1.20,1.25,1.30,1.35,1.40][first] || 1.25;
-    const weightKg = 1.2; // suposição por pedido demo
+    const weightKg = 1.2;
     const perKg = 3.50;
-    const prazo = Math.max(2, Math.round(2 + (first * 0.6))); // 2..8 dias
+    const prazo = Math.max(2, Math.round(2 + (first * 0.6)));
     const valor = +(base * regionFactor + weightKg * perKg).toFixed(2);
     return { ok:true, valor, prazo };
   }
@@ -78,14 +127,14 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* HEADER FIXO */}
+      {/* HEADER */}
       <header className="fixed top-0 inset-x-0 z-50 border-b" style={{ background: BRAND.primary, color: BRAND.textOnPrimary }}>
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <button aria-label="Abrir menu" className="p-2 rounded-md bg-white/10 hover:bg-white/20 transition" onClick={() => setMenuOpen(true)}>
             <div className="space-y-1.5">
-              <span className="block w-6 h-0.5 bg-white"></span>
-              <span className="block w-6 h-0.5 bg-white"></span>
-              <span className="block w-6 h-0.5 bg-white"></span>
+              <span className="block w-6 h-0.5 bg-white" />
+              <span className="block w-6 h-0.5 bg-white" />
+              <span className="block w-6 h-0.5 bg-white" />
             </div>
           </button>
 
@@ -105,7 +154,7 @@ export default function App() {
         </div>
       </header>
 
-      {/* LATERAL MENU */}
+      {/* MENU LATERAL */}
       {menuOpen && (
         <div className="fixed inset-0 z-[60]">
           <div className="absolute inset-0 bg-black/40" onClick={() => setMenuOpen(false)} />
@@ -166,8 +215,11 @@ export default function App() {
           </div>
         </section>
 
-        {/* CATEGORIAS */}
-        <CategoriesBar activeCategory={activeCategory} setActiveCategory={setActiveCategory} />
+        {/* CATEGORIAS (fixas – use os slugs que colocou no seed) */}
+        <CategoriesBar
+          activeCategory={activeCategory}
+          setActiveCategory={setActiveCategory}
+        />
 
         {/* FILTROS */}
         <section className="mb-4">
@@ -185,36 +237,54 @@ export default function App() {
               Apenas promoções
             </label>
 
-            <BrandSelect brands={brands} brand={brand} setBrand={setBrand} />
+            <BrandSelect
+              brands={brandOptions}
+              brand={brand}
+              setBrand={setBrand}
+              labelBySlug={brandNameBySlug}
+            />
           </div>
         </section>
 
         {/* PRODUTOS */}
-        <ProductGrid items={filtered} addToCart={addToCart} />
+        <ProductGrid
+          loading={loading}
+          items={products}
+          addToCart={addToCart}
+          brandNameBySlug={brandNameBySlug}
+        />
       </main>
 
-      {/* CHATVOLT */}
-      <button aria-label="Abrir ChatVolt" className="fixed bottom-5 right-5 z-50 shadow-xl rounded-full p-4 text-white" style={{ background: BRAND.primary }} onClick={() => alert("Abrindo ChatVolt… (placeholder)")} >
+      {/* CHATVOLT placeholder */}
+      <button
+        aria-label="Abrir ChatVolt"
+        className="fixed bottom-5 right-5 z-50 shadow-xl rounded-full p-4 text-white"
+        style={{ background: BRAND.primary }}
+        onClick={() => alert("Abrindo ChatVolt… (placeholder)")}
+      >
         <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
           <path strokeLinecap="round" strokeLinejoin="round" d="M7 8h10M7 12h6M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 7l3 3" />
         </svg>
       </button>
 
-      <footer className="text-center text-xs text-gray-500 py-6">© {new Date().getFullYear()} {BRAND.name}. Todos os direitos reservados.</footer>
+      <footer className="text-center text-xs text-gray-500 py-6">
+        © {new Date().getFullYear()} {BRAND.name}. Todos os direitos reservados.
+      </footer>
     </div>
   );
 }
 
 function CategoriesBar({ activeCategory, setActiveCategory }) {
+  // Use slugs que estão no seed/backend
   const categories = [
-    { id: "higiene", label: "Higiene", emoji: "🧼" },
-    { id: "limpeza", label: "Limpeza", emoji: "🧽" },
-    { id: "chocolate", label: "Chocolate", emoji: "🍫" },
+    { id: "higiene",   label: "Higiene",     emoji: "🧼" },
+    { id: "limpeza",   label: "Limpeza",     emoji: "🧽" },
+    { id: "chocolate", label: "Chocolate",   emoji: "🍫" },
     { id: "salgadinhos", label: "Salgadinhos", emoji: "🥟" },
-    { id: "bebidas", label: "Bebidas", emoji: "🥤" },
-    { id: "padaria", label: "Padaria", emoji: "🥐" },
-    { id: "biscoitos", label: "Biscoitos", emoji: "🍪" },
-    { id: "infantil", label: "Infantil", emoji: "🍼" },
+    { id: "bebidas",   label: "Bebidas",     emoji: "🥤" },
+    { id: "padaria",   label: "Padaria",     emoji: "🥐" },
+    { id: "biscoitos", label: "Biscoitos",   emoji: "🍪" },
+    { id: "infantil",  label: "Infantil",    emoji: "🍼" },
   ];
 
   return (
@@ -222,14 +292,23 @@ function CategoriesBar({ activeCategory, setActiveCategory }) {
       <div className="flex items-center justify-between mb-3">
         <h2 className="text-lg font-semibold">Categorias</h2>
         {activeCategory && (
-          <button onClick={() => setActiveCategory(null)} className="text-sm px-3 py-1.5 rounded-md border hover:bg-gray-50">
+          <button
+            onClick={() => setActiveCategory(null)}
+            className="text-sm px-3 py-1.5 rounded-md border hover:bg-gray-50"
+          >
             Limpar filtro
           </button>
         )}
       </div>
       <div className="grid grid-rows-2 sm:grid-rows-2 grid-flow-col sm:grid-flow-col gap-3 overflow-x-auto sm:overflow-x-visible pb-1">
         {categories.map((c) => (
-          <button key={c.id} onClick={() => setActiveCategory(c.id)} className={`min-w-[140px] sm:min-w-0 aspect-[3/1] rounded-xl border flex items-center justify-center gap-2 text-sm font-medium hover:shadow transition ${activeCategory === c.id ? "bg-blue-50 border-blue-200" : "bg-white"}`}>
+          <button
+            key={c.id}
+            onClick={() => setActiveCategory(c.id)}
+            className={`min-w-[140px] sm:min-w-0 aspect-[3/1] rounded-xl border flex items-center justify-center gap-2 text-sm font-medium hover:shadow transition ${
+              activeCategory === c.id ? "bg-blue-50 border-blue-200" : "bg-white"
+            }`}
+          >
             <span className="text-lg">{c.emoji}</span>
             <span>{c.label}</span>
           </button>
@@ -239,22 +318,33 @@ function CategoriesBar({ activeCategory, setActiveCategory }) {
   );
 }
 
-function BrandSelect({ brands, brand, setBrand }) {
+function BrandSelect({ brands, brand, setBrand, labelBySlug }) {
   return (
     <label className="flex items-center gap-2 text-sm">
       Marca:
-      <select value={brand} onChange={(e) => setBrand(e.target.value)} className="px-2 py-1 rounded-md border">
-        {brands.map((b) => (
-          <option key={b} value={b}>{b}</option>
+      <select
+        value={brand}
+        onChange={(e) => setBrand(e.target.value)}
+        className="px-2 py-1 rounded-md border"
+      >
+        {brands.map((slug) => (
+          <option key={slug} value={slug}>
+            {slug === "todas" ? "todas" : (labelBySlug?.(slug) || slug)}
+          </option>
         ))}
       </select>
     </label>
   );
 }
 
-function ProductGrid({ items, addToCart }) {
+function ProductGrid({ loading, items, addToCart, brandNameBySlug }) {
   return (
     <section className="mb-16">
+      {loading && (
+        <div className="text-center text-sm text-gray-500 py-6">
+          Carregando produtos…
+        </div>
+      )}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
         {items.map((p) => (
           <article key={p.id} className="bg-white rounded-2xl border shadow-sm overflow-hidden">
@@ -267,16 +357,30 @@ function ProductGrid({ items, addToCart }) {
                 <span className="text-base font-semibold">{money(p.price)}</span>
                 <span className="text-xs text-gray-500">{p.spec}</span>
               </div>
-              <div className="mt-1 text-xs text-gray-500">{p.brand}</div>
-              {p.promo && <div className="mt-2 inline-flex items-center px-2 py-0.5 rounded-full text-[11px] bg-green-50 text-green-700 border border-green-200">Promoção</div>}
-              <button onClick={() => addToCart(p.price)} className="mt-3 w-full py-2 rounded-xl text-sm font-medium text-white" style={{ background: "var(--brand)" }}>
+              <div className="mt-1 text-xs text-gray-500">
+                {brandNameBySlug?.(p.brandSlug) || p.brandName || p.brandSlug}
+              </div>
+              {p.promo && (
+                <div className="mt-2 inline-flex items-center px-2 py-0.5 rounded-full text-[11px] bg-green-50 text-green-700 border border-green-200">
+                  Promoção
+                </div>
+              )}
+              <button
+                onClick={() => addToCart(p.price)}
+                className="mt-3 w-full py-2 rounded-xl text-sm font-medium text-white"
+                style={{ background: "var(--brand)" }}
+              >
                 Adicionar
               </button>
             </div>
           </article>
         ))}
       </div>
-      {items.length === 0 && <div className="text-center text-sm text-gray-500 py-10">Nenhum produto encontrado com os filtros atuais.</div>}
+      {!loading && items.length === 0 && (
+        <div className="text-center text-sm text-gray-500 py-10">
+          Nenhum produto encontrado com os filtros atuais.
+        </div>
+      )}
     </section>
   );
 }
