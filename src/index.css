@@ -1,7 +1,15 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 :root{
-  --brand:#2563EB; /* Azul VisorIA */
+  --brand: #0f3b86; /* azul mais escuro */
+}
+
+.header-shadow{
+  box-shadow: 0 1px 0 rgba(0,0,0,.06);
+}
+
+.btn{
+  @apply px-3 py-1.5 rounded-md text-sm font-medium;
+}
+
+.input{
+  @apply border rounded-md px-2 py-1 text-sm;
 }
