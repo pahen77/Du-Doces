@@ -1,4 +1,6 @@
+// ======================
 // ===== Dados base =====
+// ======================
 const CATEGORIES = [
   { id: "todas", label: "Todas" },
   { id: "balas", label: "Balas" },
@@ -8,29 +10,29 @@ const CATEGORIES = [
 ];
 
 const BRANDS = [
-  { id: "todas", label: "Todas as Marcas" },
-  { id: "arcor", label: "Arcor" },
-  { id: "nestle", label: "Nestlé" },
-  { id: "trident", label: "Trident" },
-  { id: "santafe", label: "Santa Fe" },
-  { id: "dori", label: "Dori" },
-  { id: "soberana", label: "Soberana" },
-  { id: "primor", label: "Primor" },
-  { id: "chita", label: "Chita" },
-  { id: "ourolux", label: "Ourolux" },
-  { id: "lacta", label: "Lacta" },
-  { id: "garoto", label: "Garoto" },
-  { id: "copag", label: "Copag" },
+  { id: "todas", label: "Todas as Marcas", logo: "" },
+  { id: "arcor", label: "Arcor", logo: "https://upload.wikimedia.org/wikipedia/commons/1/1b/Arcor_logo.png" },
+  { id: "nestle", label: "Nestlé", logo: "https://upload.wikimedia.org/wikipedia/commons/2/21/Nestle_textlogo_blue.svg" },
+  { id: "trident", label: "Trident", logo: "" },
+  { id: "santafe", label: "Santa Fe", logo: "" },
+  { id: "dori", label: "Dori", logo: "" },
+  { id: "soberana", label: "Soberana", logo: "" },
+  { id: "primor", label: "Primor", logo: "" },
+  { id: "chita", label: "Chita", logo: "" },
+  { id: "ourolux", label: "Ourolux", logo: "" },
+  { id: "lacta", label: "Lacta", logo: "" },
+  { id: "garoto", label: "Garoto", logo: "" },
+  { id: "copag", label: "Copag", logo: "" },
 ];
 
 const FALLBACK_IMG = {
-  balas: "https://picsum.photos/200/150?balas",
-  chicletes: "https://picsum.photos/200/150?chiclete",
-  chocolates: "https://picsum.photos/200/150?choco",
-  outros: "https://picsum.photos/200/150?outros",
+  balas: "https://picsum.photos/800/800?random=11",
+  chicletes: "https://picsum.photos/800/800?random=22",
+  chocolates: "https://picsum.photos/800/800?random=33",
+  outros: "https://picsum.photos/800/800?random=44",
 };
 
-// Alguns produtos de exemplo
+// Produtos de exemplo (pode trocar depois por JSON)
 const PRODUCTS = [
   { id: 101, name: "Bala Pipper Dura", brand: "santafe", category: "balas", price: 6.95, unit: "pacote" },
   { id: 102, name: "Bala Pipper Mastigável", brand: "santafe", category: "balas", price: 5.95, unit: "pacote" },
@@ -43,7 +45,9 @@ const PRODUCTS = [
   { id: 108, name: "Lâmpada 9W", brand: "ourolux", category: "outros", price: 2.99, unit: "unidade" },
 ];
 
-// ===== Estado =====
+// ======================
+// =====   Estado   =====
+// ======================
 let state = {
   cat: "todas",
   brand: "todas",
@@ -51,38 +55,50 @@ let state = {
   cart: [],
   sort: "relevancia",
   promoOnly: false,
+  bannerIndex: 0,
 };
 
-// ===== Utils =====
-const fmtBRL = (n) =>
-  n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+// ======================
+// ===== Utilitários ====
+// ======================
+const fmtBRL = (n) => n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
-// ===== Render Categorias =====
-const catRow = document.getElementById("catRow");
-function renderCatChips() {
-  catRow.innerHTML = "";
-  CATEGORIES.forEach((c) => {
-    const btn = document.createElement("button");
-    btn.className = "chip" + (state.cat === c.id ? " active" : "");
-    btn.dataset.cat = c.id;
-    btn.textContent = c.id === "chicletes" ? `🍬 ${c.label}` : c.label;
-    btn.onclick = () => {
-      state.cat = c.id;
-      renderProducts();
-      renderCatChips();
-    };
-    catRow.appendChild(btn);
-  });
-}
-
-// ===== Render Marcas =====
+// ======================
+// ===== Seletores  =====
+// ======================
+const grid = document.getElementById("grid");
 const brandRow = document.getElementById("brandRow");
+const catRow = document.getElementById("catRow");
+const sortSelect = document.getElementById("sortSelect");
+const promoOnly = document.getElementById("promoOnly");
+const searchInput = document.getElementById("searchInput");
+const cepInput = document.getElementById("cepInput");
+
+const cartDrawer = document.getElementById("cartDrawer");
+const btnCart = document.getElementById("btnCart");
+const closeCartBtn = document.getElementById("closeCart");
+const cartList = document.getElementById("cartList");
+const cartTotal = document.getElementById("cartTotal");
+const cartCount = document.getElementById("cartCount");
+
+const btnDrawer = document.getElementById("btnDrawer");
+const drawer = document.getElementById("drawer");
+const drawerBackdrop = document.getElementById("drawerBackdrop");
+
+const bannerTrack = document.getElementById("bannerTrack");
+const bannerDots = document.getElementById("bannerDots");
+
+// ======================
+// =====  Render UI  ====
+// ======================
 function renderBrands() {
   brandRow.innerHTML = "";
   BRANDS.forEach((b) => {
-    const btn = document.createElement("div");
-    btn.className = "brand-logo" + (state.brand === b.id ? " active" : "");
-    btn.textContent = b.label;
+    const btn = document.createElement("button");
+    btn.className = "brand-btn" + (state.brand === b.id ? " active" : "");
+    btn.innerHTML = b.logo
+      ? `<img src="${b.logo}" alt="${b.label}"><strong>${b.id === "todas" ? "Todas as Marcas" : b.label}</strong>`
+      : `<strong>${b.label}</strong>`;
     btn.onclick = () => {
       state.brand = b.id;
       renderProducts();
@@ -92,9 +108,23 @@ function renderBrands() {
   });
 }
 
-// ===== Render Produtos =====
-const grid = document.getElementById("grid");
-function renderProducts() {
+function renderCatChips() {
+  catRow.innerHTML = "";
+  CATEGORIES.forEach((c) => {
+    const btn = document.createElement("button");
+    btn.className = "chip" + (state.cat === c.id ? " active" : "");
+    btn.dataset.cat = c.id;
+    btn.innerHTML = c.id === "chicletes" ? `🍬 ${c.label}` : c.label;
+    btn.onclick = () => {
+      state.cat = c.id;
+      renderProducts();
+      renderCatChips();
+    };
+    catRow.appendChild(btn);
+  });
+}
+
+function filteredProducts() {
   let items = PRODUCTS.filter(
     (p) =>
       (state.cat === "todas" || p.category === state.cat) &&
@@ -102,22 +132,29 @@ function renderProducts() {
       (!state.promoOnly || p.promo) &&
       p.name.toLowerCase().includes(state.search.toLowerCase())
   );
-
   if (state.sort === "preco_asc") items.sort((a, b) => a.price - b.price);
   if (state.sort === "preco_desc") items.sort((a, b) => b.price - a.price);
+  return items;
+}
 
+function renderProducts() {
+  const items = filteredProducts();
   grid.innerHTML = items
-    .map(
-      (p) => `
-    <div class="card">
-      <img src="${FALLBACK_IMG[p.category] || FALLBACK_IMG.outros}" alt="${p.name}">
-      <div class="body">
-        <div>${p.name}</div>
-        <div>${fmtBRL(p.price)} • ${p.unit}</div>
-        <button class="add" data-id="${p.id}">Adicionar</button>
-      </div>
-    </div>`
-    )
+    .map((p) => {
+      const src = FALLBACK_IMG[p.category] || FALLBACK_IMG.outros;
+      const brandName = (p.brand || "").toUpperCase();
+      return `
+        <div class="card">
+          <img src="${src}" alt="${p.name}">
+          <div class="body">
+            <div class="title">${p.name}</div>
+            <div class="brand-tag">${brandName} • ${p.unit}</div>
+            <div class="price">${fmtBRL(p.price)}</div>
+            <button class="add" data-id="${p.id}">Adicionar</button>
+          </div>
+        </div>
+      `;
+    })
     .join("");
 
   grid.querySelectorAll(".add").forEach((btn) => {
@@ -125,14 +162,9 @@ function renderProducts() {
   });
 }
 
-// ===== Carrinho =====
-const cartDrawer = document.getElementById("cartDrawer");
-const btnCart = document.getElementById("btnCart");
-const closeCartBtn = document.getElementById("closeCart");
-const cartList = document.getElementById("cartList");
-const cartTotal = document.getElementById("cartTotal");
-const cartCount = document.getElementById("cartCount");
-
+// ======================
+// =====  Carrinho  =====
+// ======================
 btnCart.onclick = () => cartDrawer.classList.add("open");
 closeCartBtn.onclick = () => cartDrawer.classList.remove("open");
 
@@ -145,48 +177,140 @@ function addToCart(p) {
 
 function renderCart() {
   cartList.innerHTML = "";
-  let total = 0,
-    count = 0;
-  state.cart.forEach((i) => {
-    total += i.price * i.qty;
-    count += i.qty;
-    cartList.innerHTML += `
-      <div class="cart-item">
-        <img src="${FALLBACK_IMG[i.category]}" width="40">
-        <div>
-          ${i.name}<br>
-          <small>${fmtBRL(i.price)} • ${i.unit}</small>
-        </div>
-        <div>${i.qty}</div>
-      </div>`;
-  });
+  let total = 0;
+  let count = 0;
+
   if (state.cart.length === 0) {
     cartList.innerHTML = `<div class="cart-empty">Seu carrinho está vazio</div>`;
+  } else {
+    state.cart.forEach((i) => {
+      total += i.price * i.qty;
+      count += i.qty;
+      const src = FALLBACK_IMG[i.category] || FALLBACK_IMG.outros;
+      cartList.innerHTML += `
+        <div class="cart-item">
+          <img src="${src}" width="50" height="50" alt="${i.name}">
+          <div>
+            <div style="font-weight:700">${i.name}</div>
+            <small>${fmtBRL(i.price)} • ${i.unit}</small>
+          </div>
+          <div style="margin-left:auto;display:flex;align-items:center;gap:8px">
+            <button class="qty-dec" data-id="${i.id}">-</button>
+            <strong>${i.qty}</strong>
+            <button class="qty-inc" data-id="${i.id}">+</button>
+          </div>
+        </div>
+      `;
+    });
   }
+
   cartTotal.textContent = fmtBRL(total);
   cartCount.textContent = count;
+
+  cartList.querySelectorAll(".qty-inc").forEach((b) => {
+    b.onclick = () => changeQty(+b.dataset.id, +1);
+  });
+  cartList.querySelectorAll(".qty-dec").forEach((b) => {
+    b.onclick = () => changeQty(+b.dataset.id, -1);
+  });
 }
 
-// ===== Login =====
+function changeQty(id, delta) {
+  const i = state.cart.findIndex((x) => x.id === id);
+  if (i < 0) return;
+  const q = state.cart[i].qty + delta;
+  if (q <= 0) state.cart.splice(i, 1);
+  else state.cart[i].qty = q;
+  renderCart();
+}
+
+// ======================
+// =====   Banners  =====
+// ======================
+let bannerTimer = null;
+
+function renderBannerDots() {
+  bannerDots.innerHTML = "";
+  [0, 1, 2].forEach((i) => {
+    const b = document.createElement("button");
+    b.className = i === state.bannerIndex ? "active" : "";
+    b.onclick = () => {
+      state.bannerIndex = i;
+      updateBanner();
+      restartBannerTimer();
+    };
+    bannerDots.appendChild(b);
+  });
+}
+
+function updateBanner() {
+  if (!bannerTrack) return;
+  bannerTrack.style.transform = `translateX(-${state.bannerIndex * 100}%)`;
+  renderBannerDots();
+}
+
+function nextBanner() {
+  state.bannerIndex = (state.bannerIndex + 1) % 3;
+  updateBanner();
+}
+
+function restartBannerTimer() {
+  if (bannerTimer) clearInterval(bannerTimer);
+  bannerTimer = setInterval(nextBanner, 5000);
+}
+
+// ======================
+// =====    Menu    =====
+// ======================
+btnDrawer?.addEventListener("click", () => drawer.classList.add("open"));
+drawerBackdrop?.addEventListener("click", () => drawer.classList.remove("open"));
+
+// ======================
+// =====   Login    =====
+// ======================
 const adminModal = document.getElementById("adminModal");
-document.getElementById("btnLogin").onclick = () =>
-  adminModal.classList.add("open");
-document.getElementById("cancelAdmin").onclick = () =>
-  adminModal.classList.remove("open");
+document.getElementById("btnLogin").onclick = () => adminModal.classList.add("open");
+document.getElementById("cancelAdmin").onclick = () => adminModal.classList.remove("open");
 document.getElementById("submitAdmin").onclick = () => {
   alert("Login mockado: admin@dudoces.com / 123456");
   adminModal.classList.remove("open");
 };
 
-// ===== Chat =====
+// ======================
+// =====    Chat    =====
+// ======================
 document.getElementById("toggleChat").onclick = () =>
   document.getElementById("chatEmbed").classList.toggle("open");
 
-// ===== Inicialização =====
+// ======================
+// =====  Controles =====
+// ======================
+sortSelect.onchange = (e) => {
+  state.sort = e.target.value;
+  renderProducts();
+};
+promoOnly.onchange = (e) => {
+  state.promoOnly = e.target.checked;
+  renderProducts();
+};
+searchInput.oninput = (e) => {
+  state.search = e.target.value;
+  renderProducts();
+};
+
+// CEP persistido
+if (localStorage.getItem("cep")) cepInput.value = localStorage.getItem("cep");
+cepInput.oninput = (e) => localStorage.setItem("cep", e.target.value);
+
+// ======================
+// ===== Inicializar ====
+// ======================
 function init() {
-  renderCatChips();
   renderBrands();
+  renderCatChips();
   renderProducts();
   renderCart();
+  updateBanner();
+  restartBannerTimer();
 }
 init();
