@@ -32,7 +32,7 @@ const FALLBACK_IMG = {
   outros: "https://picsum.photos/800/800?random=44",
 };
 
-// Produtos de exemplo (pode trocar depois por JSON)
+// Produtos de exemplo
 const PRODUCTS = [
   { id: 101, name: "Bala Pipper Dura", brand: "santafe", category: "balas", price: 6.95, unit: "pacote" },
   { id: 102, name: "Bala Pipper Mastigável", brand: "santafe", category: "balas", price: 5.95, unit: "pacote" },
@@ -59,11 +59,6 @@ let state = {
 };
 
 // ======================
-// ===== Utilitários ====
-// ======================
-const fmtBRL = (n) => n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-
-// ======================
 // ===== Seletores  =====
 // ======================
 const grid = document.getElementById("grid");
@@ -87,6 +82,11 @@ const drawerBackdrop = document.getElementById("drawerBackdrop");
 
 const bannerTrack = document.getElementById("bannerTrack");
 const bannerDots = document.getElementById("bannerDots");
+
+// ======================
+// ===== Utilitários ====
+// ======================
+const fmtBRL = (n) => n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
 // ======================
 // =====  Render UI  ====
@@ -145,7 +145,7 @@ function renderProducts() {
       const brandName = (p.brand || "").toUpperCase();
       return `
         <div class="card">
-          <img src="${src}" alt="${p.name}">
+          <div class="thumb"><img src="${src}" alt="${p.name}"></div>
           <div class="body">
             <div class="title">${p.name}</div>
             <div class="brand-tag">${brandName} • ${p.unit}</div>
@@ -164,7 +164,6 @@ function renderProducts() {
 
 // ======================
 // =====  Carrinho  =====
-// ======================
 btnCart.onclick = () => cartDrawer.classList.add("open");
 closeCartBtn.onclick = () => cartDrawer.classList.remove("open");
 
@@ -172,7 +171,7 @@ function addToCart(p) {
   const found = state.cart.find((i) => i.id === p.id);
   if (found) found.qty++;
   else state.cart.push({ ...p, qty: 1 });
-  renderCart();
+  renderCart(); // não abre o carrinho automaticamente
 }
 
 function renderCart() {
@@ -226,7 +225,6 @@ function changeQty(id, delta) {
 
 // ======================
 // =====   Banners  =====
-// ======================
 let bannerTimer = null;
 
 function renderBannerDots() {
@@ -261,13 +259,11 @@ function restartBannerTimer() {
 
 // ======================
 // =====    Menu    =====
-// ======================
 btnDrawer?.addEventListener("click", () => drawer.classList.add("open"));
 drawerBackdrop?.addEventListener("click", () => drawer.classList.remove("open"));
 
 // ======================
 // =====   Login    =====
-// ======================
 const adminModal = document.getElementById("adminModal");
 document.getElementById("btnLogin").onclick = () => adminModal.classList.add("open");
 document.getElementById("cancelAdmin").onclick = () => adminModal.classList.remove("open");
@@ -278,25 +274,14 @@ document.getElementById("submitAdmin").onclick = () => {
 
 // ======================
 // =====    Chat    =====
-// ======================
 document.getElementById("toggleChat").onclick = () =>
   document.getElementById("chatEmbed").classList.toggle("open");
 
 // ======================
 // =====  Controles =====
-// ======================
-sortSelect.onchange = (e) => {
-  state.sort = e.target.value;
-  renderProducts();
-};
-promoOnly.onchange = (e) => {
-  state.promoOnly = e.target.checked;
-  renderProducts();
-};
-searchInput.oninput = (e) => {
-  state.search = e.target.value;
-  renderProducts();
-};
+sortSelect.onchange = (e) => { state.sort = e.target.value; renderProducts(); };
+promoOnly.onchange = (e) => { state.promoOnly = e.target.checked; renderProducts(); };
+searchInput.oninput = (e) => { state.search = e.target.value; renderProducts(); };
 
 // CEP persistido
 if (localStorage.getItem("cep")) cepInput.value = localStorage.getItem("cep");
