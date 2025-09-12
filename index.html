@@ -1,162 +1,128 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" class="blue-lines">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-  <title>DU DOCES</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="assets/style.css" />
-  <meta name="theme-color" content="#0E2A47" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DU DOCES Distribuidora</title>
+  <meta name="theme-color" content="#991b1b" />
+
+  <!-- fontes -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+
+  <!-- estilos -->
+  <link rel="stylesheet" href="./assets/style.css" />
 </head>
 <body>
-  <!-- HEADER -->
+  <!-- ==== header ==== -->
   <header class="header">
     <div class="topbar">
-      <button class="hamburger" id="btnDrawer" aria-label="Abrir menu"><span></span></button>
-
+      <div class="hamburger" id="btnMenu"><span></span></div>
       <div class="brand">
-        <h1><span>DU</span> DOCES</h1>
-        <span class="subtitle">Distribuidora</span>
+        <h1><span>DU DOCES</span></h1>
+        <div class="subtitle">Distribuidora</div>
       </div>
-
-      <div class="search">
-        <input id="searchInput" type="search" placeholder="Buscar produtos..." />
-      </div>
-
-      <button class="btn secondary" id="btnLogin">Login</button>
-
+      <div class="search"><input id="searchInput" placeholder="Buscar produtos..." /></div>
+      <button class="login-btn" id="btnLogin">Login</button>
       <div class="cart-cep">
-        <div class="cep-input">
-          <input id="cepInput" type="text" placeholder="CEP" maxlength="9" />
+        <div class="cep-input"><input id="cepInput" placeholder="CEP" /></div>
+        <div class="cart" id="btnCart">
+          <span>🛒</span><span class="badge" id="cartCount">0</span>
         </div>
-        <button class="cart" id="btnCart" aria-label="Abrir carrinho">
-          <span class="badge" id="cartCount">0</span> 🛒
-        </button>
       </div>
     </div>
   </header>
 
-  <!-- DRAWER LATERAL -->
-  <div class="drawer" id="drawer" aria-hidden="true">
-    <div class="backdrop" id="drawerBackdrop"></div>
-    <div class="panel" id="drawerPanel" role="menu">
-      <h3 style="margin:8px 0 12px">Menu</h3>
-      <a href="#" id="openAdmin">Login</a>
+  <!-- ==== drawer lateral ==== -->
+  <div class="drawer" id="drawer">
+    <div class="backdrop" id="closeDrawer"></div>
+    <div class="panel">
       <a href="#">Sobre nós</a>
       <a href="#">Configurações</a>
-      <label class="dm-toggle">
-        <input type="checkbox" id="darkToggle" />
-        <span>Modo escuro</span>
-      </label>
       <a href="#">Política de Entrega</a>
       <a href="#">Atendimento</a>
+      <hr style="border-color:#ffffff22;margin:10px 0" />
+      <a href="#" id="toggleDark">🌙 Modo escuro</a>
     </div>
   </div>
 
-  <!-- BANNERS -->
-  <section class="banners" aria-label="Destaques">
-    <div class="banner-track" id="bannerTrack"></div>
+  <!-- ==== banners ==== -->
+  <section class="banners">
+    <div class="banner-track" id="bannerTrack">
+      <div class="banner banner-1"></div>
+      <div class="banner banner-2"></div>
+      <div class="banner banner-3"></div>
+    </div>
     <div class="banner-dots" id="bannerDots"></div>
   </section>
 
-  <!-- FILTROS -->
+  <!-- ==== filtros ==== -->
   <section class="filters">
-    <!-- MARCAS -->
     <div class="brand-row" id="brandRow"></div>
-
-    <!-- TOOLBAR SUPERIOR -->
     <div class="toolbar">
-      <label>
-        <select id="sortSelect" aria-label="Ordenação">
-          <option value="relevancia">Relevância</option>
-          <option value="best">Mais vendidos</option>
-          <option value="preco_asc">Menor preço</option>
-          <option value="preco_desc">Maior preço</option>
-        </select>
-      </label>
+      <select id="sortSelect">
+        <option value="relevancia">Relevância</option>
+        <option value="preco_asc">Menor preço</option>
+        <option value="preco_desc">Maior preço</option>
+      </select>
       <label><input type="checkbox" id="promoOnly" /> Somente promoções</label>
-
-      <!-- Faixa de Preço -->
-      <div class="price-range">
-        <span>Preço:</span>
-        <input type="number" id="priceMin" min="0" step="0.01" placeholder="mín" />
-        <span>–</span>
-        <input type="number" id="priceMax" min="0" step="0.01" placeholder="máx" />
-        <button class="btn secondary" id="clearFilters">Limpar</button>
-      </div>
-
-      <!-- Frete estimado -->
-      <div class="shipping-estimate" id="shippingEstimate">Frete: —</div>
     </div>
-
-    <!-- CATEGORIAS -->
     <div class="chip-row" id="catRow"></div>
   </section>
 
-  <!-- PRODUTOS -->
+  <!-- ==== produtos ==== -->
   <main class="container">
-    <div id="resultsInfo" class="results-info" style="display:none"></div>
     <div class="grid" id="grid"></div>
-    <div class="no-results" id="noResults" style="display:none">Nenhum produto encontrado para este filtro.</div>
   </main>
 
-  <!-- MINI-CARRINHO MOBILE -->
-  <div class="mini-cart" id="miniCart">
-    <div><strong>Total:</strong> <span id="miniTotal">R$ 0,00</span></div>
-    <button class="btn primary" id="miniOpenCart">Abrir carrinho</button>
-  </div>
-
-  <!-- LINHAS AZUIS -->
-  <div class="blue-lines"></div>
-
-  <!-- CARRINHO -->
-  <aside class="cart-drawer" id="cartDrawer" aria-label="Carrinho">
+  <!-- ==== carrinho ==== -->
+  <aside class="cart-drawer" id="cartDrawer">
     <header>
-      <strong>Carrinho</strong>
-      <button class="btn secondary" id="closeCart">Fechar</button>
+      <h3>Carrinho</h3>
+      <button id="closeCart">✖</button>
     </header>
     <div class="cart-list" id="cartList"></div>
     <div class="cart-footer">
       <div class="row">
-        <span>Total produtos:</span> <strong id="cartTotal">R$ 0,00</strong>
+        <span>Total:</span>
+        <strong id="cartTotal">R$ 0,00</strong>
       </div>
       <div class="row">
-        <span>Frete:</span> <strong id="cartShipping">—</strong>
+        <span>Frete:</span>
+        <strong id="cartFrete">--</strong>
       </div>
-      <div class="row totalz">
-        <span>Total geral:</span> <strong id="cartGrand">R$ 0,00</strong>
-      </div>
-      <button class="btn primary checkout">Finalizar Pedido</button>
+      <button class="checkout">Finalizar Pedido</button>
     </div>
   </aside>
 
-  <!-- MODAL LOGIN -->
-  <div class="modal" id="adminModal" aria-hidden="true">
+  <!-- ==== modal login ==== -->
+  <div class="modal" id="adminModal">
     <div class="box">
       <h3>Login</h3>
-      <input id="adminEmail" type="email" placeholder="Email" />
-      <input id="adminPass" type="password" placeholder="Senha" />
-      <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:6px">
+      <input id="email" placeholder="Email" />
+      <input id="senha" type="password" placeholder="Senha" />
+      <div style="display:flex;gap:8px;margin-top:10px">
         <button class="btn secondary" id="cancelAdmin">Cancelar</button>
         <button class="btn primary" id="submitAdmin">Entrar</button>
       </div>
-      <small id="adminMsg" style="display:none;color:#c00">Credenciais inválidas</small>
     </div>
   </div>
 
-  <!-- CHAT IA -->
+  <!-- ==== chat ==== -->
   <div class="chatvolt-dock">
-    <div class="chatvolt-bubble" id="toggleChat" title="Abrir ChatVolt">IA</div>
-  </div>
-  <div class="chatvolt-embed" id="chatEmbed">
-    <iframe title="ChatVolt" srcdoc="<p style='font-family:sans-serif;padding:10px'>Substitua pelo widget oficial do ChatVolt.</p>" style="border:0;width:100%;height:100%"></iframe>
+    <div class="chatvolt-bubble" id="toggleChat">IA</div>
+    <div class="chatvolt-embed" id="chatEmbed">
+      <!-- insira aqui o script do ChatVolt -->
+    </div>
   </div>
 
-  <!-- RODAPÉ -->
-  <footer>
-    <div class="site-footer">Du Doces Distribuidora LTDA — todos os direitos reservados.</div>
+  <!-- ==== footer ==== -->
+  <footer class="site-footer">
+    Du Doces Distribuidora LTDA — todos os direitos reservados
   </footer>
 
-  <script src="assets/app.js"></script>
+  <!-- scripts -->
+  <script src="./assets/app.js"></script>
 </body>
 </html>
