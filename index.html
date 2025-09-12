@@ -1,62 +1,131 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>DU DOCES DISTRIBUIDORA</title>
-  <link rel="stylesheet" href="./styles.css?v=1"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+  <title>DU DOCES</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css">
+  <meta name="theme-color" content="#0E2A47" />
 </head>
 <body>
+  <!-- HEADER -->
   <header class="header">
-    <div class="logo">
-      <img src="./assets/logo-du-doces.svg" alt="Du Doces"/>
-      <span>DU DOCES DISTRIBUIDORA</span>
-    </div>
-    <div class="header-right">
-      <div class="cep-input"><input id="cep" placeholder="Seu CEP" aria-label="Seu CEP"/></div>
-      <button class="cart-btn" id="btnCarrinho" aria-label="Carrinho">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M6 6h15l-1.5 8.5a2 2 0 0 1-2 1.5H8.5a2 2 0 0 1-2-1.5L5 3H2"/>
-          <circle cx="9.5" cy="20" r="1.6"></circle>
-          <circle cx="17.5" cy="20" r="1.6"></circle>
-        </svg>
-        <span>Meu carrinho</span>
-      </button>
-      <button class="btn-outline" id="btnMenu" aria-label="Menu">☰</button>
+    <div class="topbar">
+      <button class="hamburger" id="btnDrawer" aria-label="Abrir menu"><span></span></button>
+
+      <div class="brand">
+        <h1><span>DU</span> DOCES</h1>
+        <small class="subtitle">Distribuidora</small>
+      </div>
+
+      <div class="search">
+        <input id="searchInput" type="search" placeholder="Buscar produtos..." />
+      </div>
+
+      <button class="login-btn" id="btnLogin">Login</button>
+
+      <div class="cart-cep">
+        <div class="cep-input"><input id="cepInput" type="text" placeholder="CEP" maxlength="9"></div>
+        <button class="cart" id="btnCart" aria-label="Abrir carrinho">
+          <span class="badge" id="cartCount">0</span> 🛒
+        </button>
+      </div>
     </div>
   </header>
 
-  <aside id="drawer" style="position:fixed;inset:0 0 0 auto;width:300px;transform:translateX(100%);transition:.25s;background:#fff;box-shadow:var(--shadow);padding:16px;z-index:50">
-    <h3 style="margin-bottom:12px">Opções</h3>
-    <ul>
-      <li><a href="#" aria-label="Sobre nós">Sobre nós</a></li>
-      <li><a href="#" aria-label="Configurações">Configurações</a></li>
-    </ul>
-    <div style="margin-top:16px">
-      <button class="btn-outline" onclick="document.getElementById('drawer').style.transform='translateX(100%)'">Fechar</button>
+  <!-- DRAWER LATERAL -->
+  <div class="drawer" id="drawer" aria-hidden="true">
+    <div class="backdrop" id="drawerBackdrop"></div>
+    <div class="panel" role="menu">
+      <h3 style="margin:8px 0 12px">Menu</h3>
+      <a href="#" id="openAdmin">Login</a>
+      <a href="#">Sobre nós</a>
+      <a href="#">Configurações</a>
+      <a href="#">Política de Entrega</a>
+      <a href="#">Atendimento</a>
+    </div>
+  </div>
+
+  <!-- BANNERS -->
+  <section class="banners" aria-label="Destaques">
+    <div class="banner-track" id="bannerTrack">
+      <div class="banner banner-1"></div>
+      <div class="banner banner-2"></div>
+      <div class="banner banner-3"></div>
+    </div>
+    <div class="banner-dots" id="bannerDots"></div>
+  </section>
+
+  <!-- FILTROS -->
+  <section class="filters">
+    <!-- MARCAS -->
+    <div class="brand-row" id="brandRow"></div>
+
+    <!-- TOOLBAR -->
+    <div class="toolbar">
+      <label>
+        <select id="sortSelect">
+          <option value="relevancia">Relevância</option>
+          <option value="preco_asc">Menor preço</option>
+          <option value="preco_desc">Maior preço</option>
+        </select>
+      </label>
+      <label><input type="checkbox" id="promoOnly" /> Somente promoções</label>
+    </div>
+
+    <!-- CATEGORIAS -->
+    <div class="chip-row" id="catRow"></div>
+  </section>
+
+  <!-- PRODUTOS -->
+  <main class="container">
+    <div class="grid" id="grid"></div>
+  </main>
+
+  <!-- LINHAS AZUIS DECORATIVAS -->
+  <div class="blue-lines"></div>
+
+  <!-- CARRINHO -->
+  <aside class="cart-drawer" id="cartDrawer" aria-label="Carrinho">
+    <header>
+      <strong>Carrinho</strong>
+      <button class="btn" id="closeCart">Fechar</button>
+    </header>
+    <div class="cart-list" id="cartList"></div>
+    <div class="cart-footer">
+      <div class="row"><span>Total:</span> <strong id="cartTotal">R$ 0,00</strong></div>
+      <button class="checkout">Finalizar Pedido</button>
     </div>
   </aside>
 
-  <main>
-    <section>
-      <h2>Marcas</h2>
-      <div class="section-sub">Veja as principais marcas. Use o filtro para ver todas.</div>
-      <div class="filter-bar">
-        <span class="chip active" data-filter="principais">Principais</span>
-        <span class="chip" data-filter="todas">Ver todas</span>
+  <!-- MODAL LOGIN -->
+  <div class="modal" id="adminModal" aria-hidden="true">
+    <div class="box">
+      <h3>Login</h3>
+      <input id="adminEmail" type="email" placeholder="Email" />
+      <input id="adminPass" type="password" placeholder="Senha" />
+      <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:6px">
+        <button class="btn" id="cancelAdmin">Cancelar</button>
+        <button class="btn primary" id="submitAdmin">Entrar</button>
       </div>
-      <div id="brandsGrid" class="grid" aria-live="polite"></div>
-    </section>
-  </main>
+      <small id="adminMsg" style="display:none;color:#c00">Credenciais inválidas</small>
+    </div>
+  </div>
 
-  <script>
-    // Exemplo: sobrescrever a API em produção sem rebuild
-    // window.__API_BASE__ = "https://seu-servico.railway.app";
-  </script>
-  <script type="module" src="./config.js?v=1"></script>
-  <script type="module" src="./app.js?v=1"></script>
-  <script>
-    btnMenu.onclick = ()=> document.getElementById('drawer').style.transform='translateX(0%)';
-  </script>
+  <!-- CHAT IA (placeholder) -->
+  <div class="chatvolt-dock">
+    <div class="chatvolt-bubble" id="toggleChat" title="Abrir ChatVolt">IA</div>
+  </div>
+  <div class="chatvolt-embed" id="chatEmbed">
+    <iframe title="ChatVolt" srcdoc="<p style='font-family:sans-serif;padding:10px'>Substitua por o widget oficial do ChatVolt aqui.</p>" style="border:0;width:100%;height:100%"></iframe>
+  </div>
+
+  <!-- RODAPÉ -->
+  <footer>
+    <div class="site-footer">Du Doces Distribuidora LTDA — todos os direitos reservados.</div>
+  </footer>
+
+  <script src="assets/app.js"></script>
 </body>
 </html>

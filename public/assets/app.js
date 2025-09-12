@@ -1,10 +1,8 @@
-// ======================
 // ===== Dados base =====
-// ======================
 const CATEGORIES = [
   { id: "todas", label: "Todas" },
   { id: "balas", label: "Balas" },
-  { id: "chicletes", label: "Chicletes" },
+  { id: "chicletes", label: "Chicletes" }, // Trident cai aqui
   { id: "chocolates", label: "Chocolates" },
   { id: "outros", label: "Outros" },
 ];
@@ -32,7 +30,7 @@ const FALLBACK_IMG = {
   outros: "https://picsum.photos/800/800?random=44",
 };
 
-// Produtos de exemplo
+// Produtos (pode expandir à vontade)
 const PRODUCTS = [
   { id: 101, name: "Bala Pipper Dura", brand: "santafe", category: "balas", price: 6.95, unit: "pacote" },
   { id: 102, name: "Bala Pipper Mastigável", brand: "santafe", category: "balas", price: 5.95, unit: "pacote" },
@@ -45,9 +43,7 @@ const PRODUCTS = [
   { id: 108, name: "Lâmpada 9W", brand: "ourolux", category: "outros", price: 2.99, unit: "unidade" },
 ];
 
-// ======================
-// =====   Estado   =====
-// ======================
+// ===== Estado =====
 let state = {
   cat: "todas",
   brand: "todas",
@@ -58,9 +54,7 @@ let state = {
   bannerIndex: 0,
 };
 
-// ======================
-// ===== Seletores  =====
-// ======================
+// ===== Seletores =====
 const grid = document.getElementById("grid");
 const brandRow = document.getElementById("brandRow");
 const catRow = document.getElementById("catRow");
@@ -83,112 +77,95 @@ const drawerBackdrop = document.getElementById("drawerBackdrop");
 const bannerTrack = document.getElementById("bannerTrack");
 const bannerDots = document.getElementById("bannerDots");
 
-// ======================
-// ===== Utilitários ====
-// ======================
+// ===== Utils =====
 const fmtBRL = (n) => n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
-// ======================
-// =====  Render UI  ====
-// ======================
-function renderBrands() {
+// ===== Render =====
+function renderBrands(){
   brandRow.innerHTML = "";
-  BRANDS.forEach((b) => {
+  BRANDS.forEach(b=>{
     const btn = document.createElement("button");
-    btn.className = "brand-btn" + (state.brand === b.id ? " active" : "");
+    btn.className = "brand-btn" + (state.brand===b.id ? " active":"");
     btn.innerHTML = b.logo
-      ? `<img src="${b.logo}" alt="${b.label}"><strong>${b.id === "todas" ? "Todas as Marcas" : b.label}</strong>`
+      ? `<img src="${b.logo}" alt="${b.label}"><strong>${b.id==='todas'?'Todas as Marcas':b.label}</strong>`
       : `<strong>${b.label}</strong>`;
-    btn.onclick = () => {
-      state.brand = b.id;
-      renderProducts();
-      renderBrands();
-    };
+    btn.onclick = ()=>{ state.brand=b.id; renderProducts(); renderBrands(); };
     brandRow.appendChild(btn);
   });
 }
 
-function renderCatChips() {
+function renderCatChips(){
   catRow.innerHTML = "";
-  CATEGORIES.forEach((c) => {
+  CATEGORIES.forEach(c=>{
     const btn = document.createElement("button");
-    btn.className = "chip" + (state.cat === c.id ? " active" : "");
+    btn.className = "chip" + (state.cat===c.id ? " active": "");
     btn.dataset.cat = c.id;
-    btn.innerHTML = c.id === "chicletes" ? `🍬 ${c.label}` : c.label;
-    btn.onclick = () => {
-      state.cat = c.id;
-      renderProducts();
-      renderCatChips();
-    };
+    btn.innerHTML = c.id==="chicletes" ? `🍬 ${c.label}` : c.label;
+    btn.onclick = ()=>{ state.cat=c.id; renderProducts(); renderCatChips(); };
     catRow.appendChild(btn);
   });
 }
 
-function filteredProducts() {
-  let items = PRODUCTS.filter(
-    (p) =>
-      (state.cat === "todas" || p.category === state.cat) &&
-      (state.brand === "todas" || p.brand === state.brand) &&
-      (!state.promoOnly || p.promo) &&
-      p.name.toLowerCase().includes(state.search.toLowerCase())
+function filteredProducts(){
+  let items = PRODUCTS.filter(p =>
+    (state.cat==="todas" || p.category===state.cat) &&
+    (state.brand==="todas" || p.brand===state.brand) &&
+    (!state.promoOnly || p.promo) &&
+    p.name.toLowerCase().includes(state.search.toLowerCase())
   );
-  if (state.sort === "preco_asc") items.sort((a, b) => a.price - b.price);
-  if (state.sort === "preco_desc") items.sort((a, b) => b.price - a.price);
+  if(state.sort==="preco_asc") items.sort((a,b)=>a.price-b.price);
+  if(state.sort==="preco_desc") items.sort((a,b)=>b.price-a.price);
   return items;
 }
 
-function renderProducts() {
+function renderProducts(){
   const items = filteredProducts();
-  grid.innerHTML = items
-    .map((p) => {
-      const src = FALLBACK_IMG[p.category] || FALLBACK_IMG.outros;
-      const brandName = (p.brand || "").toUpperCase();
-      return `
-        <div class="card">
-          <div class="thumb"><img src="${src}" alt="${p.name}"></div>
-          <div class="body">
-            <div class="title">${p.name}</div>
-            <div class="brand-tag">${brandName} • ${p.unit}</div>
-            <div class="price">${fmtBRL(p.price)}</div>
-            <button class="add" data-id="${p.id}">Adicionar</button>
-          </div>
+  grid.innerHTML = items.map(p=>{
+    const src = FALLBACK_IMG[p.category] || FALLBACK_IMG.outros;
+    const brandName = (p.brand||"").toUpperCase();
+    return `
+      <div class="card">
+        <div class="thumb"><img src="${src}" alt="${p.name}"></div>
+        <div class="body">
+          <div class="title">${p.name}</div>
+          <div class="brand-tag">${brandName} • ${p.unit}</div>
+          <div class="price">${fmtBRL(p.price)}</div>
+          <button class="add" data-id="${p.id}">Adicionar</button>
         </div>
-      `;
-    })
-    .join("");
+      </div>
+    `;
+  }).join("");
 
-  grid.querySelectorAll(".add").forEach((btn) => {
-    btn.onclick = () => addToCart(PRODUCTS.find((p) => p.id == btn.dataset.id));
+  grid.querySelectorAll(".add").forEach(btn=>{
+    btn.onclick = ()=> addToCart(PRODUCTS.find(p=>p.id==btn.dataset.id));
   });
 }
 
-// ======================
-// =====  Carrinho  =====
-btnCart.onclick = () => cartDrawer.classList.add("open");
-closeCartBtn.onclick = () => cartDrawer.classList.remove("open");
+// ===== Carrinho =====
+btnCart.onclick = ()=> cartDrawer.classList.add("open");
+closeCartBtn.onclick = ()=> cartDrawer.classList.remove("open");
 
-function addToCart(p) {
-  const found = state.cart.find((i) => i.id === p.id);
-  if (found) found.qty++;
-  else state.cart.push({ ...p, qty: 1 });
-  renderCart(); // não abre o carrinho automaticamente
+function addToCart(p){
+  const found = state.cart.find(i=>i.id===p.id);
+  if(found) found.qty++;
+  else state.cart.push({...p, qty:1});
+  renderCart(); // não abre automaticamente
 }
 
-function renderCart() {
+function renderCart(){
   cartList.innerHTML = "";
-  let total = 0;
-  let count = 0;
+  let total=0, count=0;
 
-  if (state.cart.length === 0) {
+  if(state.cart.length===0){
     cartList.innerHTML = `<div class="cart-empty">Seu carrinho está vazio</div>`;
   } else {
-    state.cart.forEach((i) => {
+    state.cart.forEach(i=>{
       total += i.price * i.qty;
       count += i.qty;
       const src = FALLBACK_IMG[i.category] || FALLBACK_IMG.outros;
       cartList.innerHTML += `
         <div class="cart-item">
-          <img src="${src}" width="50" height="50" alt="${i.name}">
+          <img src="${src}" alt="${i.name}">
           <div>
             <div style="font-weight:700">${i.name}</div>
             <small>${fmtBRL(i.price)} • ${i.unit}</small>
@@ -198,99 +175,71 @@ function renderCart() {
             <strong>${i.qty}</strong>
             <button class="qty-inc" data-id="${i.id}">+</button>
           </div>
-        </div>
-      `;
+        </div>`;
     });
   }
 
   cartTotal.textContent = fmtBRL(total);
   cartCount.textContent = count;
 
-  cartList.querySelectorAll(".qty-inc").forEach((b) => {
-    b.onclick = () => changeQty(+b.dataset.id, +1);
-  });
-  cartList.querySelectorAll(".qty-dec").forEach((b) => {
-    b.onclick = () => changeQty(+b.dataset.id, -1);
-  });
+  cartList.querySelectorAll(".qty-inc").forEach(b=> b.onclick = ()=> changeQty(+b.dataset.id, +1));
+  cartList.querySelectorAll(".qty-dec").forEach(b=> b.onclick = ()=> changeQty(+b.dataset.id, -1));
 }
 
-function changeQty(id, delta) {
-  const i = state.cart.findIndex((x) => x.id === id);
-  if (i < 0) return;
+function changeQty(id, delta){
+  const i = state.cart.findIndex(x=>x.id===id);
+  if(i<0) return;
   const q = state.cart[i].qty + delta;
-  if (q <= 0) state.cart.splice(i, 1);
-  else state.cart[i].qty = q;
+  if(q<=0) state.cart.splice(i,1); else state.cart[i].qty = q;
   renderCart();
 }
 
-// ======================
-// =====   Banners  =====
-let bannerTimer = null;
-
-function renderBannerDots() {
-  bannerDots.innerHTML = "";
-  [0, 1, 2].forEach((i) => {
-    const b = document.createElement("button");
-    b.className = i === state.bannerIndex ? "active" : "";
-    b.onclick = () => {
-      state.bannerIndex = i;
-      updateBanner();
-      restartBannerTimer();
-    };
+// ===== Banners =====
+let bannerTimer=null;
+function renderBannerDots(){
+  bannerDots.innerHTML="";
+  [0,1,2].forEach(i=>{
+    const b=document.createElement("button");
+    b.className = i===state.bannerIndex ? "active":"";
+    b.onclick = ()=>{ state.bannerIndex=i; updateBanner(); restartBannerTimer(); };
     bannerDots.appendChild(b);
   });
 }
-
-function updateBanner() {
-  if (!bannerTrack) return;
-  bannerTrack.style.transform = `translateX(-${state.bannerIndex * 100}%)`;
+function updateBanner(){
+  if(!bannerTrack) return;
+  bannerTrack.style.transform = `translateX(-${state.bannerIndex*100}%)`;
   renderBannerDots();
 }
+function nextBanner(){ state.bannerIndex = (state.bannerIndex+1)%3; updateBanner(); }
+function restartBannerTimer(){ if(bannerTimer) clearInterval(bannerTimer); bannerTimer = setInterval(nextBanner, 5000); }
 
-function nextBanner() {
-  state.bannerIndex = (state.bannerIndex + 1) % 3;
-  updateBanner();
-}
+// ===== Menu =====
+btnDrawer?.addEventListener("click", ()=> drawer.classList.add("open"));
+drawerBackdrop?.addEventListener("click", ()=> drawer.classList.remove("open"));
 
-function restartBannerTimer() {
-  if (bannerTimer) clearInterval(bannerTimer);
-  bannerTimer = setInterval(nextBanner, 5000);
-}
-
-// ======================
-// =====    Menu    =====
-btnDrawer?.addEventListener("click", () => drawer.classList.add("open"));
-drawerBackdrop?.addEventListener("click", () => drawer.classList.remove("open"));
-
-// ======================
-// =====   Login    =====
+// ===== Login =====
 const adminModal = document.getElementById("adminModal");
-document.getElementById("btnLogin").onclick = () => adminModal.classList.add("open");
-document.getElementById("cancelAdmin").onclick = () => adminModal.classList.remove("open");
-document.getElementById("submitAdmin").onclick = () => {
+document.getElementById("btnLogin").onclick = ()=> adminModal.classList.add("open");
+document.getElementById("cancelAdmin").onclick = ()=> adminModal.classList.remove("open");
+document.getElementById("submitAdmin").onclick = ()=>{
   alert("Login mockado: admin@dudoces.com / 123456");
   adminModal.classList.remove("open");
 };
 
-// ======================
-// =====    Chat    =====
-document.getElementById("toggleChat").onclick = () =>
-  document.getElementById("chatEmbed").classList.toggle("open");
+// ===== Chat =====
+document.getElementById("toggleChat").onclick = ()=> document.getElementById("chatEmbed").classList.toggle("open");
 
-// ======================
-// =====  Controles =====
-sortSelect.onchange = (e) => { state.sort = e.target.value; renderProducts(); };
-promoOnly.onchange = (e) => { state.promoOnly = e.target.checked; renderProducts(); };
-searchInput.oninput = (e) => { state.search = e.target.value; renderProducts(); };
+// ===== Controles =====
+sortSelect.onchange = e=>{ state.sort=e.target.value; renderProducts(); };
+promoOnly.onchange = e=>{ state.promoOnly=e.target.checked; renderProducts(); };
+searchInput.oninput = e=>{ state.search=e.target.value; renderProducts(); };
 
 // CEP persistido
-if (localStorage.getItem("cep")) cepInput.value = localStorage.getItem("cep");
-cepInput.oninput = (e) => localStorage.setItem("cep", e.target.value);
+if(localStorage.getItem("cep")) cepInput.value = localStorage.getItem("cep");
+cepInput.oninput = e=> localStorage.setItem("cep", e.target.value);
 
-// ======================
-// ===== Inicializar ====
-// ======================
-function init() {
+// ===== Init =====
+function init(){
   renderBrands();
   renderCatChips();
   renderProducts();
