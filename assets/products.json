@@ -1,0 +1,43 @@
+[
+  { "id": 1001, "name": "Bala Pipper Dura", "brand": "santafe", "category": "balas", "price": 6.95, "unit": "pacote", "stock": 24, "best": 120 },
+  { "id": 1002, "name": "Bala Pipper Mastigável", "brand": "santafe", "category": "balas", "price": 5.95, "unit": "pacote", "stock": 18, "promo": true, "oldPrice": 6.95, "best": 95 },
+
+  { "id": 1003, "name": "Bala de Mel", "brand": "dori", "category": "balas", "price": 8.99, "unit": "pacote", "stock": 40, "best": 150 },
+  { "id": 1004, "name": "Bala Gengibre e Mel", "brand": "soberana", "category": "balas", "price": 7.95, "unit": "pacote", "stock": 22, "best": 60 },
+  { "id": 1005, "name": "Bala de Mel", "brand": "arcor", "category": "balas", "price": 15.50, "unit": "pacote", "stock": 15, "best": 55 },
+  { "id": 1006, "name": "Bala de Banana", "brand": "primor", "category": "balas", "price": 15.75, "unit": "pacote", "stock": 17, "best": 52 },
+  { "id": 1007, "name": "Bala Sortida", "brand": "chita", "category": "balas", "price": 7.60, "unit": "pacote", "stock": 28, "best": 47 },
+
+  { "id": 1008, "name": "Lâmpada 9W", "brand": "ourolux", "category": "outros", "price": 2.99, "unit": "unidade", "stock": 80, "best": 30 },
+
+  { "id": 1009, "name": "Suflair (unidade)", "brand": "nestle", "category": "chocolates", "price": 4.99, "unit": "unidade", "stock": 200, "best": 300 },
+  { "id": 1010, "name": "Suflair (caixa)", "brand": "nestle", "category": "chocolates", "price": 99.50, "unit": "caixa", "stock": 12, "promo": true, "oldPrice": 109.90, "best": 80 },
+
+  { "id": 1011, "name": "KitKat (unidade)", "brand": "nestle", "category": "chocolates", "price": 2.99, "unit": "unidade", "stock": 240, "best": 260 },
+  { "id": 1012, "name": "KitKat (caixa)", "brand": "nestle", "category": "chocolates", "price": 71.75, "unit": "caixa", "stock": 14, "best": 120 },
+
+  { "id": 1013, "name": "Chocolate Block (unidade)", "brand": "arcor", "category": "chocolates", "price": 1.75, "unit": "unidade", "stock": 180, "best": 140 },
+  { "id": 1014, "name": "Chocolate Block (caixa)", "brand": "arcor", "category": "chocolates", "price": 32.50, "unit": "caixa", "stock": 16, "best": 75 },
+
+  { "id": 1015, "name": "Sonho de Valsa (pacote)", "brand": "lacta", "category": "chocolates", "price": 53.95, "unit": "pacote", "stock": 26, "best": 180 },
+  { "id": 1016, "name": "Ouro Branco (pacote)", "brand": "lacta", "category": "chocolates", "price": 53.95, "unit": "pacote", "stock": 24, "best": 170 },
+  { "id": 1017, "name": "Serenata de Amor (pacote)", "brand": "garoto", "category": "chocolates", "price": 49.95, "unit": "pacote", "stock": 21, "best": 160 },
+
+  { "id": 1018, "name": "Bon o Bon Brigadeiro (pacote)", "brand": "arcor", "category": "chocolates", "price": 39.95, "unit": "pacote", "stock": 20, "best": 110 },
+  { "id": 1019, "name": "Bon o Bon Morango (pacote)", "brand": "arcor", "category": "chocolates", "price": 39.95, "unit": "pacote", "stock": 20, "best": 105 },
+  { "id": 1020, "name": "Bon o Bon Beijinho (pacote)", "brand": "arcor", "category": "chocolates", "price": 39.95, "unit": "pacote", "stock": 20, "best": 98 },
+
+  { "id": 1021, "name": "Baralho Copag (unidade)", "brand": "copag", "category": "outros", "price": 11.50, "unit": "unidade", "stock": 60, "best": 50 },
+  { "id": 1022, "name": "Baralho Copag (caixa)", "brand": "copag", "category": "outros", "price": 138.00, "unit": "caixa", "stock": 8, "best": 25 },
+
+  { "id": 1023, "name": "Trident Caixa Menta", "brand": "trident", "category": "chicletes", "price": 35.70, "unit": "caixa", "stock": 33, "best": 210 },
+  { "id": 1024, "name": "Trident Caixa Hortelã", "brand": "trident", "category": "chicletes", "price": 35.70, "unit": "caixa", "stock": 31, "best": 205 },
+  { "id": 1025, "name": "Trident Caixa Tutti Frutti", "brand": "trident", "category": "chicletes", "price": 35.70, "unit": "caixa", "stock": 30, "best": 190 },
+  { "id": 1026, "name": "Trident Caixa Blueberry", "brand": "trident", "category": "chicletes", "price": 35.70, "unit": "caixa", "stock": 29, "best": 175 },
+  { "id": 1027, "name": "Trident Caixa Intense", "brand": "trident", "category": "chicletes", "price": 35.70, "unit": "caixa", "stock": 27, "best": 165 },
+  { "id": 1028, "name": "Trident Caixa Cereja Ice", "brand": "trident", "category": "chicletes", "price": 35.70, "unit": "caixa", "stock": 26, "best": 160 },
+  { "id": 1029, "name": "Trident Caixa Herbal", "brand": "trident", "category": "chicletes", "price": 35.70, "unit": "caixa", "stock": 24, "best": 150 },
+  { "id": 1030, "name": "Trident Caixa Melancia", "brand": "trident", "category": "chicletes", "price": 35.70, "unit": "caixa", "stock": 23, "best": 148 },
+  { "id": 1031, "name": "Trident Caixa Canela", "brand": "trident", "category": "chicletes", "price": 35.70, "unit": "caixa", "stock": 22, "best": 145 },
+  { "id": 1032, "name": "Trident Caixa Morango", "brand": "trident", "category": "chicletes", "price": 35.70, "unit": "caixa", "stock": 21, "best": 140 }
+]
