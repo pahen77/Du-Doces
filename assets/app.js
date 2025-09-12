@@ -1,39 +1,43 @@
-// ==== Configurações e defaults ====
+/* DU DOCES – Frontend 2.3 (tema vermelho) */
+
+/* =======================
+   Defaults / Fallback Data
+   ======================= */
 const DEFAULT_CATEGORIES = [
-  { id: "todas",        label: "Todas" },
-  { id: "balas",        label: "Balas" },
-  { id: "chicletes",    label: "Chicletes" },
-  { id: "chocolates",   label: "Chocolates" },
-  { id: "bolachas",     label: "Bolacha/Biscoito" },
-  { id: "salgadinhos",  label: "Salgadinhos" },
-  { id: "outros",       label: "Outros" }
+  { id: "todas",       label: "Todas" },
+  { id: "balas",       label: "Balas" },
+  { id: "chicletes",   label: "Chicletes" },
+  { id: "chocolates",  label: "Chocolates" },
+  { id: "bolachas",    label: "Bolacha/Biscoito" },
+  { id: "salgadinhos", label: "Salgadinhos" },
+  { id: "outros",      label: "Outros" }
 ];
 
-const PRIMARY_BRANDS = ["arcor","freegells","nestle","coca"]; // aparecem no topo
+const PRIMARY_BRANDS = ["todas","arcor","freegells","nestle","coca"]; // linha principal
 const DEFAULT_BRANDS = [
-  { id: "todas", label: "Todas as Marcas", logo: "" },
-  { id: "arcor", label: "Arcor", logo: "https://upload.wikimedia.org/wikipedia/commons/1/1b/Arcor_logo.png" },
-  { id: "freegells", label: "Freegells", logo: "" },
-  { id: "nestle", label: "Nestlé", logo: "https://upload.wikimedia.org/wikipedia/commons/2/21/Nestle_textlogo_blue.svg" },
-  { id: "coca", label: "Coca-Cola", logo: "https://upload.wikimedia.org/wikipedia/commons/9/9d/Coca-Cola_logo.svg" },
-  { id: "trident", label: "Trident", logo: "" },
-  { id: "santafe", label: "Santa Fe", logo: "" },
-  { id: "dori", label: "Dori", logo: "" },
-  { id: "soberana", label: "Soberana", logo: "" },
-  { id: "primor", label: "Primor", logo: "" },
-  { id: "chita", label: "Chita", logo: "" },
-  { id: "ourolux", label: "Ourolux", logo: "" },
-  { id: "lacta", label: "Lacta", logo: "" },
-  { id: "garoto", label: "Garoto", logo: "" },
-  { id: "copag", label: "Copag", logo: "" }
+  { id: "todas",    label: "Todas as Marcas", logo: "" },
+  { id: "arcor",    label: "Arcor",           logo: "https://upload.wikimedia.org/wikipedia/commons/1/1b/Arcor_logo.png" },
+  { id: "freegells",label: "Freegells",       logo: "" },
+  { id: "nestle",   label: "Nestlé",          logo: "https://upload.wikimedia.org/wikipedia/commons/2/21/Nestle_textlogo_blue.svg" },
+  { id: "coca",     label: "Coca-Cola",       logo: "https://upload.wikimedia.org/wikipedia/commons/9/9d/Coca-Cola_logo.svg" },
+  { id: "trident",  label: "Trident",         logo: "" },
+  { id: "santafe",  label: "Santa Fe",        logo: "" },
+  { id: "dori",     label: "Dori",            logo: "" },
+  { id: "soberana", label: "Soberana",        logo: "" },
+  { id: "primor",   label: "Primor",          logo: "" },
+  { id: "chita",    label: "Chita",           logo: "" },
+  { id: "ourolux",  label: "Ourolux",         logo: "" },
+  { id: "lacta",    label: "Lacta",           logo: "" },
+  { id: "garoto",   label: "Garoto",          logo: "" },
+  { id: "copag",    label: "Copag",           logo: "" }
 ];
 
 const DEFAULT_BANNERS = [
-  { image: "https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?q=80&w=1600&auto=format&fit=crop" },
-  { image: "https://images.unsplash.com/photo-1452251889946-8ff5ea7b27ab?q=80&w=1600&auto=format&fit=crop" },
-  { image: "https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=1600&auto=format&fit=crop" }
+  { image: "https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?q=80&w=1600&auto=format&fit=crop", href: "#" },
+  { image: "https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=1600&auto=format&fit=crop" },
+  { image: "https://images.unsplash.com/photo-1452251889946-8ff5ea7b27ab?q=80&w=1600&auto=format&fit=crop" }
 ];
-// FALLBACK embutido: aparece mesmo sem servidor
+
 const DEFAULT_PRODUCTS = [
   { "id": 101, "name": "Bala Pipper Dura",              "brand": "santafe",  "category": "balas",       "price": 6.95,  "unit": "pacote",  "best": 30, "stock": 50 },
   { "id": 102, "name": "Bala Pipper Mastigável",         "brand": "santafe",  "category": "balas",       "price": 5.95,  "unit": "pacote",  "best": 28, "stock": 60, "promo": true, "oldPrice": 6.50 },
@@ -94,23 +98,14 @@ const FALLBACK_IMG = {
   salgadinhos: "https://picsum.photos/800/800?random=55",
   outros: "https://picsum.photos/800/800?random=66",
 };
-async function loadProducts(){
-  try{
-    const r = await fetch("assets/products.json", { cache: "no-store" });
-    if(!r.ok) throw new Error(r.status);
-    const data = await r.json();
-    PRODUCTS = Array.isArray(data) && data.length ? data : DEFAULT_PRODUCTS;
-  }catch(e){
-    console.warn("products.json não carregou — usando DEFAULT_PRODUCTS", e);
-    PRODUCTS = DEFAULT_PRODUCTS;
-  }
-}
 
-// ==== Estado ====
+/* =======================
+   Estado
+   ======================= */
 let CATEGORIES = DEFAULT_CATEGORIES.slice();
 let BRANDS = DEFAULT_BRANDS.slice();
 let BANNERS = DEFAULT_BANNERS.slice();
-let PRODUCTS = []; // via JSON
+let PRODUCTS = [];
 
 let state = {
   cat: "todas",
@@ -121,71 +116,73 @@ let state = {
   cart: [],
   bannerIndex: 0,
   dark: false,
-  priceMin: null,
-  priceMax: null,
+  minPrice: null,
+  maxPrice: null
 };
 
-// ==== Seletores ====
+/* =======================
+   Seletores
+   ======================= */
 const btnMenu = document.getElementById("btnMenu");
 const drawer = document.getElementById("drawer");
 const closeDrawer = document.getElementById("closeDrawer");
-const drawerPanel = document.getElementById("drawerPanel");
-const darkToggle = document.getElementById("darkToggle");
+const toggleDark = document.getElementById("toggleDark");
 
 const bannerTrack = document.getElementById("bannerTrack");
 const bannerDots = document.getElementById("bannerDots");
 
 const brandRow = document.getElementById("brandRow");
-const brandRowExtra = document.getElementById("brandRowExtra");
-const otherBrands = document.getElementById("otherBrands");
+const otherBrandsWrap = document.getElementById("otherBrands");
 
 const catRow = document.getElementById("catRow");
 const sortSelect = document.getElementById("sortSelect");
 const promoOnly = document.getElementById("promoOnly");
 const searchInput = document.getElementById("searchInput");
-const priceMin = document.getElementById("priceMin");
-const priceMax = document.getElementById("priceMax");
+const minPrice = document.getElementById("minPrice");
+const maxPrice = document.getElementById("maxPrice");
 const clearFilters = document.getElementById("clearFilters");
 
 const grid = document.getElementById("grid");
-const resultsInfo = document.getElementById("resultsInfo");
-const noResults = document.getElementById("noResults");
 
 const btnCart = document.getElementById("btnCart");
 const cartDrawer = document.getElementById("cartDrawer");
 const closeCart = document.getElementById("closeCart");
 const cartList = document.getElementById("cartList");
 const cartTotal = document.getElementById("cartTotal");
-const cartShipping = document.getElementById("cartShipping");
-const cartGrand = document.getElementById("cartGrand");
+const cartFrete = document.getElementById("cartFrete");
 const cartCount = document.getElementById("cartCount");
+
 const cepInput = document.getElementById("cepInput");
 
 const adminModal = document.getElementById("adminModal");
 const btnLogin = document.getElementById("btnLogin");
 const cancelAdmin = document.getElementById("cancelAdmin");
 const submitAdmin = document.getElementById("submitAdmin");
+const emailEl = document.getElementById("email");
+const senhaEl = document.getElementById("senha");
 
 const toggleChat = document.getElementById("toggleChat");
 const chatEmbed = document.getElementById("chatEmbed");
 
-// ==== Utils ====
-const fmtBRL = (n)=> isFinite(n) ? n.toLocaleString("pt-BR",{style:"currency",currency:"BRL"}) : "—";
+/* =======================
+   Utils
+   ======================= */
+const fmtBRL = (n) => isFinite(n) ? n.toLocaleString("pt-BR",{style:"currency",currency:"BRL"}) : "—";
 const maskCEP = (v)=> v.replace(/\D/g,"").slice(0,8).replace(/(\d{5})(\d)/,"$1-$2");
 
-// frete estimado
+// Frete estimado (mock por faixa de CEP + quantidade de itens)
 function estimateShipping(cep){
   const digits = (cep||"").replace(/\D/g,"");
   if(digits.length<8) return null;
   const d2 = parseInt(digits.slice(0,2),10);
   let base = 19.9;
   if(d2<=19) base = 21.9; else if(d2<=59) base = 24.9; else base = 29.9;
-  const items = state.cart.reduce((a,i)=>a+i.qty,0);
-  const extra = Math.max(0, (items-3)) * 2.5;
+  const qty = state.cart.reduce((a,i)=>a+i.qty,0);
+  const extra = Math.max(0, qty-3) * 2.5;
   return +(base + extra).toFixed(2);
 }
 
-// persistência
+// Persistência simples
 function saveState(){
   localStorage.setItem("dd_cart", JSON.stringify(state.cart));
   localStorage.setItem("dd_cep", cepInput.value || "");
@@ -193,7 +190,7 @@ function saveState(){
 }
 function loadState(){
   try{
-    const c = JSON.parse(localStorage.getItem("dd_cart")||"[]");
+    const c = JSON.parse(localStorage.getItem("dd_cart") || "[]");
     if(Array.isArray(c)) state.cart = c;
     const cep = localStorage.getItem("dd_cep"); if(cep) cepInput.value = cep;
     state.dark = localStorage.getItem("dd_dark")==="1";
@@ -201,15 +198,18 @@ function loadState(){
   }catch(e){}
 }
 
-// ==== Loads JSON ====
+/* =======================
+   Loads de JSON (com fallback)
+   ======================= */
 async function loadProducts(){
   try{
     const r = await fetch("assets/products.json",{cache:"no-store"});
     if(!r.ok) throw new Error(r.status);
     const data = await r.json();
-    PRODUCTS = Array.isArray(data) ? data : [];
+    PRODUCTS = Array.isArray(data) && data.length ? data : DEFAULT_PRODUCTS;
   }catch(e){
-    console.warn("products.json não carregou", e); PRODUCTS = [];
+    console.warn("products.json não carregou — usando DEFAULT_PRODUCTS", e);
+    PRODUCTS = DEFAULT_PRODUCTS;
   }
 }
 async function loadBrands(){
@@ -217,9 +217,10 @@ async function loadBrands(){
     const r = await fetch("assets/brands.json",{cache:"no-store"});
     if(!r.ok) throw new Error(r.status);
     const data = await r.json();
-    BRANDS = Array.isArray(data)&&data.length ? data : DEFAULT_BRANDS;
+    BRANDS = Array.isArray(data) && data.length ? data : DEFAULT_BRANDS;
   }catch(e){
-    console.warn("brands.json não carregou", e); BRANDS = DEFAULT_BRANDS;
+    console.warn("brands.json não carregou — usando DEFAULT_BRANDS", e);
+    BRANDS = DEFAULT_BRANDS;
   }
 }
 async function loadBanners(){
@@ -227,26 +228,28 @@ async function loadBanners(){
     const r = await fetch("assets/banners.json",{cache:"no-store"});
     if(!r.ok) throw new Error(r.status);
     const data = await r.json();
-    BANNERS = Array.isArray(data)&&data.length ? data : DEFAULT_BANNERS;
+    BANNERS = Array.isArray(data) && data.length ? data : DEFAULT_BANNERS;
   }catch(e){
-    console.warn("banners.json não carregou", e); BANNERS = DEFAULT_BANNERS;
+    console.warn("banners.json não carregou — usando DEFAULT_BANNERS", e);
+    BANNERS = DEFAULT_BANNERS;
   }
 }
 
-// ==== Drawer / Dark ====
+/* =======================
+   Drawer + Dark mode
+   ======================= */
 btnMenu?.addEventListener("click", ()=> drawer.classList.add("open"));
 closeDrawer?.addEventListener("click", ()=> drawer.classList.remove("open"));
-darkToggle?.addEventListener("change", ()=>{
-  state.dark = darkToggle.checked;
+toggleDark?.addEventListener("click",(e)=>{
+  e.preventDefault();
+  state.dark = !state.dark;
   document.body.classList.toggle("dark", state.dark);
   saveState();
 });
-// swipe close
-let startX=null;
-drawerPanel?.addEventListener("touchstart",(e)=>{ startX = e.touches[0].clientX; },{passive:true});
-drawerPanel?.addEventListener("touchmove",(e)=>{ if(startX==null) return; const dx=e.touches[0].clientX-startX; if(dx<-60){drawer.classList.remove("open"); startX=null;} },{passive:true});
 
-// ==== Banners ====
+/* =======================
+   Banners
+   ======================= */
 let bannerTimer=null;
 function renderBanners(){
   bannerTrack.innerHTML = BANNERS.map(b=>{
@@ -254,51 +257,62 @@ function renderBanners(){
     return b.href ? `<a class="banner" href="${b.href}" ${style}></a>` : `<div class="banner" ${style}></div>`;
   }).join("");
   bannerDots.innerHTML = BANNERS.map((_,i)=>`<button class="${i===state.bannerIndex?'active':''}"></button>`).join("");
-  [...bannerDots.children].forEach((d,i)=> d.onclick=()=>{state.bannerIndex=i;updateBanner();restartBannerTimer();});
+  [...bannerDots.children].forEach((d,i)=> d.onclick = ()=>{ state.bannerIndex=i; updateBanner(); restartBannerTimer(); });
   updateBanner(); restartBannerTimer();
 }
-function updateBanner(){ if(!bannerTrack) return; bannerTrack.style.transform=`translateX(-${state.bannerIndex*100}%)`; [...bannerDots.children].forEach((d,i)=>d.classList.toggle("active", i===state.bannerIndex)); }
+function updateBanner(){
+  if(!bannerTrack) return;
+  bannerTrack.style.transform = `translateX(-${state.bannerIndex*100}%)`;
+  [...bannerDots.children].forEach((d,i)=> d.classList.toggle("active", i===state.bannerIndex));
+}
 function nextBanner(){ state.bannerIndex=(state.bannerIndex+1)%BANNERS.length; updateBanner(); }
 function restartBannerTimer(){ if(bannerTimer) clearInterval(bannerTimer); bannerTimer=setInterval(nextBanner,5000); }
 
-// ==== Marcas (principais + extras) ====
+/* =======================
+   Marcas (principais + outras)
+   ======================= */
+function makeBrandButton(b){
+  const el = document.createElement("div");
+  el.className = "brand-logo" + (state.brand===b.id?" active":"");
+  el.innerHTML = b.logo
+    ? `<img src="${b.logo}" alt="${b.label}" style="height:20px;vertical-align:middle;margin-right:8px"> ${b.id==="todas"?"Todas as Marcas":b.label}`
+    : (b.id==="todas"?"Todas as Marcas":b.label);
+  el.onclick = ()=>{ state.brand=b.id; renderProducts(); renderBrands(); };
+  return el;
+}
 function renderBrands(){
-  const main = BRANDS.filter(b=> PRIMARY_BRANDS.includes(b.id) || b.id==="todas");
-  const extra = BRANDS.filter(b=> !PRIMARY_BRANDS.includes(b.id) && b.id!=="todas");
+  const main = BRANDS.filter(b=> PRIMARY_BRANDS.includes(b.id));
+  const extras = BRANDS.filter(b=> !PRIMARY_BRANDS.includes(b.id));
 
-  const mk = (b)=> {
-    const el=document.createElement("button");
-    el.className="brand-btn"+(state.brand===b.id?" active":"");
-    el.innerHTML = b.logo ? `<img src="${b.logo}" alt="${b.label}"><strong>${b.id==="todas"?"Todas as Marcas":b.label}</strong>` : `<strong>${b.label}</strong>`;
-    el.onclick=()=>{ state.brand=b.id; renderProducts(); renderBrands(); };
-    return el;
-  };
+  brandRow.innerHTML = "";
+  main.forEach(b=> brandRow.appendChild(makeBrandButton(b)));
 
-  brandRow.innerHTML=""; brandRowExtra.innerHTML="";
-  main.forEach(b=> brandRow.appendChild(mk(b)));
-  extra.forEach(b=> brandRowExtra.appendChild(mk(b)));
-  // se nenhuma extra, esconde o details
-  otherBrands.style.display = extra.length ? "block" : "none";
+  otherBrandsWrap.innerHTML = "";
+  extras.forEach(b=> otherBrandsWrap.appendChild(makeBrandButton(b)));
 }
 
-// ==== Categorias (fixas) ====
+/* =======================
+   Categorias fixas (chips)
+   ======================= */
 function renderCatChips(){
-  catRow.innerHTML="";
+  catRow.innerHTML = "";
   DEFAULT_CATEGORIES.forEach(c=>{
     const btn = document.createElement("button");
-    btn.className="chip"+(state.cat===c.id?" active":"");
-    btn.dataset.cat=c.id;
+    btn.className = "chip" + (state.cat===c.id ? " active":"");
+    btn.dataset.cat = c.id;
     btn.textContent = c.label;
-    if(c.id==="chicletes") btn.innerHTML = `🍬 ${c.label}`;
-    btn.onclick=()=>{ state.cat=c.id; renderProducts(); renderCatChips(); };
+    if(c.id==="chicletes") btn.textContent = `🍬 ${c.label}`;
+    btn.onclick = ()=> { state.cat=c.id; renderProducts(); renderCatChips(); };
     catRow.appendChild(btn);
   });
 }
 
-// ==== Filtros ====
+/* =======================
+   Filtros / Busca / Ordenação
+   ======================= */
 function inPriceRange(p){
-  const min = state.priceMin!=null ? state.priceMin : -Infinity;
-  const max = state.priceMax!=null ? state.priceMax : Infinity;
+  const min = state.minPrice!=null ? state.minPrice : -Infinity;
+  const max = state.maxPrice!=null ? state.maxPrice : Infinity;
   return p.price >= min && p.price <= max;
 }
 function filteredProducts(){
@@ -311,148 +325,163 @@ function filteredProducts(){
   );
   if(state.sort==="preco_asc") items.sort((a,b)=>a.price-b.price);
   if(state.sort==="preco_desc") items.sort((a,b)=>b.price-a.price);
-  if(state.sort==="best") items.sort((a,b)=>(b.best||0)-(a.best||0));
+  // relevância simples: best desc, promo primeiro
+  if(state.sort==="relevancia") items.sort((a,b)=>((b.promo?1:0)-(a.promo?1:0)) || (b.best||0)-(a.best||0));
   return items;
 }
 
-// ==== Produtos ====
+/* =======================
+   Produtos (grid)
+   ======================= */
 function renderProducts(){
   const items = filteredProducts();
-  resultsInfo.style.display="block";
-  resultsInfo.textContent = `${items.length} produto(s) encontrados`;
-  noResults.style.display = items.length ? "none" : "block";
+  if(!items.length){
+    grid.innerHTML = `<div style="text-align:center;opacity:.75;padding:24px">Nenhum produto encontrado.</div>`;
+    return;
+  }
 
   grid.innerHTML = items.map(p=>{
     const src = FALLBACK_IMG[p.category] || FALLBACK_IMG.outros;
-    const brand = (p.brand||"").toUpperCase();
     const inCart = !!state.cart.find(i=>i.id===p.id);
-    const stockBadge = (p.stock??0) > 0 ? ((p.stock<=10)?"Últimas unidades":"Em estoque") : "Sem estoque";
+    const brandTag = (p.brand || "").toUpperCase();
+    const stockBadge = (p.stock??0)>0 ? ((p.stock<=10)?"Últimas unidades":"Em estoque") : "Sem estoque";
+
     return `
       <div class="card">
-        <div class="badges">
-          <span class="badge stock">${stockBadge}</span>
-          ${p.promo ? `<span class="badge promo">PROMO</span>` : ""}
-        </div>
-        <div class="thumb"><img src="${src}" alt="${p.name}"></div>
+        <img src="${src}" alt="${p.name}">
         <div class="body">
-          <div class="title">${p.name}</div>
-          <div class="brand-tag">${brand} • ${p.unit}</div>
+          <div style="font-weight:800">${p.name}</div>
+          <small class="brand-tag">${brandTag} • ${p.unit}</small>
           <div class="price">
-            ${p.promo&&p.oldPrice?`<s style="opacity:.6;margin-right:6px">${fmtBRL(p.oldPrice)}</s>`:""}
+            ${p.promo && p.oldPrice ? `<s style="opacity:.6;margin-right:6px">${fmtBRL(p.oldPrice)}</s>`:""}
             ${fmtBRL(p.price)}
           </div>
-          <button class="btn primary add ${inCart?'in-cart':''}" data-id="${p.id}">
-            ${inCart ? "No carrinho ✓" : "Adicionar"}
-          </button>
+          <button class="add" data-id="${p.id}">${inCart?"No carrinho ✓":"Adicionar"}</button>
+          <div style="font-size:11px;opacity:.75;margin-top:4px">${stockBadge}</div>
         </div>
       </div>`;
   }).join("");
 
   grid.querySelectorAll(".add").forEach(btn=>{
-    btn.onclick=()=> addToCart(PRODUCTS.find(p=>p.id==btn.dataset.id));
+    btn.onclick = ()=> addToCart(PRODUCTS.find(p=>p.id==btn.dataset.id));
   });
 }
 
-// ==== Carrinho ====
+/* =======================
+   Carrinho
+   ======================= */
 btnCart.onclick = ()=> cartDrawer.classList.add("open");
 closeCart.onclick = ()=> cartDrawer.classList.remove("open");
 
 function addToCart(p){
-  const f = state.cart.find(i=>i.id===p.id);
-  if(f) f.qty++; else state.cart.push({...p, qty:1});
+  const found = state.cart.find(i=>i.id===p.id);
+  if(found) found.qty++;
+  else state.cart.push({...p, qty:1});
   saveState();
-  renderCart(); renderProducts();
+  renderCart();
+  renderProducts(); // atualiza botão para "No carrinho"
 }
+
 function changeQty(id, delta){
-  const i = state.cart.findIndex(x=>x.id===id);
-  if(i<0) return;
-  const q = (state.cart[i].qty||0)+delta;
-  if(q<=0) state.cart.splice(i,1); else state.cart[i].qty = q;
+  const idx = state.cart.findIndex(i=>i.id===id);
+  if(idx<0) return;
+  const q = (state.cart[idx].qty||0) + delta;
+  if(q<=0) state.cart.splice(idx,1);
+  else state.cart[idx].qty = q;
   saveState();
-  renderCart(); renderProducts();
+  renderCart();
+  renderProducts();
 }
+
 function renderCart(){
-  cartList.innerHTML="";
-  let total=0, count=0;
+  cartList.innerHTML = "";
+  let total = 0, count = 0;
 
   if(!state.cart.length){
     cartList.innerHTML = `<div class="cart-empty">Seu carrinho está vazio</div>`;
   }else{
     state.cart.forEach(i=>{
-      total += i.price*i.qty; count += i.qty;
+      total += i.price * i.qty;
+      count += i.qty;
       const src = FALLBACK_IMG[i.category] || FALLBACK_IMG.outros;
       cartList.innerHTML += `
         <div class="cart-item">
-          <img src="${src}" alt="${i.name}">
-          <div><div style="font-weight:800">${i.name}</div><small>${fmtBRL(i.price)} • ${i.unit}</small></div>
-          <div style="margin-left:auto;display:flex;align-items:center;gap:8px">
-            <button class="btn secondary qty-dec" data-id="${i.id}">-</button>
+          <img src="${src}" alt="${i.name}" width="40" height="40">
+          <div style="flex:1">
+            <div style="font-weight:700">${i.name}</div>
+            <small>${fmtBRL(i.price)} • ${i.unit}</small>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px">
+            <button class="btn secondary" data-dec="${i.id}">-</button>
             <strong>${i.qty}</strong>
-            <button class="btn primary qty-inc" data-id="${i.id}">+</button>
+            <button class="btn primary" data-inc="${i.id}">+</button>
           </div>
         </div>`;
     });
   }
 
-  const ship = estimateShipping(cepInput.value);
-  cartTotal.textContent = fmtBRL(total);
-  cartShipping.textContent = ship ? fmtBRL(ship) : "—";
-  cartGrand.textContent = ship ? fmtBRL(total+ship) : fmtBRL(total);
   cartCount.textContent = count;
+  const ship = estimateShipping(cepInput.value);
+  cartTotal.textContent = fmtBRL(total + (ship||0));
+  cartFrete.textContent = ship ? fmtBRL(ship) : "--";
 
-  cartList.querySelectorAll(".qty-inc").forEach(b=> b.onclick=()=>changeQty(+b.dataset.id,+1));
-  cartList.querySelectorAll(".qty-dec").forEach(b=> b.onclick=()=>changeQty(+b.dataset.id,-1));
+  // eventos qty
+  cartList.querySelectorAll("[data-inc]").forEach(b=> b.onclick=()=> changeQty(+b.dataset.inc, +1));
+  cartList.querySelectorAll("[data-dec]").forEach(b=> b.onclick=()=> changeQty(+b.dataset.dec, -1));
 }
 
-// CEP + frete live
+/* CEP + frete live */
 cepInput.addEventListener("input",(e)=>{
-  const pos=e.target.selectionStart;
+  const pos = e.target.selectionStart;
   e.target.value = maskCEP(e.target.value);
-  saveState(); renderCart();
+  saveState();
+  renderCart();
   try{ e.target.setSelectionRange(pos,pos);}catch(_){}
 });
 
-// ==== Login (mock) ====
+/* =======================
+   Login (mock)
+   ======================= */
 btnLogin.onclick = ()=> adminModal.classList.add("open");
 cancelAdmin.onclick = ()=> adminModal.classList.remove("open");
-submitAdmin.onclick = ()=>{ alert("Login mockado: admin@dudoces.com • 123456"); adminModal.classList.remove("open"); };
+submitAdmin.onclick = ()=>{
+  // mock de credencial
+  const ok = (emailEl.value||"").includes("@") && (senhaEl.value||"").length>=4;
+  alert(ok ? "Login mockado: admin@dudoces.com • 123456" : "Credenciais inválidas");
+  if(ok) adminModal.classList.remove("open");
+};
 
-// Chat
+/* =======================
+   Chat
+   ======================= */
 toggleChat.onclick = ()=> chatEmbed.classList.toggle("open");
 
-// Controles
-sortSelect.onchange = (e)=>{ state.sort=e.target.value; renderProducts(); };
-promoOnly.onchange  = (e)=>{ state.promoOnly=e.target.checked; renderProducts(); };
-searchInput.oninput = (e)=>{ state.search=e.target.value; renderProducts(); };
-priceMin.oninput = ()=>{ const v=parseFloat(priceMin.value.replace(",",".")); state.priceMin=isNaN(v)?null:v; renderProducts(); };
-priceMax.oninput = ()=>{ const v=parseFloat(priceMax.value.replace(",",".")); state.priceMax=isNaN(v)?null:v; renderProducts(); };
+/* =======================
+   Controles de filtro
+   ======================= */
+sortSelect.onchange = (e)=>{ state.sort = e.target.value; renderProducts(); };
+promoOnly.onchange  = (e)=>{ state.promoOnly = e.target.checked; renderProducts(); };
+searchInput.oninput = (e)=>{ state.search = e.target.value; renderProducts(); };
+minPrice.oninput = ()=>{ const v = parseFloat(minPrice.value.replace(",", ".")); state.minPrice = isNaN(v)?null:v; renderProducts(); };
+maxPrice.oninput = ()=>{ const v = parseFloat(maxPrice.value.replace(",", ".")); state.maxPrice = isNaN(v)?null:v; renderProducts(); };
 clearFilters.onclick = ()=>{
-  state.brand="todas"; state.cat="todas"; state.search=""; state.promoOnly=false; state.priceMin=null; state.priceMax=null; sortSelect.value="relevancia";
-  searchInput.value=""; priceMin.value=""; priceMax.value=""; promoOnly.checked=false;
+  state.brand="todas"; state.cat="todas"; state.search=""; state.promoOnly=false; state.minPrice=null; state.maxPrice=null; sortSelect.value="relevancia";
+  searchInput.value=""; minPrice.value=""; maxPrice.value=""; promoOnly.checked=false;
   renderBrands(); renderCatChips(); renderProducts();
 };
 
-// ==== Init ====
+/* =======================
+   Init
+   ======================= */
 async function init(){
   loadState();
 
   await Promise.all([ loadProducts(), loadBrands(), loadBanners() ]);
-
-  // placeholders de preço (se houver produtos)
-  const prices = PRODUCTS.map(p=>p.price);
-  if(prices.length){
-    priceMin.placeholder = Math.min(...prices).toFixed(2).replace('.',',');
-    priceMax.placeholder = Math.max(...prices).toFixed(2).replace('.',',');
-  }
 
   renderBrands();
   renderCatChips();
   renderProducts();
   renderCart();
   renderBanners();
-
-  // frete inicial
-  const ship = estimateShipping(cepInput.value);
-  document.getElementById("shippingEstimate").textContent = "Frete: " + (ship? fmtBRL(ship) : "—");
 }
 init();
