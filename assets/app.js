@@ -33,6 +33,58 @@ const DEFAULT_BANNERS = [
   { image: "https://images.unsplash.com/photo-1452251889946-8ff5ea7b27ab?q=80&w=1600&auto=format&fit=crop" },
   { image: "https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=1600&auto=format&fit=crop" }
 ];
+// FALLBACK embutido: aparece mesmo sem servidor
+const DEFAULT_PRODUCTS = [
+  { "id": 101, "name": "Bala Pipper Dura",              "brand": "santafe",  "category": "balas",       "price": 6.95,  "unit": "pacote",  "best": 30, "stock": 50 },
+  { "id": 102, "name": "Bala Pipper Mastigável",         "brand": "santafe",  "category": "balas",       "price": 5.95,  "unit": "pacote",  "best": 28, "stock": 60, "promo": true, "oldPrice": 6.50 },
+  { "id": 103, "name": "Bala de Mel",                    "brand": "dori",     "category": "balas",       "price": 8.99,  "unit": "pacote",  "best": 18, "stock": 40 },
+  { "id": 104, "name": "Bala Gengibre e Mel",            "brand": "soberana", "category": "balas",       "price": 7.95,  "unit": "pacote",  "best": 14, "stock": 35 },
+  { "id": 105, "name": "Bala de Mel",                    "brand": "arcor",    "category": "balas",       "price": 15.50, "unit": "pacote",  "best": 12, "stock": 25 },
+  { "id": 106, "name": "Bala de Banana",                 "brand": "primor",   "category": "balas",       "price": 15.75, "unit": "pacote",  "best": 10, "stock": 20 },
+  { "id": 107, "name": "Bala Chita Sortida",             "brand": "chita",    "category": "balas",       "price": 7.60,  "unit": "pacote",  "best": 16, "stock": 30 },
+  { "id": 108, "name": "Lâmpada 9W",                     "brand": "ourolux",  "category": "outros",      "price": 2.99,  "unit": "unidade", "best": 6,  "stock": 100 },
+
+  { "id": 109, "name": "Suflair unidade",                "brand": "nestle",   "category": "chocolates",  "price": 4.99,  "unit": "unidade", "best": 40, "stock": 80 },
+  { "id": 110, "name": "Suflair caixa",                  "brand": "nestle",   "category": "chocolates",  "price": 99.50, "unit": "caixa",   "best": 15, "stock": 15 },
+  { "id": 111, "name": "KitKat unidade",                 "brand": "nestle",   "category": "chocolates",  "price": 2.99,  "unit": "unidade", "best": 42, "stock": 120, "promo": true, "oldPrice": 3.49 },
+  { "id": 112, "name": "KitKat caixa",                   "brand": "nestle",   "category": "chocolates",  "price": 71.75, "unit": "caixa",   "best": 22, "stock": 18 },
+  { "id": 113, "name": "Chocolate Block unidade",        "brand": "arcor",    "category": "chocolates",  "price": 1.75,  "unit": "unidade", "best": 26, "stock": 150 },
+  { "id": 114, "name": "Chocolate Block caixa",          "brand": "arcor",    "category": "chocolates",  "price": 32.50, "unit": "caixa",   "best": 20, "stock": 22 },
+  { "id": 115, "name": "Sonho de Valsa pacote",          "brand": "lacta",    "category": "chocolates",  "price": 53.95, "unit": "pacote",  "best": 19, "stock": 25 },
+  { "id": 116, "name": "Ouro Branco pacote",             "brand": "lacta",    "category": "chocolates",  "price": 53.95, "unit": "pacote",  "best": 18, "stock": 25 },
+  { "id": 117, "name": "Serenata de Amor pacote",        "brand": "garoto",   "category": "chocolates",  "price": 49.95, "unit": "pacote",  "best": 15, "stock": 20 },
+  { "id": 118, "name": "Bon o Bon pacote brigadeiro",    "brand": "arcor",    "category": "chocolates",  "price": 39.95, "unit": "pacote",  "best": 12, "stock": 18 },
+  { "id": 119, "name": "Bon o Bon pacote morango",       "brand": "arcor",    "category": "chocolates",  "price": 39.95, "unit": "pacote",  "best": 12, "stock": 18 },
+  { "id": 120, "name": "Bon o Bon pacote beijinho",      "brand": "arcor",    "category": "chocolates",  "price": 39.95, "unit": "pacote",  "best": 12, "stock": 18 },
+
+  { "id": 121, "name": "Baralho Copag unidade",          "brand": "copag",    "category": "outros",      "price": 11.50, "unit": "unidade", "best": 9,  "stock": 50 },
+  { "id": 122, "name": "Baralho Copag caixa",            "brand": "copag",    "category": "outros",      "price": 138.00,"unit": "caixa",   "best": 5,  "stock": 8 },
+
+  { "id": 123, "name": "Trident caixa Menta",            "brand": "trident",  "category": "chicletes",   "price": 35.70, "unit": "caixa",   "best": 38, "stock": 30 },
+  { "id": 124, "name": "Trident caixa Hortelã",          "brand": "trident",  "category": "chicletes",   "price": 35.70, "unit": "caixa",   "best": 34, "stock": 28 },
+  { "id": 125, "name": "Trident caixa Tutti Frutti",     "brand": "trident",  "category": "chicletes",   "price": 35.70, "unit": "caixa",   "best": 33, "stock": 26 },
+  { "id": 126, "name": "Trident caixa Blueberry",        "brand": "trident",  "category": "chicletes",   "price": 35.70, "unit": "caixa",   "best": 31, "stock": 24 },
+  { "id": 127, "name": "Trident caixa Intense",          "brand": "trident",  "category": "chicletes",   "price": 35.70, "unit": "caixa",   "best": 30, "stock": 22 },
+  { "id": 128, "name": "Trident caixa Cereja Ice",       "brand": "trident",  "category": "chicletes",   "price": 35.70, "unit": "caixa",   "best": 29, "stock": 22 },
+  { "id": 129, "name": "Trident caixa Herbal",           "brand": "trident",  "category": "chicletes",   "price": 35.70, "unit": "caixa",   "best": 28, "stock": 22 },
+  { "id": 130, "name": "Trident caixa Melancia",         "brand": "trident",  "category": "chicletes",   "price": 35.70, "unit": "caixa",   "best": 27, "stock": 22 },
+  { "id": 131, "name": "Trident caixa Canela",           "brand": "trident",  "category": "chicletes",   "price": 35.70, "unit": "caixa",   "best": 26, "stock": 22 },
+  { "id": 132, "name": "Trident caixa Morango",          "brand": "trident",  "category": "chicletes",   "price": 35.70, "unit": "caixa",   "best": 26, "stock": 22 },
+
+  { "id": 133, "name": "Freegells Menthol pacote",       "brand": "freegells","category": "chicletes",   "price": 9.90,  "unit": "pacote",  "best": 20, "stock": 40, "promo": true, "oldPrice": 11.50 },
+
+  { "id": 201, "name": "Biscoito Maizena 400g",          "brand": "nestle",   "category": "bolachas",    "price": 6.49,  "unit": "pacote",  "best": 21, "stock": 60 },
+  { "id": 202, "name": "Biscoito Recheado Morango",      "brand": "nestle",   "category": "bolachas",    "price": 3.99,  "unit": "pacote",  "best": 24, "stock": 80 },
+  { "id": 203, "name": "Biscoito Recheado Chocolate",    "brand": "arcor",    "category": "bolachas",    "price": 4.49,  "unit": "pacote",  "best": 22, "stock": 70 },
+  { "id": 204, "name": "Wafer Chocolate 140g",           "brand": "nestle",   "category": "bolachas",    "price": 3.49,  "unit": "pacote",  "best": 19, "stock": 90 },
+
+  { "id": 301, "name": "Salgadinho Queijo 45g",          "brand": "dori",     "category": "salgadinhos", "price": 4.29,  "unit": "unidade", "best": 25, "stock": 120 },
+  { "id": 302, "name": "Salgadinho Churrasco 45g",       "brand": "dori",     "category": "salgadinhos", "price": 4.29,  "unit": "unidade", "best": 23, "stock": 110 },
+  { "id": 303, "name": "Batata Lisa 90g",                "brand": "dori",     "category": "salgadinhos", "price": 7.99,  "unit": "unidade", "best": 18, "stock": 80 },
+
+  { "id": 401, "name": "Coca-Cola Lata 350ml",           "brand": "coca",     "category": "outros",      "price": 4.50,  "unit": "unidade", "best": 50, "stock": 200, "promo": true, "oldPrice": 5.00 },
+  { "id": 402, "name": "Coca-Cola Caixa c/12 latas",     "brand": "coca",     "category": "outros",      "price": 51.00, "unit": "caixa",   "best": 35, "stock": 25 }
+];
 
 const FALLBACK_IMG = {
   balas: "https://picsum.photos/800/800?random=11",
@@ -42,6 +94,17 @@ const FALLBACK_IMG = {
   salgadinhos: "https://picsum.photos/800/800?random=55",
   outros: "https://picsum.photos/800/800?random=66",
 };
+async function loadProducts(){
+  try{
+    const r = await fetch("assets/products.json", { cache: "no-store" });
+    if(!r.ok) throw new Error(r.status);
+    const data = await r.json();
+    PRODUCTS = Array.isArray(data) && data.length ? data : DEFAULT_PRODUCTS;
+  }catch(e){
+    console.warn("products.json não carregou — usando DEFAULT_PRODUCTS", e);
+    PRODUCTS = DEFAULT_PRODUCTS;
+  }
+}
 
 // ==== Estado ====
 let CATEGORIES = DEFAULT_CATEGORIES.slice();
