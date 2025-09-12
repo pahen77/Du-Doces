@@ -1,18 +1,21 @@
-// DU DOCES – app.js (compatível com o seu último index.html vermelho)
-
-// ===== Defaults / Fallback =====
+// ==== Configurações e defaults ====
 const DEFAULT_CATEGORIES = [
-  { id: "todas", label: "Todas" },
-  { id: "balas", label: "Balas" },
-  { id: "chicletes", label: "Chicletes" },
-  { id: "chocolates", label: "Chocolates" },
-  { id: "outros", label: "Outros" },
+  { id: "todas",        label: "Todas" },
+  { id: "balas",        label: "Balas" },
+  { id: "chicletes",    label: "Chicletes" },
+  { id: "chocolates",   label: "Chocolates" },
+  { id: "bolachas",     label: "Bolacha/Biscoito" },
+  { id: "salgadinhos",  label: "Salgadinhos" },
+  { id: "outros",       label: "Outros" }
 ];
 
+const PRIMARY_BRANDS = ["arcor","freegells","nestle","coca"]; // aparecem no topo
 const DEFAULT_BRANDS = [
   { id: "todas", label: "Todas as Marcas", logo: "" },
   { id: "arcor", label: "Arcor", logo: "https://upload.wikimedia.org/wikipedia/commons/1/1b/Arcor_logo.png" },
+  { id: "freegells", label: "Freegells", logo: "" },
   { id: "nestle", label: "Nestlé", logo: "https://upload.wikimedia.org/wikipedia/commons/2/21/Nestle_textlogo_blue.svg" },
+  { id: "coca", label: "Coca-Cola", logo: "https://upload.wikimedia.org/wikipedia/commons/9/9d/Coca-Cola_logo.svg" },
   { id: "trident", label: "Trident", logo: "" },
   { id: "santafe", label: "Santa Fe", logo: "" },
   { id: "dori", label: "Dori", logo: "" },
@@ -22,27 +25,29 @@ const DEFAULT_BRANDS = [
   { id: "ourolux", label: "Ourolux", logo: "" },
   { id: "lacta", label: "Lacta", logo: "" },
   { id: "garoto", label: "Garoto", logo: "" },
-  { id: "copag", label: "Copag", logo: "" },
+  { id: "copag", label: "Copag", logo: "" }
 ];
 
 const DEFAULT_BANNERS = [
-  { image: "https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?q=80&w=1470&auto=format&fit=crop", href: "#" },
-  { image: "https://images.unsplash.com/photo-1452251889946-8ff5ea7b27ab?q=80&w=1470&auto=format&fit=crop" },
-  { image: "https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=1470&auto=format&fit=crop" }
+  { image: "https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?q=80&w=1600&auto=format&fit=crop" },
+  { image: "https://images.unsplash.com/photo-1452251889946-8ff5ea7b27ab?q=80&w=1600&auto=format&fit=crop" },
+  { image: "https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=1600&auto=format&fit=crop" }
 ];
 
 const FALLBACK_IMG = {
   balas: "https://picsum.photos/800/800?random=11",
   chicletes: "https://picsum.photos/800/800?random=22",
   chocolates: "https://picsum.photos/800/800?random=33",
-  outros: "https://picsum.photos/800/800?random=44",
+  bolachas: "https://picsum.photos/800/800?random=44",
+  salgadinhos: "https://picsum.photos/800/800?random=55",
+  outros: "https://picsum.photos/800/800?random=66",
 };
 
-// ===== Estado =====
+// ==== Estado ====
 let CATEGORIES = DEFAULT_CATEGORIES.slice();
 let BRANDS = DEFAULT_BRANDS.slice();
 let BANNERS = DEFAULT_BANNERS.slice();
-let PRODUCTS = []; // vem do products.json
+let PRODUCTS = []; // via JSON
 
 let state = {
   cat: "todas",
@@ -53,33 +58,44 @@ let state = {
   cart: [],
   bannerIndex: 0,
   dark: false,
+  priceMin: null,
+  priceMax: null,
 };
 
-// ===== Seletores (batendo com seu index.html) =====
+// ==== Seletores ====
 const btnMenu = document.getElementById("btnMenu");
 const drawer = document.getElementById("drawer");
 const closeDrawer = document.getElementById("closeDrawer");
-const toggleDark = document.getElementById("toggleDark");
+const drawerPanel = document.getElementById("drawerPanel");
+const darkToggle = document.getElementById("darkToggle");
 
 const bannerTrack = document.getElementById("bannerTrack");
 const bannerDots = document.getElementById("bannerDots");
 
 const brandRow = document.getElementById("brandRow");
+const brandRowExtra = document.getElementById("brandRowExtra");
+const otherBrands = document.getElementById("otherBrands");
+
 const catRow = document.getElementById("catRow");
 const sortSelect = document.getElementById("sortSelect");
 const promoOnly = document.getElementById("promoOnly");
 const searchInput = document.getElementById("searchInput");
+const priceMin = document.getElementById("priceMin");
+const priceMax = document.getElementById("priceMax");
+const clearFilters = document.getElementById("clearFilters");
 
 const grid = document.getElementById("grid");
+const resultsInfo = document.getElementById("resultsInfo");
+const noResults = document.getElementById("noResults");
 
 const btnCart = document.getElementById("btnCart");
 const cartDrawer = document.getElementById("cartDrawer");
 const closeCart = document.getElementById("closeCart");
 const cartList = document.getElementById("cartList");
 const cartTotal = document.getElementById("cartTotal");
-const cartFrete = document.getElementById("cartFrete");
+const cartShipping = document.getElementById("cartShipping");
+const cartGrand = document.getElementById("cartGrand");
 const cartCount = document.getElementById("cartCount");
-
 const cepInput = document.getElementById("cepInput");
 
 const adminModal = document.getElementById("adminModal");
@@ -90,185 +106,164 @@ const submitAdmin = document.getElementById("submitAdmin");
 const toggleChat = document.getElementById("toggleChat");
 const chatEmbed = document.getElementById("chatEmbed");
 
-// ===== Utils =====
-const fmtBRL = (n) =>
-  isFinite(n) ? n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" }) : "—";
+// ==== Utils ====
+const fmtBRL = (n)=> isFinite(n) ? n.toLocaleString("pt-BR",{style:"currency",currency:"BRL"}) : "—";
+const maskCEP = (v)=> v.replace(/\D/g,"").slice(0,8).replace(/(\d{5})(\d)/,"$1-$2");
 
-function maskCEP(v) {
-  return v.replace(/\D/g, "").slice(0, 8).replace(/(\d{5})(\d)/, "$1-$2");
-}
-
-// Frete estimado (mock por faixa CEP + quantidade itens)
-function estimateShipping(cep) {
-  const digits = (cep || "").replace(/\D/g, "");
-  if (digits.length < 8) return null;
-  const d2 = parseInt(digits.slice(0, 2), 10);
+// frete estimado
+function estimateShipping(cep){
+  const digits = (cep||"").replace(/\D/g,"");
+  if(digits.length<8) return null;
+  const d2 = parseInt(digits.slice(0,2),10);
   let base = 19.9;
-  if (d2 <= 19) base = 21.9; // SE/SUL
-  else if (d2 <= 59) base = 24.9; // CO/NE
-  else base = 29.9; // Norte
-  const qnt = state.cart.reduce((a, i) => a + i.qty, 0);
-  const extra = Math.max(0, qnt - 3) * 2.5;
+  if(d2<=19) base = 21.9; else if(d2<=59) base = 24.9; else base = 29.9;
+  const items = state.cart.reduce((a,i)=>a+i.qty,0);
+  const extra = Math.max(0, (items-3)) * 2.5;
   return +(base + extra).toFixed(2);
 }
 
-// Persistência
-function saveState() {
+// persistência
+function saveState(){
   localStorage.setItem("dd_cart", JSON.stringify(state.cart));
   localStorage.setItem("dd_cep", cepInput.value || "");
-  localStorage.setItem("dd_dark", state.dark ? "1" : "0");
+  localStorage.setItem("dd_dark", state.dark ? "1":"0");
 }
-function loadState() {
-  try {
-    const c = JSON.parse(localStorage.getItem("dd_cart") || "[]");
-    if (Array.isArray(c)) state.cart = c;
-    const cep = localStorage.getItem("dd_cep");
-    if (cep) cepInput.value = cep;
-    state.dark = localStorage.getItem("dd_dark") === "1";
+function loadState(){
+  try{
+    const c = JSON.parse(localStorage.getItem("dd_cart")||"[]");
+    if(Array.isArray(c)) state.cart = c;
+    const cep = localStorage.getItem("dd_cep"); if(cep) cepInput.value = cep;
+    state.dark = localStorage.getItem("dd_dark")==="1";
     document.body.classList.toggle("dark", state.dark);
-  } catch (e) {}
+  }catch(e){}
 }
 
-// ===== Loads (JSONs) =====
-async function loadProducts() {
-  try {
-    const r = await fetch("assets/products.json", { cache: "no-store" });
-    if (!r.ok) throw new Error(r.status);
+// ==== Loads JSON ====
+async function loadProducts(){
+  try{
+    const r = await fetch("assets/products.json",{cache:"no-store"});
+    if(!r.ok) throw new Error(r.status);
     const data = await r.json();
     PRODUCTS = Array.isArray(data) ? data : [];
-  } catch (e) {
-    console.warn("Falha ao carregar products.json", e);
-    PRODUCTS = [];
+  }catch(e){
+    console.warn("products.json não carregou", e); PRODUCTS = [];
   }
 }
-async function loadBrands() {
-  try {
-    const r = await fetch("assets/brands.json", { cache: "no-store" });
-    if (!r.ok) throw new Error(r.status);
+async function loadBrands(){
+  try{
+    const r = await fetch("assets/brands.json",{cache:"no-store"});
+    if(!r.ok) throw new Error(r.status);
     const data = await r.json();
-    BRANDS = Array.isArray(data) && data.length ? data : DEFAULT_BRANDS;
-  } catch (e) {
-    console.warn("Falha ao carregar brands.json", e);
-    BRANDS = DEFAULT_BRANDS;
+    BRANDS = Array.isArray(data)&&data.length ? data : DEFAULT_BRANDS;
+  }catch(e){
+    console.warn("brands.json não carregou", e); BRANDS = DEFAULT_BRANDS;
   }
 }
-async function loadBanners() {
-  try {
-    const r = await fetch("assets/banners.json", { cache: "no-store" });
-    if (!r.ok) throw new Error(r.status);
+async function loadBanners(){
+  try{
+    const r = await fetch("assets/banners.json",{cache:"no-store"});
+    if(!r.ok) throw new Error(r.status);
     const data = await r.json();
-    BANNERS = Array.isArray(data) && data.length ? data : DEFAULT_BANNERS;
-  } catch (e) {
-    console.warn("Falha ao carregar banners.json", e);
-    BANNERS = DEFAULT_BANNERS;
+    BANNERS = Array.isArray(data)&&data.length ? data : DEFAULT_BANNERS;
+  }catch(e){
+    console.warn("banners.json não carregou", e); BANNERS = DEFAULT_BANNERS;
   }
 }
 
-// ===== UI – Drawer / Dark mode =====
-btnMenu?.addEventListener("click", () => drawer.classList.add("open"));
-closeDrawer?.addEventListener("click", () => drawer.classList.remove("open"));
-toggleDark?.addEventListener("click", (e) => {
-  e.preventDefault();
-  state.dark = !state.dark;
+// ==== Drawer / Dark ====
+btnMenu?.addEventListener("click", ()=> drawer.classList.add("open"));
+closeDrawer?.addEventListener("click", ()=> drawer.classList.remove("open"));
+darkToggle?.addEventListener("change", ()=>{
+  state.dark = darkToggle.checked;
   document.body.classList.toggle("dark", state.dark);
   saveState();
 });
+// swipe close
+let startX=null;
+drawerPanel?.addEventListener("touchstart",(e)=>{ startX = e.touches[0].clientX; },{passive:true});
+drawerPanel?.addEventListener("touchmove",(e)=>{ if(startX==null) return; const dx=e.touches[0].clientX-startX; if(dx<-60){drawer.classList.remove("open"); startX=null;} },{passive:true});
 
-// swipe close no painel (mobile)
-let startX = null;
-drawer?.addEventListener("touchstart", (e) => {
-  startX = e.touches[0].clientX;
-}, { passive: true });
-drawer?.addEventListener("touchmove", (e) => {
-  if (startX == null) return;
-  const dx = e.touches[0].clientX - startX;
-  if (dx < -60) { drawer.classList.remove("open"); startX = null; }
-}, { passive: true });
-
-// ===== Banners =====
-let bannerTimer = null;
-function renderBanners() {
-  bannerTrack.innerHTML = BANNERS.map(b => {
+// ==== Banners ====
+let bannerTimer=null;
+function renderBanners(){
+  bannerTrack.innerHTML = BANNERS.map(b=>{
     const style = `style="background:url('${b.image}') center/cover"`;
     return b.href ? `<a class="banner" href="${b.href}" ${style}></a>` : `<div class="banner" ${style}></div>`;
   }).join("");
-  renderBannerDots();
-  updateBanner();
-  restartBannerTimer();
+  bannerDots.innerHTML = BANNERS.map((_,i)=>`<button class="${i===state.bannerIndex?'active':''}"></button>`).join("");
+  [...bannerDots.children].forEach((d,i)=> d.onclick=()=>{state.bannerIndex=i;updateBanner();restartBannerTimer();});
+  updateBanner(); restartBannerTimer();
 }
-function renderBannerDots() {
-  bannerDots.innerHTML = "";
-  for (let i = 0; i < BANNERS.length; i++) {
-    const d = document.createElement("button");
-    d.className = i === state.bannerIndex ? "active" : "";
-    d.onclick = () => { state.bannerIndex = i; updateBanner(); restartBannerTimer(); };
-    bannerDots.appendChild(d);
-  }
-}
-function updateBanner() {
-  if (!bannerTrack || BANNERS.length === 0) return;
-  bannerTrack.style.transform = `translateX(-${state.bannerIndex * 100}%)`;
-  [...bannerDots.children].forEach((el, idx) =>
-    el.classList.toggle("active", idx === state.bannerIndex)
-  );
-}
-function nextBanner() {
-  state.bannerIndex = (state.bannerIndex + 1) % BANNERS.length;
-  updateBanner();
-}
-function restartBannerTimer() {
-  if (bannerTimer) clearInterval(bannerTimer);
-  bannerTimer = setInterval(nextBanner, 5000);
+function updateBanner(){ if(!bannerTrack) return; bannerTrack.style.transform=`translateX(-${state.bannerIndex*100}%)`; [...bannerDots.children].forEach((d,i)=>d.classList.toggle("active", i===state.bannerIndex)); }
+function nextBanner(){ state.bannerIndex=(state.bannerIndex+1)%BANNERS.length; updateBanner(); }
+function restartBannerTimer(){ if(bannerTimer) clearInterval(bannerTimer); bannerTimer=setInterval(nextBanner,5000); }
+
+// ==== Marcas (principais + extras) ====
+function renderBrands(){
+  const main = BRANDS.filter(b=> PRIMARY_BRANDS.includes(b.id) || b.id==="todas");
+  const extra = BRANDS.filter(b=> !PRIMARY_BRANDS.includes(b.id) && b.id!=="todas");
+
+  const mk = (b)=> {
+    const el=document.createElement("button");
+    el.className="brand-btn"+(state.brand===b.id?" active":"");
+    el.innerHTML = b.logo ? `<img src="${b.logo}" alt="${b.label}"><strong>${b.id==="todas"?"Todas as Marcas":b.label}</strong>` : `<strong>${b.label}</strong>`;
+    el.onclick=()=>{ state.brand=b.id; renderProducts(); renderBrands(); };
+    return el;
+  };
+
+  brandRow.innerHTML=""; brandRowExtra.innerHTML="";
+  main.forEach(b=> brandRow.appendChild(mk(b)));
+  extra.forEach(b=> brandRowExtra.appendChild(mk(b)));
+  // se nenhuma extra, esconde o details
+  otherBrands.style.display = extra.length ? "block" : "none";
 }
 
-// ===== Marcas / Categorias =====
-function renderBrands() {
-  brandRow.innerHTML = "";
-  BRANDS.forEach((b) => {
-    const el = document.createElement("button");
-    el.className = "brand-btn" + (state.brand === b.id ? " active" : "");
-    el.innerHTML = b.logo
-      ? `<img src="${b.logo}" alt="${b.label}"><strong>${b.id === "todas" ? "Todas as Marcas" : b.label}</strong>`
-      : `<strong>${b.label}</strong>`;
-    el.onclick = () => { state.brand = b.id; renderProducts(); renderBrands(); };
-    brandRow.appendChild(el);
-  });
-}
-function renderCatChips() {
-  catRow.innerHTML = "";
-  CATEGORIES.forEach((c) => {
+// ==== Categorias (fixas) ====
+function renderCatChips(){
+  catRow.innerHTML="";
+  DEFAULT_CATEGORIES.forEach(c=>{
     const btn = document.createElement("button");
-    btn.className = "chip" + (state.cat === c.id ? " active" : "");
-    btn.dataset.cat = c.id;
-    btn.textContent = c.id === "chicletes" ? `🍬 ${c.label}` : c.label;
-    btn.onclick = () => { state.cat = c.id; renderProducts(); renderCatChips(); };
+    btn.className="chip"+(state.cat===c.id?" active":"");
+    btn.dataset.cat=c.id;
+    btn.textContent = c.label;
+    if(c.id==="chicletes") btn.innerHTML = `🍬 ${c.label}`;
+    btn.onclick=()=>{ state.cat=c.id; renderProducts(); renderCatChips(); };
     catRow.appendChild(btn);
   });
 }
 
-// ===== Produtos / Filtros =====
-function filteredProducts() {
+// ==== Filtros ====
+function inPriceRange(p){
+  const min = state.priceMin!=null ? state.priceMin : -Infinity;
+  const max = state.priceMax!=null ? state.priceMax : Infinity;
+  return p.price >= min && p.price <= max;
+}
+function filteredProducts(){
   let items = PRODUCTS.filter(p =>
-    (state.cat === "todas" || p.category === state.cat) &&
-    (state.brand === "todas" || p.brand === state.brand) &&
+    (state.cat==="todas" || p.category===state.cat) &&
+    (state.brand==="todas" || p.brand===state.brand) &&
     (!state.promoOnly || p.promo) &&
-    (p.name.toLowerCase().includes(state.search.toLowerCase()))
+    inPriceRange(p) &&
+    p.name.toLowerCase().includes(state.search.toLowerCase())
   );
-  if (state.sort === "preco_asc") items.sort((a, b) => a.price - b.price);
-  if (state.sort === "preco_desc") items.sort((a, b) => b.price - a.price);
+  if(state.sort==="preco_asc") items.sort((a,b)=>a.price-b.price);
+  if(state.sort==="preco_desc") items.sort((a,b)=>b.price-a.price);
+  if(state.sort==="best") items.sort((a,b)=>(b.best||0)-(a.best||0));
   return items;
 }
-function renderProducts() {
+
+// ==== Produtos ====
+function renderProducts(){
   const items = filteredProducts();
-  if (!items.length) {
-    grid.innerHTML = `<div class="no-results" style="text-align:center;opacity:.8;padding:20px">Nenhum produto encontrado.</div>`;
-    return;
-  }
-  grid.innerHTML = items.map(p => {
+  resultsInfo.style.display="block";
+  resultsInfo.textContent = `${items.length} produto(s) encontrados`;
+  noResults.style.display = items.length ? "none" : "block";
+
+  grid.innerHTML = items.map(p=>{
     const src = FALLBACK_IMG[p.category] || FALLBACK_IMG.outros;
-    const brandName = (p.brand || "").toUpperCase();
-    const inCart = !!state.cart.find(i => i.id === p.id);
-    const stockBadge = (p.stock ?? 0) > 0 ? ((p.stock <= 10) ? "Últimas unidades" : "Em estoque") : "Sem estoque";
+    const brand = (p.brand||"").toUpperCase();
+    const inCart = !!state.cart.find(i=>i.id===p.id);
+    const stockBadge = (p.stock??0) > 0 ? ((p.stock<=10)?"Últimas unidades":"Em estoque") : "Sem estoque";
     return `
       <div class="card">
         <div class="badges">
@@ -278,65 +273,55 @@ function renderProducts() {
         <div class="thumb"><img src="${src}" alt="${p.name}"></div>
         <div class="body">
           <div class="title">${p.name}</div>
-          <div class="brand-tag">${brandName} • ${p.unit}</div>
+          <div class="brand-tag">${brand} • ${p.unit}</div>
           <div class="price">
-            ${p.promo && p.oldPrice ? `<s style="opacity:.6;margin-right:6px">${fmtBRL(p.oldPrice)}</s>` : ""}
+            ${p.promo&&p.oldPrice?`<s style="opacity:.6;margin-right:6px">${fmtBRL(p.oldPrice)}</s>`:""}
             ${fmtBRL(p.price)}
           </div>
-          <button class="btn primary add ${inCart ? "in-cart" : ""}" data-id="${p.id}">
+          <button class="btn primary add ${inCart?'in-cart':''}" data-id="${p.id}">
             ${inCart ? "No carrinho ✓" : "Adicionar"}
           </button>
         </div>
       </div>`;
   }).join("");
 
-  grid.querySelectorAll(".add").forEach((btn) => {
-    btn.onclick = () => addToCart(PRODUCTS.find(p => p.id == btn.dataset.id));
+  grid.querySelectorAll(".add").forEach(btn=>{
+    btn.onclick=()=> addToCart(PRODUCTS.find(p=>p.id==btn.dataset.id));
   });
 }
 
-// ===== Carrinho =====
-btnCart.onclick = () => cartDrawer.classList.add("open");
-closeCart.onclick = () => cartDrawer.classList.remove("open");
+// ==== Carrinho ====
+btnCart.onclick = ()=> cartDrawer.classList.add("open");
+closeCart.onclick = ()=> cartDrawer.classList.remove("open");
 
-function addToCart(p) {
-  const found = state.cart.find(i => i.id === p.id);
-  if (found) found.qty++;
-  else state.cart.push({ ...p, qty: 1 });
+function addToCart(p){
+  const f = state.cart.find(i=>i.id===p.id);
+  if(f) f.qty++; else state.cart.push({...p, qty:1});
   saveState();
-  renderCart();
-  renderProducts(); // atualiza texto do botão
+  renderCart(); renderProducts();
 }
-
-function changeQty(id, delta) {
-  const i = state.cart.findIndex(x => x.id === id);
-  if (i < 0) return;
-  const q = (state.cart[i].qty || 0) + delta;
-  if (q <= 0) state.cart.splice(i, 1);
-  else state.cart[i].qty = q;
+function changeQty(id, delta){
+  const i = state.cart.findIndex(x=>x.id===id);
+  if(i<0) return;
+  const q = (state.cart[i].qty||0)+delta;
+  if(q<=0) state.cart.splice(i,1); else state.cart[i].qty = q;
   saveState();
-  renderCart();
-  renderProducts();
+  renderCart(); renderProducts();
 }
+function renderCart(){
+  cartList.innerHTML="";
+  let total=0, count=0;
 
-function renderCart() {
-  cartList.innerHTML = "";
-  let total = 0, count = 0;
-
-  if (state.cart.length === 0) {
+  if(!state.cart.length){
     cartList.innerHTML = `<div class="cart-empty">Seu carrinho está vazio</div>`;
-  } else {
-    state.cart.forEach(i => {
-      total += i.price * i.qty;
-      count += i.qty;
+  }else{
+    state.cart.forEach(i=>{
+      total += i.price*i.qty; count += i.qty;
       const src = FALLBACK_IMG[i.category] || FALLBACK_IMG.outros;
       cartList.innerHTML += `
         <div class="cart-item">
           <img src="${src}" alt="${i.name}">
-          <div>
-            <div style="font-weight:700">${i.name}</div>
-            <small>${fmtBRL(i.price)} • ${i.unit}</small>
-          </div>
+          <div><div style="font-weight:800">${i.name}</div><small>${fmtBRL(i.price)} • ${i.unit}</small></div>
           <div style="margin-left:auto;display:flex;align-items:center;gap:8px">
             <button class="btn secondary qty-dec" data-id="${i.id}">-</button>
             <strong>${i.qty}</strong>
@@ -348,53 +333,63 @@ function renderCart() {
 
   const ship = estimateShipping(cepInput.value);
   cartTotal.textContent = fmtBRL(total);
-  cartFrete.textContent = ship ? fmtBRL(ship) : "—";
+  cartShipping.textContent = ship ? fmtBRL(ship) : "—";
+  cartGrand.textContent = ship ? fmtBRL(total+ship) : fmtBRL(total);
   cartCount.textContent = count;
 
-  cartList.querySelectorAll(".qty-inc").forEach(b => b.onclick = () => changeQty(+b.dataset.id, +1));
-  cartList.querySelectorAll(".qty-dec").forEach(b => b.onclick = () => changeQty(+b.dataset.id, -1));
+  cartList.querySelectorAll(".qty-inc").forEach(b=> b.onclick=()=>changeQty(+b.dataset.id,+1));
+  cartList.querySelectorAll(".qty-dec").forEach(b=> b.onclick=()=>changeQty(+b.dataset.id,-1));
 }
 
 // CEP + frete live
-cepInput.addEventListener("input", (e) => {
-  const pos = e.target.selectionStart;
+cepInput.addEventListener("input",(e)=>{
+  const pos=e.target.selectionStart;
   e.target.value = maskCEP(e.target.value);
-  saveState();
-  renderCart();
-  try { e.target.setSelectionRange(pos, pos); } catch (_){}
+  saveState(); renderCart();
+  try{ e.target.setSelectionRange(pos,pos);}catch(_){}
 });
 
-// ===== Login (mock) =====
-btnLogin.onclick = () => adminModal.classList.add("open");
-cancelAdmin.onclick = () => adminModal.classList.remove("open");
-submitAdmin.onclick = () => {
-  alert("Login mockado: admin@dudoces.com • senha: 123456");
-  adminModal.classList.remove("open");
+// ==== Login (mock) ====
+btnLogin.onclick = ()=> adminModal.classList.add("open");
+cancelAdmin.onclick = ()=> adminModal.classList.remove("open");
+submitAdmin.onclick = ()=>{ alert("Login mockado: admin@dudoces.com • 123456"); adminModal.classList.remove("open"); };
+
+// Chat
+toggleChat.onclick = ()=> chatEmbed.classList.toggle("open");
+
+// Controles
+sortSelect.onchange = (e)=>{ state.sort=e.target.value; renderProducts(); };
+promoOnly.onchange  = (e)=>{ state.promoOnly=e.target.checked; renderProducts(); };
+searchInput.oninput = (e)=>{ state.search=e.target.value; renderProducts(); };
+priceMin.oninput = ()=>{ const v=parseFloat(priceMin.value.replace(",",".")); state.priceMin=isNaN(v)?null:v; renderProducts(); };
+priceMax.oninput = ()=>{ const v=parseFloat(priceMax.value.replace(",",".")); state.priceMax=isNaN(v)?null:v; renderProducts(); };
+clearFilters.onclick = ()=>{
+  state.brand="todas"; state.cat="todas"; state.search=""; state.promoOnly=false; state.priceMin=null; state.priceMax=null; sortSelect.value="relevancia";
+  searchInput.value=""; priceMin.value=""; priceMax.value=""; promoOnly.checked=false;
+  renderBrands(); renderCatChips(); renderProducts();
 };
 
-// ===== Chat =====
-toggleChat.onclick = () => chatEmbed.classList.toggle("open");
-
-// ===== Controles de filtro =====
-sortSelect.onchange = (e) => { state.sort = e.target.value; renderProducts(); };
-promoOnly.onchange = (e) => { state.promoOnly = e.target.checked; renderProducts(); };
-searchInput.oninput = (e) => { state.search = e.target.value; renderProducts(); };
-
-// ===== Init =====
-async function init() {
+// ==== Init ====
+async function init(){
   loadState();
 
-  await Promise.all([
-    loadProducts(),
-    loadBrands(),
-    loadBanners(),
-  ]);
+  await Promise.all([ loadProducts(), loadBrands(), loadBanners() ]);
+
+  // placeholders de preço (se houver produtos)
+  const prices = PRODUCTS.map(p=>p.price);
+  if(prices.length){
+    priceMin.placeholder = Math.min(...prices).toFixed(2).replace('.',',');
+    priceMax.placeholder = Math.max(...prices).toFixed(2).replace('.',',');
+  }
 
   renderBrands();
   renderCatChips();
   renderProducts();
   renderCart();
-
   renderBanners();
+
+  // frete inicial
+  const ship = estimateShipping(cepInput.value);
+  document.getElementById("shippingEstimate").textContent = "Frete: " + (ship? fmtBRL(ship) : "—");
 }
 init();
