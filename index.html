@@ -4,14 +4,15 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>DU DOCES — Distribuidora</title>
-  <link rel="stylesheet" href="./styles.css" />
+
+  <!-- carrega CSS da pasta /assets -->
+  <link rel="stylesheet" href="./assets/style.css?v=2025-09-12-1" />
 </head>
 <body>
   <!-- Header -->
   <header class="topbar">
     <button class="icon-btn" id="btn-menu" aria-label="Abrir menu">
-      <!-- burger -->
-      <svg width="24" height="24" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+      <svg width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
     </button>
 
     <a class="brand" href="/">
@@ -20,16 +21,11 @@
     </a>
 
     <div class="header-actions">
-      <div class="cep-wrap">
-        <input id="cep" class="input" placeholder="CEP" inputmode="numeric" />
-      </div>
-
+      <input id="cep" class="input" placeholder="CEP" inputmode="numeric" />
       <button class="btn btn-light" id="btn-login">Login</button>
-
       <button class="icon-btn" id="btn-cart" aria-label="Carrinho">
-        <!-- carrinho estilizado -->
         <svg width="26" height="26" viewBox="0 0 24 24">
-          <path d="M7 18a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm10 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4ZM3 3h2l2.4 10.3A2 2 0 0 0 9.35 15h7.9a2 2 0 0 0 1.96-1.58L21 7H6.42l-.5-2H3Z"/>
+          <path fill="currentColor" d="M7 18a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm10 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4ZM3 3h2l2.4 10.3A2 2 0 0 0 9.35 15h7.9a2 2 0 0 0 1.96-1.58L21 7H6.42l-.5-2H3Z"/>
         </svg>
         <span class="cart-badge" id="cart-count">0</span>
       </button>
@@ -46,25 +42,22 @@
       <button class="chip" data-cat="bolacha">Bolacha/Biscoito</button>
       <button class="chip" data-cat="salgadinho">Salgadinho</button>
       <span class="divider"></span>
-      <!-- Marcas principais apenas -->
       <button class="chip chip-brand" data-brand="coca-cola">Coca-Cola</button>
       <button class="chip chip-brand" data-brand="tang">Tang</button>
       <button class="chip chip-brand" data-brand="arcor">Arcor</button>
-      <button class="chip chip-brand" data-brand="santa-helena">Santa Helena</button>
+      <button class="chip chip-brand" data-brand="santa helena">Santa Helena</button>
       <button class="chip chip-brand" data-brand="oz">OZ</button>
-      <button class="chip chip-brand" data-brand="nestle">Nestlé</button>
+      <button class="chip chip-brand" data-brand="nestlé">Nestlé</button>
       <button class="chip chip-brand" data-brand="lacta">Lacta</button>
     </div>
   </nav>
 
   <main class="page">
-    <!-- Seção de filtros (relevância, promo, preço) -->
+    <!-- Filtros -->
     <section class="filters">
       <details class="other-brands">
         <summary>Outras marcas</summary>
-        <div class="brands-grid" id="otherBrands">
-          <!-- checkboxes gerados via JS -->
-        </div>
+        <div class="brands-grid" id="otherBrands"></div>
       </details>
 
       <div class="filters-row">
@@ -94,12 +87,9 @@
     </section>
 
     <!-- Grid de produtos -->
-    <section class="products" id="productsGrid">
-      <!-- cards renderizados via JS -->
-    </section>
+    <section class="products" id="productsGrid"></section>
   </main>
 
-  <!-- Rodapé colado na base com “linhas” no canto -->
   <footer class="footer">
     <div class="footer-inner">
       <p>Du Doces Distribuidora LTDA — todos os direitos reservados</p>
@@ -107,6 +97,7 @@
     <div class="footer-accent"></div>
   </footer>
 
-  <script src="./app.js"></script>
+  <!-- carrega JS da pasta /assets -->
+  <script src="./assets/app.js?v=2025-09-12-1"></script>
 </body>
 </html>
