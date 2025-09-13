@@ -4,9 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>DU DOCES — Distribuidora</title>
-
-  <!-- carrega CSS da pasta /assets -->
-  <link rel="stylesheet" href="./assets/style.css?v=2025-09-12-1" />
+  <link rel="stylesheet" href="./assets/style.css?v=2.2-red" />
 </head>
 <body>
   <!-- Header -->
@@ -16,7 +14,7 @@
     </button>
 
     <a class="brand" href="/">
-      <span class="brand-du">DU</span> <span class="brand-doces">DOCES</span>
+      <span class="brand-du">DU</span><span class="brand-doces">DOCES</span>
       <span class="brand-sub">Distribuidora</span>
     </a>
 
@@ -31,6 +29,9 @@
       </button>
     </div>
   </header>
+
+  <!-- Carrossel/Banners -->
+  <section class="banners" id="banners"></section>
 
   <!-- Barra fixa: categorias + marcas principais -->
   <nav class="sticky-bar" id="stickyBar">
@@ -55,7 +56,7 @@
   <main class="page">
     <!-- Filtros -->
     <section class="filters">
-      <details class="other-brands">
+      <details class="other-brands" open>
         <summary>Outras marcas</summary>
         <div class="brands-grid" id="otherBrands"></div>
       </details>
@@ -90,6 +91,21 @@
     <section class="products" id="productsGrid"></section>
   </main>
 
+  <!-- IA flutuante -->
+  <button class="fab-ia" id="btn-ia">IA</button>
+
+  <!-- Drawer (menu) -->
+  <aside class="drawer" id="drawer">
+    <div class="drawer-panel">
+      <button class="icon-btn close" id="close-drawer" aria-label="Fechar">✕</button>
+      <nav class="drawer-nav">
+        <a href="#">Sobre nós</a>
+        <a href="#">Configurações</a>
+        <a href="#">Ajuda</a>
+      </nav>
+    </div>
+  </aside>
+
   <footer class="footer">
     <div class="footer-inner">
       <p>Du Doces Distribuidora LTDA — todos os direitos reservados</p>
@@ -97,7 +113,6 @@
     <div class="footer-accent"></div>
   </footer>
 
-  <!-- carrega JS da pasta /assets -->
-  <script src="./assets/app.js?v=2025-09-12-1"></script>
+  <script src="./assets/app.js?v=2.2-red"></script>
 </body>
 </html>
