@@ -1,112 +1,11 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>DU DOCES — Distribuidora</title>
-  <link rel="stylesheet" href="./styles.css" />
+  <meta charset="utf-8">
+  <meta http-equiv="refresh" content="0; url=./dist/index.html">
+  <title>Redirecionando...</title>
 </head>
 <body>
-  <!-- Header -->
-  <header class="topbar">
-    <button class="icon-btn" id="btn-menu" aria-label="Abrir menu">
-      <!-- burger -->
-      <svg width="24" height="24" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
-    </button>
-
-    <a class="brand" href="/">
-      <span class="brand-du">DU</span> <span class="brand-doces">DOCES</span>
-      <span class="brand-sub">Distribuidora</span>
-    </a>
-
-    <div class="header-actions">
-      <div class="cep-wrap">
-        <input id="cep" class="input" placeholder="CEP" inputmode="numeric" />
-      </div>
-
-      <button class="btn btn-light" id="btn-login">Login</button>
-
-      <button class="icon-btn" id="btn-cart" aria-label="Carrinho">
-        <!-- carrinho estilizado -->
-        <svg width="26" height="26" viewBox="0 0 24 24">
-          <path d="M7 18a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm10 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4ZM3 3h2l2.4 10.3A2 2 0 0 0 9.35 15h7.9a2 2 0 0 0 1.96-1.58L21 7H6.42l-.5-2H3Z"/>
-        </svg>
-        <span class="cart-badge" id="cart-count">0</span>
-      </button>
-    </div>
-  </header>
-
-  <!-- Barra fixa: categorias + marcas principais -->
-  <nav class="sticky-bar" id="stickyBar">
-    <div class="bar-scroll">
-      <button class="chip active" data-cat="tudo">Tudo</button>
-      <button class="chip" data-cat="chiclete">Chiclete</button>
-      <button class="chip" data-cat="bala">Bala</button>
-      <button class="chip" data-cat="chocolate">Chocolate</button>
-      <button class="chip" data-cat="bolacha">Bolacha/Biscoito</button>
-      <button class="chip" data-cat="salgadinho">Salgadinho</button>
-      <span class="divider"></span>
-      <!-- Marcas principais apenas -->
-      <button class="chip chip-brand" data-brand="coca-cola">Coca-Cola</button>
-      <button class="chip chip-brand" data-brand="tang">Tang</button>
-      <button class="chip chip-brand" data-brand="arcor">Arcor</button>
-      <button class="chip chip-brand" data-brand="santa-helena">Santa Helena</button>
-      <button class="chip chip-brand" data-brand="oz">OZ</button>
-      <button class="chip chip-brand" data-brand="nestle">Nestlé</button>
-      <button class="chip chip-brand" data-brand="lacta">Lacta</button>
-    </div>
-  </nav>
-
-  <main class="page">
-    <!-- Seção de filtros (relevância, promo, preço) -->
-    <section class="filters">
-      <details class="other-brands">
-        <summary>Outras marcas</summary>
-        <div class="brands-grid" id="otherBrands">
-          <!-- checkboxes gerados via JS -->
-        </div>
-      </details>
-
-      <div class="filters-row">
-        <label>
-          <span class="lbl">Ordenar</span>
-          <select id="sort" class="select">
-            <option value="relevance">Relevância</option>
-            <option value="price-asc">Preço: menor → maior</option>
-            <option value="price-desc">Preço: maior → menor</option>
-            <option value="name-asc">Nome: A → Z</option>
-          </select>
-        </label>
-
-        <label class="chk">
-          <input type="checkbox" id="promoOnly" />
-          <span>Somente promoções</span>
-        </label>
-
-        <label class="range">
-          <span class="lbl">Preço:</span>
-          <input id="minPrice" class="input input-sm" placeholder="mín" inputmode="decimal" />
-          <span class="dash">—</span>
-          <input id="maxPrice" class="input input-sm" placeholder="máx" inputmode="decimal" />
-          <button class="btn btn-outline" id="btn-clear">Limpar</button>
-        </label>
-      </div>
-    </section>
-
-    <!-- Grid de produtos -->
-    <section class="products" id="productsGrid">
-      <!-- cards renderizados via JS -->
-    </section>
-  </main>
-
-  <!-- Rodapé colado na base com “linhas” no canto -->
-  <footer class="footer">
-    <div class="footer-inner">
-      <p>Du Doces Distribuidora LTDA — todos os direitos reservados</p>
-    </div>
-    <div class="footer-accent"></div>
-  </footer>
-
-  <script src="./app.js"></script>
+  <p>Redirecionando para <a href="./dist/index.html">DU DOCES</a>...</p>
 </body>
 </html>
