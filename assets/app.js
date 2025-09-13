@@ -23,24 +23,19 @@ const CATS = [
   { key:'bolacha', label:'Bolacha/Biscoito' },
   { key:'salgadinho', label:'Salgadinho' },
 ];
-
 const MAIN_BRANDS = ['Coca-Cola','Tang','Arcor','Santa Helena','OZ','Nestlé','Lacta'];
 
 function mountBars(){
-  // categorias
   $('#catsBar').innerHTML = CATS.map((c,i)=>`
     <button class="chip ${i===0?'active':''}" data-cat="${c.key}">${c.label}</button>
   `).join('');
-
-  // marcas principais
   $('#brandsBar').innerHTML = MAIN_BRANDS.map(b=>`
     <button class="chip chip-brand" data-brand="${b.toLowerCase()}">${b}</button>
   `).join('');
 }
 
-// outras marcas (chips em sessão separada)
 function mountOtherBrands(brandsJson){
-  let list = ['Freegells','Garoto','Pipper','Chita','Haribo','Fini','Peccin','Dori','Fazer'];
+  let list = ['Freegells','Garoto','Pipper','Chita','Haribo','Fini','Peccin','Dori','Riclan'];
   if (brandsJson){
     if (Array.isArray(brandsJson)) list = brandsJson;
     if (brandsJson.others) list = brandsJson.others;
@@ -104,7 +99,7 @@ function applyFilters(){
     case 'price-asc': list.sort((a,b)=>a.price-b.price); break;
     case 'price-desc': list.sort((a,b)=>b.price-a.price); break;
     case 'name-asc': list.sort((a,b)=>a.name.localeCompare(b.name)); break;
-    default: /* relevance */ break;
+    default: break;
   }
   render(list);
 }
@@ -113,59 +108,51 @@ function applyFilters(){
 document.addEventListener('click', (e)=>{
   const chip = e.target.closest('.chip');
 
-  // categoria
-  if(chip && chip.dataset.cat){
+  if(chip?.dataset.cat){
     document.querySelectorAll('#catsBar .chip').forEach(c=>c.classList.remove('active'));
     chip.classList.add('active');
     activeCat = chip.dataset.cat;
-    activeBrand = null;                         // limpa marca principal
-    otherBrandsSelected.clear();                // limpa outras marcas
-    document.querySelectorAll('[data-other-brand].active').forEach(c=>c.classList.remove('active'));
-    applyFilters();
-    return;
-  }
-
-  // marca principal
-  if(chip && chip.dataset.brand){
-    document.querySelectorAll('#brandsBar .chip').forEach(c=>c.classList.remove('active'));
-    chip.classList.add('active');
-    activeBrand = chip.dataset.brand;
-    activeCat = 'tudo';                         // reseta categoria
+    activeBrand = null;
     otherBrandsSelected.clear();
     document.querySelectorAll('[data-other-brand].active').forEach(c=>c.classList.remove('active'));
     applyFilters();
     return;
   }
 
-  // outras marcas (toggle multi)
-  if(chip && chip.dataset.otherBrand){
-    const key = chip.dataset.otherBrand;
-    chip.classList.toggle('active');
-    if(chip.classList.contains('active')) otherBrandsSelected.add(key);
-    else otherBrandsSelected.delete(key);
-    activeBrand = null;                         // se escolher outras marcas, limpa principal
+  if(chip?.dataset.brand){
+    document.querySelectorAll('#brandsBar .chip').forEach(c=>c.classList.remove('active'));
+    chip.classList.add('active');
+    activeBrand = chip.dataset.brand;
+    activeCat = 'tudo';
+    otherBrandsSelected.clear();
+    document.querySelectorAll('[data-other-brand].active').forEach(c=>c.classList.remove('active'));
     applyFilters();
     return;
   }
 
-  // adicionar carrinho
+  if(chip?.dataset.otherBrand){
+    const key = chip.dataset.otherBrand;
+    chip.classList.toggle('active');
+    if(chip.classList.contains('active')) otherBrandsSelected.add(key);
+    else otherBrandsSelected.delete(key);
+    activeBrand = null;
+    applyFilters();
+    return;
+  }
+
   if(e.target.matches('[data-add]')){
     const count = document.getElementById('cart-count');
     count.textContent = String(parseInt(count.textContent,10)+1);
-    return;
   }
 });
 
-// filtros
 [sortSel,promoOnly].forEach(elm => on(elm,'input', applyFilters));
 on(btnClear,'click', ()=>{
   promoOnly.checked = false;
   sortSel.value = 'relevance';
   document.querySelectorAll('.chip.active').forEach(c=>c.classList.remove('active'));
   document.querySelector('[data-cat="tudo"]')?.classList.add('active');
-  activeCat = 'tudo';
-  activeBrand = null;
-  otherBrandsSelected.clear();
+  activeCat = 'tudo'; activeBrand = null; otherBrandsSelected.clear();
   document.querySelectorAll('[data-other-brand].active').forEach(c=>c.classList.remove('active'));
   applyFilters();
 });
@@ -177,10 +164,8 @@ on($('#drawer'),'click', (e)=>{ if(e.target.id==='drawer') e.currentTarget.class
 
 document.querySelectorAll('[data-open]').forEach(btn=>{
   on(btn,'click', ()=>{
-    const id = btn.getAttribute('data-open');
     $('#drawer').classList.remove('open');
-    const modal = $('#modal-'+id);
-    modal?.classList.add('open');
+    $('#modal-'+btn.getAttribute('data-open'))?.classList.add('open');
   });
 });
 document.querySelectorAll('[data-close]').forEach(btn=>{
@@ -191,17 +176,14 @@ document.querySelectorAll('.modal').forEach(m=>{
 });
 
 // IA (placeholder)
-on($('#btn-ia'),'click', ()=>alert('IA: em breve conectaremos o ChatVolt aqui. 😉'));
+on($('#btn-ia'),'click', ()=>alert('IA: conectar ChatVolt aqui. 😉'));
 
 // Modo escuro
 function setTheme(mode){
   if(mode==='dark'){ document.body.classList.add('dark'); localStorage.setItem('theme','dark'); }
   else{ document.body.classList.remove('dark'); localStorage.setItem('theme','light'); }
 }
-on($('#toggle-dark'),'click', ()=>{
-  const dark = !document.body.classList.contains('dark');
-  setTheme(dark?'dark':'light');
-});
+on($('#toggle-dark'),'click', ()=> setTheme(document.body.classList.contains('dark')?'light':'dark'));
 setTheme(localStorage.getItem('theme') || 'light');
 
 // Banners
@@ -227,14 +209,11 @@ async function loadData(){
     ]);
     PRODUCTS = (Array.isArray(prods)?prods:[]).map(normalizeProduct);
     mountOtherBrands(brands);
-  }catch(e){
-    // fallback para garantir layout
+  }catch{
     PRODUCTS = [
       { id:1, name:"Bala Hortelã", brand:"Arcor", cat:"bala", price:2.99, promo:true,  img:"https://picsum.photos/seed/bala/600/400" },
-      { id:2, name:"Chocolate Ao Leite 90g", brand:"Nestlé", cat:"chocolate", price:7.49, promo:false, img:"https://picsum.photos/seed/choc/600/400" },
-      { id:3, name:"Refrigerante Lata 350ml", brand:"Coca-Cola", cat:"salgadinho", price:4.99, promo:true,  img:"https://picsum.photos/seed/coke/600/400" },
-      { id:4, name:"Tang Laranja", brand:"Tang", cat:"chiclete", price:1.49, promo:false, img:"https://picsum.photos/seed/tang/600/400" },
-      { id:5, name:"Amendoim Japonês", brand:"Santa Helena", cat:"salgadinho", price:8.90, promo:false, img:"https://picsum.photos/seed/amendoim/600/400" },
+      { id:2, name:"Chocolate Ao Leite 90g", brand:"Nestlé", cat:"chocolate", price:7.49, promo:false, img:"httpsum.photos/seed/choc/600/400".replace('httpsum','https://pics') },
+      { id:3, name:"Refrigerante Lata 350ml", brand:"Coca-Cola", cat:"salgadinho", price:4.99, promo:true,  img:"https://picsum.photos/seed/coke/600/400" }
     ].map(normalizeProduct);
     mountOtherBrands(null);
   }

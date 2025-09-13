@@ -21,12 +21,10 @@ body.dark{
 *{box-sizing:border-box}
 html,body{height:100%}
 body{
-  margin:0;
+  margin:0; display:flex; flex-direction:column;
   font:16px/1.4 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
   color:var(--text);
   background: linear-gradient(180deg, #ffe7e7 0%, var(--bg) 30%);
-  display:flex;
-  flex-direction:column;
 }
 
 /* Header */
@@ -78,10 +76,10 @@ body.dark .input{background:#fff; color:#000} /* CEP legível no dark */
 
 /* Barras fixas */
 .sticky-bar{
-  position:sticky; top:64px; z-index:60; /* fixa abaixo do header */
+  position:sticky; top:64px; z-index:60;
   background:var(--bg); border-bottom:1px solid #eee; box-shadow:0 2px 6px rgba(0,0,0,.04)
 }
-#navBrands{top:106px} /* segunda faixa cola logo abaixo da primeira */
+#navBrands{top:106px}
 body.dark .sticky-bar{border-bottom:1px solid #222}
 
 .bar-scroll{display:flex; gap:8px; overflow:auto; padding:10px 12px}
@@ -110,18 +108,12 @@ body.dark .bar-scroll::-webkit-scrollbar-thumb{background:#333}
   padding:12px; margin:16px auto; max-width:900px;
 }
 .other-brands-box h3{margin:0 0 8px 0}
-.brands-grid{
-  display:flex; flex-wrap:wrap; gap:8px;
-}
+.brands-grid{ display:flex; flex-wrap:wrap; gap:8px; }
 .brands-grid .chip{border-radius:999px}
 
 /* Filtros (sem faixa de preço) */
-.filters{
-  background:transparent; padding:0; margin:0 auto; max-width:900px;
-}
-.filters-row{
-  display:flex; gap:14px; align-items:center; flex-wrap:wrap; margin-top:8px;
-}
+.filters{ background:transparent; padding:0; margin:0 auto; max-width:900px; }
+.filters-row{ display:flex; gap:14px; align-items:center; flex-wrap:wrap; margin-top:8px; }
 .lbl{font-size:12px; color:var(--muted); margin-right:6px}
 .select{border:1px solid #ddd; border-radius:10px; padding:8px 10px; height:38px}
 .input:focus, .select:focus{border-color:#f1b4b4; box-shadow:0 0 0 3px #fde3e3}
