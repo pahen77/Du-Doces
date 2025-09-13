@@ -2,6 +2,18 @@
 const $ = (s)=>document.querySelector(s);
 const on = (el,ev,fn)=>el && el.addEventListener(ev,fn);
 
+// === API base (backend) ===
+const API_BASE = "http://localhost:8080"; // em produção: sua URL do Railway
+
+// utils
+const slug = (s) => String(s||"")
+  .toLowerCase()
+  .normalize('NFD')
+  .replace(/[\u0300-\u036f]/g,'')
+  .replace(/[^a-z0-9]+/g,'-')
+  .replace(/(^-|-$)+/g,'');
+const BRL = (v) => Number(v||0).toLocaleString('pt-BR', { style:'currency', currency:'BRL' });
+
 // state
 let PRODUCTS = [];
 let activeCat = 'tudo';
@@ -16,21 +28,20 @@ const btnClear = $('#btn-clear');
 
 // ---- Layout dynamic mount ----
 const CATS = [
-  { key:'tudo', label:'Tudo' },
-  { key:'chiclete', label:'Chiclete' },
-  { key:'bala', label:'Bala' },
-  { key:'chocolate', label:'Chocolate' },
-  { key:'bolacha', label:'Bolacha/Biscoito' },
+  { key:'tudo',       label:'Tudo' },
+  { key:'bebida',     label:'Bebida' },
   { key:'salgadinho', label:'Salgadinho' },
+  { key:'chocolate',  label:'Chocolate' },
+  { key:'utilidades', label:'Utilidades' },
 ];
-const MAIN_BRANDS = ['Coca-Cola','Tang','Arcor','Santa Helena','OZ','Nestlé','Lacta'];
+const MAIN_BRANDS = ['Coca-Cola','Fanta','Nestle','Arcor','OZ','LA','BALY'];
 
 function mountBars(){
   $('#catsBar').innerHTML = CATS.map((c,i)=>`
     <button class="chip ${i===0?'active':''}" data-cat="${c.key}">${c.label}</button>
   `).join('');
   $('#brandsBar').innerHTML = MAIN_BRANDS.map(b=>`
-    <button class="chip chip-brand" data-brand="${b.toLowerCase()}">${b}</button>
+    <button class="chip chip-brand" data-brand="${slug(b)}">${b}</button>
   `).join('');
 }
 
@@ -41,20 +52,25 @@ function mountOtherBrands(brandsJson){
     if (brandsJson.others) list = brandsJson.others;
   }
   $('#otherBrands').innerHTML = list.map(b=>`
-    <button class="chip" data-other-brand="${b.toLowerCase()}">${b}</button>
+    <button class="chip" data-other-brand="${slug(b)}">${b}</button>
   `).join('');
 }
 
 // ---- Render grid ----
 function normalizeProduct(p){
+  const brandName = p?.brand?.name ?? p?.brand ?? p?.marca ?? "";
+  const catName   = p?.category?.name ?? p?.category ?? p?.categoria ?? p?.cat ?? "";
+  const priceVal  = (p?.precoCentavos != null) ? (p.precoCentavos/100) : (p?.price ?? p?.preco ?? p?.valor ?? 0);
+  const imgUrl    = p?.imageUrl ?? p?.image ?? p?.img ?? 'https://picsum.photos/seed/du-doces/600/400';
   return {
-    id: p.id ?? p.codigo ?? crypto.randomUUID(),
-    name: p.name ?? p.nome ?? p.titulo ?? 'Produto',
-    brand: (p.brand ?? p.marca ?? '').toString(),
-    cat: (p.cat ?? p.categoria ?? '').toString().toLowerCase(),
-    price: Number(p.price ?? p.preco ?? p.valor ?? 0),
-    promo: Boolean(p.promo ?? p.promocao ?? p.em_promocao ?? false),
-    img: p.img ?? p.imagem ?? p.image ?? 'https://picsum.photos/seed/du-doces/600/400'
+    id:    p?.id ?? p?.codigo ?? crypto.randomUUID(),
+    name:  p?.name ?? p?.nome ?? p?.titulo ?? 'Produto',
+    brand: String(brandName),
+    brandKey: slug(brandName),
+    cat:   slug(catName),
+    price: Number(priceVal),
+    promo: Boolean(p?.promo ?? p?.promocao ?? p?.em_promocao ?? false),
+    img:   imgUrl
   };
 }
 
@@ -70,7 +86,7 @@ function render(list){
         <div class="title">${p.name}</div>
         <div class="brand">${p.brand}</div>
         <div class="row">
-          <strong>R$ ${p.price.toFixed(2)}</strong>
+          <strong>${BRL(p.price)}</strong>
           <button class="btn btn-outline" data-add="${p.id}">Adicionar</button>
         </div>
       </div>
@@ -86,10 +102,10 @@ function applyFilters(){
     list = list.filter(p => (p.cat||'') === activeCat);
   }
   if(activeBrand){
-    list = list.filter(p => (p.brand||'').toLowerCase() === activeBrand);
+    list = list.filter(p => p.brandKey === activeBrand);
   }
   if(otherBrandsSelected.size){
-    list = list.filter(p => otherBrandsSelected.has((p.brand||'').toLowerCase()));
+    list = list.filter(p => otherBrandsSelected.has(p.brandKey));
   }
   if(promoOnly.checked){
     list = list.filter(p => p.promo);
@@ -102,6 +118,88 @@ function applyFilters(){
     default: break;
   }
   render(list);
+}
+
+// ==== CARRINHO (localStorage) ====
+const CART_KEY = "du_cart";
+const Cart = {
+  load() {
+    try { return JSON.parse(localStorage.getItem(CART_KEY) || "[]"); }
+    catch { return []; }
+  },
+  save(items) {
+    localStorage.setItem(CART_KEY, JSON.stringify(items));
+    updateCartUI();
+  },
+  add(prod, qty = 1) {
+    const items = Cart.load();
+    const idx = items.findIndex((i) => i.id === prod.id);
+    if (idx >= 0) items[idx].qty += qty;
+    else items.push({
+      id: prod.id,
+      name: prod.name,
+      price: Number(prod.price),
+      image: prod.img,
+      qty,
+    });
+    Cart.save(items);
+  },
+  remove(id) {
+    Cart.save(Cart.load().filter((i) => i.id !== id));
+  },
+  setQty(id, qty) {
+    const n = Math.max(1, Number(qty||1));
+    const items = Cart.load();
+    const it = items.find((i) => i.id === id);
+    if (!it) return;
+    it.qty = n;
+    Cart.save(items);
+  },
+  clear() {
+    Cart.save([]);
+  },
+  total() {
+    return Cart.load().reduce((sum, i) => sum + i.price * i.qty, 0);
+  },
+  count() {
+    return Cart.load().reduce((sum, i) => sum + i.qty, 0);
+  },
+};
+
+// Drawer carrinho
+const cartDrawer = $('#cartDrawer');
+function openCart(){ cartDrawer?.classList.add('open'); }
+function closeCart(){ cartDrawer?.classList.remove('open'); }
+
+function updateCartUI() {
+  const items = Cart.load();
+  // badge
+  $('#cart-count').textContent = String(Cart.count());
+  // total
+  $('#cart-total').textContent = BRL(Cart.total());
+
+  // lista
+  const wrap = $('#cart-items');
+  if (!wrap) return;
+  if (!items.length) {
+    wrap.innerHTML = `<p style="opacity:.7">Seu carrinho está vazio.</p>`;
+    return;
+  }
+  wrap.innerHTML = items.map(i => `
+    <div class="cart-row">
+      <img class="cart-thumb" src="${i.image}" alt="${i.name}" />
+      <div class="cart-info">
+        <div class="name">${i.name}</div>
+        <div class="price">${BRL(i.price)}</div>
+        <div class="qty">
+          <button class="btn-ico dec" data-id="${i.id}">−</button>
+          <input class="q" data-id="${i.id}" type="number" min="1" value="${i.qty}" />
+          <button class="btn-ico inc" data-id="${i.id}">+</button>
+        </div>
+      </div>
+      <button class="btn btn-light rm" data-id="${i.id}">Remover</button>
+    </div>
+  `).join('');
 }
 
 // ---- Events ----
@@ -122,7 +220,7 @@ document.addEventListener('click', (e)=>{
   if(chip?.dataset.brand){
     document.querySelectorAll('#brandsBar .chip').forEach(c=>c.classList.remove('active'));
     chip.classList.add('active');
-    activeBrand = chip.dataset.brand;
+    activeBrand = chip.dataset.brand; // já vem slug
     activeCat = 'tudo';
     otherBrandsSelected.clear();
     document.querySelectorAll('[data-other-brand].active').forEach(c=>c.classList.remove('active'));
@@ -141,12 +239,53 @@ document.addEventListener('click', (e)=>{
   }
 
   if(e.target.matches('[data-add]')){
-    const count = document.getElementById('cart-count');
-    count.textContent = String(parseInt(count.textContent,10)+1);
+    const id = e.target.getAttribute('data-add');
+    const prod = PRODUCTS.find(p => p.id === id);
+    if (prod) {
+      Cart.add(prod, 1);
+      openCart();
+    }
+    return;
+  }
+
+  // abrir/fechar carrinho
+  if (e.target.matches('#btn-cart')) { openCart(); return; }
+  if (e.target.matches('#cart-close')) { closeCart(); return; }
+  if (e.target.id === 'cartDrawer' && e.target.classList.contains('drawer')) { closeCart(); return; }
+
+  // remover item
+  if (e.target.matches('.rm')) {
+    Cart.remove(e.target.dataset.id);
+    return;
+  }
+  // incrementar/decrementar
+  if (e.target.matches('.inc')) {
+    const id = e.target.dataset.id;
+    const items = Cart.load();
+    const it = items.find(i=>i.id===id);
+    Cart.setQty(id, (it?.qty||1) + 1);
+    return;
+  }
+  if (e.target.matches('.dec')) {
+    const id = e.target.dataset.id;
+    const items = Cart.load();
+    const it = items.find(i=>i.id===id);
+    Cart.setQty(id, Math.max(1, (it?.qty||1) - 1));
+    return;
   }
 });
 
-[sortSel,promoOnly].forEach(elm => on(elm,'input', applyFilters));
+document.addEventListener('input', (e)=>{
+  if(e.target === sortSel || e.target === promoOnly){
+    applyFilters();
+  }
+  if (e.target.matches('.q')) {
+    const id = e.target.dataset.id;
+    const qty = Number(e.target.value||1);
+    Cart.setQty(id, qty);
+  }
+});
+
 on(btnClear,'click', ()=>{
   promoOnly.checked = false;
   sortSel.value = 'relevance';
@@ -157,11 +296,12 @@ on(btnClear,'click', ()=>{
   applyFilters();
 });
 
-// Drawer & modais
+// Drawer & modais (menu)
 on($('#btn-menu'),'click', ()=>$('#drawer').classList.add('open'));
 on($('#close-drawer'),'click', ()=>$('#drawer').classList.remove('open'));
 on($('#drawer'),'click', (e)=>{ if(e.target.id==='drawer') e.currentTarget.classList.remove('open'); });
 
+// Modais
 document.querySelectorAll('[data-open]').forEach(btn=>{
   on(btn,'click', ()=>{
     $('#drawer').classList.remove('open');
@@ -203,19 +343,36 @@ async function loadBanners(){
 // Data
 async function loadData(){
   try{
-    const [prods, brands] = await Promise.all([
-      fetch('./assets/products.json').then(r=>r.json()),
-      fetch('./assets/brands.json').then(r=>r.json()).catch(()=>null)
-    ]);
-    PRODUCTS = (Array.isArray(prods)?prods:[]).map(normalizeProduct);
-    mountOtherBrands(brands);
+    // Tenta pela API
+    const res = await fetch(`${API_BASE}/produtos`);
+    if(!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    const items = Array.isArray(data) ? data : (data.items ?? data.data ?? []);
+    PRODUCTS = (Array.isArray(items)?items:[]).map(normalizeProduct);
+
+    // monta outras marcas dinâmico
+    const mainSet = new Set(MAIN_BRANDS.map(b=>slug(b)));
+    const allBrands = [...new Set(PRODUCTS.map(p => p.brand).filter(Boolean))];
+    const others = allBrands.filter(b => !mainSet.has(slug(b)));
+    mountOtherBrands({ others });
+
   }catch{
-    PRODUCTS = [
-      { id:1, name:"Bala Hortelã", brand:"Arcor", cat:"bala", price:2.99, promo:true,  img:"https://picsum.photos/seed/bala/600/400" },
-      { id:2, name:"Chocolate Ao Leite 90g", brand:"Nestlé", cat:"chocolate", price:7.49, promo:false, img:"httpsum.photos/seed/choc/600/400".replace('httpsum','https://pics') },
-      { id:3, name:"Refrigerante Lata 350ml", brand:"Coca-Cola", cat:"salgadinho", price:4.99, promo:true,  img:"https://picsum.photos/seed/coke/600/400" }
-    ].map(normalizeProduct);
-    mountOtherBrands(null);
+    // Fallback para arquivos locais
+    try{
+      const [prods, brands] = await Promise.all([
+        fetch('./assets/products.json').then(r=>r.json()),
+        fetch('./assets/brands.json').then(r=>r.json()).catch(()=>null)
+      ]);
+      PRODUCTS = (Array.isArray(prods)?prods:[]).map(normalizeProduct);
+      mountOtherBrands(brands);
+    }catch{
+      PRODUCTS = [
+        { id:1, name:"Bala Hortelã", brand:"Arcor", cat:"bala", price:2.99, promo:true,  img:"https://picsum.photos/seed/bala/600/400" },
+        { id:2, name:"Chocolate Ao Leite 90g", brand:"Nestle", cat:"chocolate", price:7.49, promo:false, img:"https://picsum.photos/seed/choc/600/400" },
+        { id:3, name:"Refrigerante Lata 350ml", brand:"Coca-Cola", cat:"salgadinho", price:4.99, promo:true,  img:"https://picsum.photos/seed/coke/600/400" }
+      ].map(normalizeProduct);
+      mountOtherBrands(null);
+    }
   }
   applyFilters();
 }
@@ -224,5 +381,12 @@ async function loadData(){
 document.addEventListener('DOMContentLoaded', ()=>{
   mountBars();
   loadBanners();
+  updateCartUI();
   loadData();
+});
+
+// ações do drawer do carrinho
+on($('#cart-clear'), 'click', ()=> Cart.clear());
+on($('#cart-checkout'), 'click', ()=>{
+  alert('Checkout básico entra na Semana 3 😉\nResumo: ' + Cart.count() + ' item(ns) — ' + $('#cart-total').textContent);
 });

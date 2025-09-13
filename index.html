@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>DU DOCES — Distribuidora</title>
-  <link rel="stylesheet" href="./assets/style.css?v=5" />
+  <link rel="stylesheet" href="./assets/style.css?v=6" />
 </head>
 <body>
   <!-- Header -->
@@ -104,6 +104,24 @@
     </div>
   </aside>
 
+  <!-- Drawer (carrinho) -->
+  <aside class="drawer" id="cartDrawer" aria-hidden="true">
+    <div class="drawer-panel">
+      <button class="icon-btn close" id="cart-close" aria-label="Fechar">✕</button>
+      <div class="drawer-header"><strong>Carrinho</strong></div>
+      <div class="drawer-body">
+        <div id="cart-items" class="cart-list"></div>
+      </div>
+      <div class="drawer-footer">
+        <div class="cart-total">Total: <strong id="cart-total">R$ 0,00</strong></div>
+        <div class="row gap8">
+          <button class="btn btn-light" id="cart-clear">Limpar</button>
+          <button class="btn" id="cart-checkout">Finalizar</button>
+        </div>
+      </div>
+    </div>
+  </aside>
+
   <!-- Modais -->
   <section class="modal" id="modal-about" aria-hidden="true">
     <div class="modal-dialog">
@@ -133,6 +151,6 @@
     </div>
   </section>
 
-  <script src="./assets/app.js?v=5"></script>
+  <script src="./assets/app.js?v=6"></script>
 </body>
 </html>
