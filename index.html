@@ -3,17 +3,53 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <title>DU DOCES — Distribuidora</title>
-  <link rel="stylesheet" href="./assets/style.css?v=6" />
+
+  <!-- SEO básico -->
+  <link rel="canonical" href="https://du-doces.vercel.app/">
+  <meta name="description" content="Du Doces Distribuidora — bebidas, chocolates, salgadinhos e mais com entrega rápida." />
+  <meta name="robots" content="index,follow" />
+  <meta name="theme-color" content="#7d1d2f" />
+
+  <!-- Open Graph (Facebook/WhatsApp/Instagram) -->
+  <meta property="og:site_name" content="DU DOCES" />
+  <meta property="og:title" content="DU DOCES — Distribuidora" />
+  <meta property="og:description" content="As melhores marcas com logística ágil." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://du-doces.vercel.app/" />
+  <meta property="og:locale" content="pt_BR" />
+  <meta property="og:image" content="https://du-doces.vercel.app/assets/og.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="DU DOCES — Distribuidora" />
+  <meta name="twitter:description" content="As melhores marcas com logística ágil." />
+  <meta name="twitter:image" content="https://du-doces.vercel.app/assets/og.jpg" />
+
+  <!-- Structured Data (JSON-LD) -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"Organization",
+    "name":"Du Doces Distribuidora",
+    "url":"https://du-doces.vercel.app/",
+    "logo":"https://du-doces.vercel.app/assets/og.jpg"
+  }
+  </script>
+
+  <!-- Favicon / estilos -->
+  <link rel="icon" href="/assets/favicon.ico" />
+  <link rel="stylesheet" href="./assets/style.css?v=7" />
 </head>
 <body>
   <!-- Header -->
   <header class="topbar">
     <div class="topbar-left">
       <button class="icon-btn" id="btn-menu" aria-label="Abrir menu">
-        <svg width="24" height="24" viewBox="0 0 24 24">
-          <path fill="currentColor" d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/>
-        </svg>
+        <svg width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
       </button>
     </div>
 
@@ -26,15 +62,13 @@
       <input id="cep" class="input" placeholder="CEP" inputmode="numeric" />
       <button class="btn btn-light" id="btn-login">Login</button>
       <button class="icon-btn" id="btn-cart" aria-label="Carrinho">
-        <svg width="26" height="26" viewBox="0 0 24 24">
-          <path fill="currentColor" d="M7 18a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm10 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4ZM3 3h2l2.4 10.3A2 2 0 0 0 9.35 15h7.9a2 2 0 0 0 1.96-1.58L21 7H6.42l-.5-2H3Z"/>
-        </svg>
+        <svg width="26" height="26" viewBox="0 0 24 24"><path fill="currentColor" d="M7 18a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm10 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4ZM3 3h2l2.4 10.3A2 2 0 0 0 9.35 15h7.9a2 2 0 0 0 1.96-1.58L21 7H6.42l-.5-2H3Z"/></svg>
         <span class="cart-badge" id="cart-count">0</span>
       </button>
     </div>
   </header>
 
-  <!-- Banners (opcional via assets/banners.json) -->
+  <!-- Banners -->
   <section class="banners" id="banners"></section>
 
   <!-- Barra fixa: CATEGORIAS -->
@@ -48,13 +82,11 @@
   </nav>
 
   <main class="page">
-    <!-- Outras marcas -->
     <section class="other-brands-box">
       <h3>Outras marcas</h3>
       <div class="brands-grid" id="otherBrands"></div>
     </section>
 
-    <!-- Filtros -->
     <section class="filters">
       <div class="filters-row">
         <label>
@@ -76,7 +108,6 @@
       </div>
     </section>
 
-    <!-- Grid de produtos -->
     <section class="products" id="productsGrid"></section>
   </main>
 
@@ -151,6 +182,6 @@
     </div>
   </section>
 
-  <script src="./assets/app.js?v=6"></script>
+  <script src="./assets/app.js?v=7"></script>
 </body>
 </html>

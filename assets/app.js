@@ -2,16 +2,21 @@
 const $ = (s)=>document.querySelector(s);
 const on = (el,ev,fn)=>el && el.addEventListener(ev,fn);
 
-// === API base (backend) ===
-const API_BASE = "http://localhost:8080"; // em produção: sua URL do Railway
+// === API base (auto: dev vs prod) ===
+const API_BASE = (() => {
+  const PROD = "https://du-doces-backend-production.up.railway.app"; // backend no Railway
+  const DEV  = "http://localhost:8080";
+  const h = location.hostname;
+  // se estiver no Vercel (seu domínio) -> PROD; se localhost -> DEV; senão PROD
+  return (h === "du-doces.vercel.app")
+    ? PROD
+    : (["localhost","127.0.0.1"].includes(h) ? DEV : PROD);
+})();
 
 // utils
 const slug = (s) => String(s||"")
-  .toLowerCase()
-  .normalize('NFD')
-  .replace(/[\u0300-\u036f]/g,'')
-  .replace(/[^a-z0-9]+/g,'-')
-  .replace(/(^-|-$)+/g,'');
+  .toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+  .replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)+/g,'');
 const BRL = (v) => Number(v||0).toLocaleString('pt-BR', { style:'currency', currency:'BRL' });
 
 // state
@@ -81,7 +86,7 @@ function render(list){
   }
   grid.innerHTML = list.map(p=>`
     <article class="card">
-      <img src="${p.img}" alt="${p.name}">
+      <img src="${p.img}" alt="${p.name}" onerror="this.src='https://via.placeholder.com/300x300?text=Produto'">
       <div class="p16">
         <div class="title">${p.name}</div>
         <div class="brand">${p.brand}</div>
@@ -173,12 +178,9 @@ function closeCart(){ cartDrawer?.classList.remove('open'); }
 
 function updateCartUI() {
   const items = Cart.load();
-  // badge
   $('#cart-count').textContent = String(Cart.count());
-  // total
   $('#cart-total').textContent = BRL(Cart.total());
 
-  // lista
   const wrap = $('#cart-items');
   if (!wrap) return;
   if (!items.length) {
@@ -190,7 +192,7 @@ function updateCartUI() {
       <img class="cart-thumb" src="${i.image}" alt="${i.name}" />
       <div class="cart-info">
         <div class="name">${i.name}</div>
-        <div class="price">${BRL(i.price)}</div>
+        <div class="price">${BRL(i.price)} <small>× ${i.qty} = ${BRL(i.price*i.qty)}</small></div>
         <div class="qty">
           <button class="btn-ico dec" data-id="${i.id}">−</button>
           <input class="q" data-id="${i.id}" type="number" min="1" value="${i.qty}" />
@@ -220,7 +222,7 @@ document.addEventListener('click', (e)=>{
   if(chip?.dataset.brand){
     document.querySelectorAll('#brandsBar .chip').forEach(c=>c.classList.remove('active'));
     chip.classList.add('active');
-    activeBrand = chip.dataset.brand; // já vem slug
+    activeBrand = chip.dataset.brand; // slug
     activeCat = 'tudo';
     otherBrandsSelected.clear();
     document.querySelectorAll('[data-other-brand].active').forEach(c=>c.classList.remove('active'));
@@ -248,17 +250,14 @@ document.addEventListener('click', (e)=>{
     return;
   }
 
-  // abrir/fechar carrinho
   if (e.target.matches('#btn-cart')) { openCart(); return; }
   if (e.target.matches('#cart-close')) { closeCart(); return; }
   if (e.target.id === 'cartDrawer' && e.target.classList.contains('drawer')) { closeCart(); return; }
 
-  // remover item
   if (e.target.matches('.rm')) {
     Cart.remove(e.target.dataset.id);
     return;
   }
-  // incrementar/decrementar
   if (e.target.matches('.inc')) {
     const id = e.target.dataset.id;
     const items = Cart.load();
@@ -343,21 +342,18 @@ async function loadBanners(){
 // Data
 async function loadData(){
   try{
-    // Tenta pela API
     const res = await fetch(`${API_BASE}/produtos`);
     if(!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     const items = Array.isArray(data) ? data : (data.items ?? data.data ?? []);
     PRODUCTS = (Array.isArray(items)?items:[]).map(normalizeProduct);
 
-    // monta outras marcas dinâmico
     const mainSet = new Set(MAIN_BRANDS.map(b=>slug(b)));
     const allBrands = [...new Set(PRODUCTS.map(p => p.brand).filter(Boolean))];
     const others = allBrands.filter(b => !mainSet.has(slug(b)));
     mountOtherBrands({ others });
 
   }catch{
-    // Fallback para arquivos locais
     try{
       const [prods, brands] = await Promise.all([
         fetch('./assets/products.json').then(r=>r.json()),
