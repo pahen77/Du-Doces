@@ -4,21 +4,23 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>DU DOCES — Distribuidora</title>
-  <link rel="stylesheet" href="./assets/style.css?v=2.2-red" />
+  <link rel="stylesheet" href="./assets/style.css?v=2025-09-12-3" />
 </head>
 <body>
   <!-- Header -->
   <header class="topbar">
-    <button class="icon-btn" id="btn-menu" aria-label="Abrir menu">
-      <svg width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
-    </button>
+    <div class="topbar-left">
+      <button class="icon-btn" id="btn-menu" aria-label="Abrir menu">
+        <svg width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+      </button>
+    </div>
 
-    <a class="brand" href="/">
+    <a class="brand center" href="/" aria-label="DU DOCES">
       <span class="brand-du">DU</span><span class="brand-doces">DOCES</span>
       <span class="brand-sub">Distribuidora</span>
     </a>
 
-    <div class="header-actions">
+    <div class="topbar-right">
       <input id="cep" class="input" placeholder="CEP" inputmode="numeric" />
       <button class="btn btn-light" id="btn-login">Login</button>
       <button class="icon-btn" id="btn-cart" aria-label="Carrinho">
@@ -30,37 +32,32 @@
     </div>
   </header>
 
-  <!-- Carrossel/Banners -->
+  <!-- Banners (opcional via assets/banners.json) -->
   <section class="banners" id="banners"></section>
 
-  <!-- Barra fixa: categorias + marcas principais -->
-  <nav class="sticky-bar" id="stickyBar">
-    <div class="bar-scroll">
-      <button class="chip active" data-cat="tudo">Tudo</button>
-      <button class="chip" data-cat="chiclete">Chiclete</button>
-      <button class="chip" data-cat="bala">Bala</button>
-      <button class="chip" data-cat="chocolate">Chocolate</button>
-      <button class="chip" data-cat="bolacha">Bolacha/Biscoito</button>
-      <button class="chip" data-cat="salgadinho">Salgadinho</button>
-      <span class="divider"></span>
-      <button class="chip chip-brand" data-brand="coca-cola">Coca-Cola</button>
-      <button class="chip chip-brand" data-brand="tang">Tang</button>
-      <button class="chip chip-brand" data-brand="arcor">Arcor</button>
-      <button class="chip chip-brand" data-brand="santa helena">Santa Helena</button>
-      <button class="chip chip-brand" data-brand="oz">OZ</button>
-      <button class="chip chip-brand" data-brand="nestlé">Nestlé</button>
-      <button class="chip chip-brand" data-brand="lacta">Lacta</button>
+  <!-- Barra fixa: CATEGORIAS -->
+  <nav class="sticky-bar" id="navCats">
+    <div class="bar-scroll" id="catsBar">
+      <!-- chips de categorias (pré-definidos no JS) -->
+    </div>
+  </nav>
+
+  <!-- Barra fixa: MARCAS PRINCIPAIS -->
+  <nav class="sticky-bar" id="navBrands">
+    <div class="bar-scroll" id="brandsBar">
+      <!-- chips de marcas principais (fixas) -->
     </div>
   </nav>
 
   <main class="page">
-    <!-- Filtros -->
-    <section class="filters">
-      <details class="other-brands" open>
-        <summary>Outras marcas</summary>
-        <div class="brands-grid" id="otherBrands"></div>
-      </details>
+    <!-- Outras marcas (SESSÃO PRÓPRIA) -->
+    <section class="other-brands-box">
+      <h3>Outras marcas</h3>
+      <div class="brands-grid" id="otherBrands"></div>
+    </section>
 
+    <!-- Filtros simples -->
+    <section class="filters">
       <div class="filters-row">
         <label>
           <span class="lbl">Ordenar</span>
@@ -77,13 +74,7 @@
           <span>Somente promoções</span>
         </label>
 
-        <label class="range">
-          <span class="lbl">Preço:</span>
-          <input id="minPrice" class="input input-sm" placeholder="mín" inputmode="decimal" />
-          <span class="dash">—</span>
-          <input id="maxPrice" class="input input-sm" placeholder="máx" inputmode="decimal" />
-          <button class="btn btn-outline" id="btn-clear">Limpar</button>
-        </label>
+        <button class="btn btn-outline" id="btn-clear">Limpar</button>
       </div>
     </section>
 
@@ -91,21 +82,10 @@
     <section class="products" id="productsGrid"></section>
   </main>
 
-  <!-- IA flutuante -->
-  <button class="fab-ia" id="btn-ia">IA</button>
+  <!-- Botão IA -->
+  <button class="fab-ia" id="btn-ia" title="IA">IA</button>
 
-  <!-- Drawer (menu) -->
-  <aside class="drawer" id="drawer">
-    <div class="drawer-panel">
-      <button class="icon-btn close" id="close-drawer" aria-label="Fechar">✕</button>
-      <nav class="drawer-nav">
-        <a href="#">Sobre nós</a>
-        <a href="#">Configurações</a>
-        <a href="#">Ajuda</a>
-      </nav>
-    </div>
-  </aside>
-
+  <!-- Rodapé -->
   <footer class="footer">
     <div class="footer-inner">
       <p>Du Doces Distribuidora LTDA — todos os direitos reservados</p>
@@ -113,6 +93,46 @@
     <div class="footer-accent"></div>
   </footer>
 
-  <script src="./assets/app.js?v=2.2-red"></script>
+  <!-- Drawer (menu) -->
+  <aside class="drawer" id="drawer" aria-hidden="true">
+    <div class="drawer-panel">
+      <button class="icon-btn close" id="close-drawer" aria-label="Fechar">✕</button>
+
+      <div class="drawer-header">
+        <strong>Menu</strong>
+      </div>
+
+      <nav class="drawer-nav">
+        <button class="link-like" id="toggle-dark">🌙 Modo escuro</button>
+        <button class="link-like" data-open="about">Sobre nós</button>
+        <button class="link-like" data-open="contact">Contatos</button>
+      </nav>
+    </div>
+  </aside>
+
+  <!-- Modais -->
+  <section class="modal" id="modal-about" aria-hidden="true">
+    <div class="modal-dialog">
+      <header><h3>Sobre nós</h3><button class="icon-btn modal-close" data-close>✕</button></header>
+      <div class="modal-body">
+        <p>A Du Doces Distribuidora traz as melhores marcas com logística ágil e atendimento próximo.</p>
+      </div>
+      <footer><button class="btn btn-light" data-close>Fechar</button></footer>
+    </div>
+  </section>
+
+  <section class="modal" id="modal-contact" aria-hidden="true">
+    <div class="modal-dialog">
+      <header><h3>Contatos</h3><button class="icon-btn modal-close" data-close>✕</button></header>
+      <div class="modal-body">
+        <p>Email: atendimento@dudoces.com.br</p>
+        <p>WhatsApp: (11) 99999-0000</p>
+        <p>Endereço: Rua Exemplo, 123 — Campinas/SP</p>
+      </div>
+      <footer><button class="btn btn-light" data-close>Fechar</button></footer>
+    </div>
+  </section>
+
+  <script src="./assets/app.js?v=2025-09-12-3"></script>
 </body>
 </html>
