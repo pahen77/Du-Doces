@@ -181,7 +181,7 @@
   ]
   </script>
 
-  <!-- ===== JS EMBUTIDO ===== -->
+  <!-- ===== JS EMBUTIDO (app) ===== -->
   <script>
   // helpers
   const $ = (s)=>document.querySelector(s);
@@ -208,8 +208,6 @@
     if (!s) return 'https://placehold.co/600x400?text=Du+Doces';
     if (s.startsWith('/images/')) s = s.replace('/images/', '/assets/images/');
     if (s.startsWith('images/'))  s = s.replace('images/',  '/assets/images/');
-
-    // troca via.placeholder.com -> placehold.co
     try {
       const url = new URL(s, location.origin);
       if (url.hostname.includes('via.placeholder.com')) {
@@ -220,7 +218,6 @@
         s = `https://placehold.co/${w}x${h}?text=${encodeURIComponent(text)}`;
       }
     } catch {}
-
     if (s.endsWith('/padaria.png') || s.endsWith('padaria.png')) return '/assets/images/padaria.svg';
     if (/^https?:\/\//i.test(s) || s.startsWith('/')) return s;
     return 'https://placehold.co/600x400?text=Du+Doces';
@@ -478,8 +475,12 @@
   document.querySelectorAll('[data-open]').forEach(btn=>{
     on(btn,'click', ()=>{ $('#drawer').classList.remove('open'); $('#modal-'+btn.getAttribute('data-open'))?.classList.add('open'); });
   });
-  document.querySelectorAll('[data-close]').forEach(btn=>{ on(btn,'click', ()=>btn.closest('.modal').classList.remove('open')); });
-  document.querySelectorAll('.modal').forEach(m=>{ on(m,'click', (e)=>{ if(e.target.classList.contains('modal')) m.classList.remove('open'); }); });
+  document.querySelectorAll('[data-close]').forEach(btn=>{
+    on(btn,'click', ()=>btn.closest('.modal').classList.remove('open'));
+  });
+  document.querySelectorAll('.modal').forEach(m=>{
+    on(m,'click', (e)=>{ if(e.target.classList.contains('modal')) m.classList.remove('open'); });
+  });
 
   /* ===== CARROSSEL ===== */
   function initCarousel(root, { autoplay = 5000, pauseOnHover = true } = {}) {
@@ -609,72 +610,23 @@
     }
     applyFilters();
   }
-
   </script>
 
-  <!-- ===== ChatVolt Bubble — local + fallback CDNs ===== -->
+  <!-- ===== ChatVolt Bubble (Opção A) ===== -->
   <script type="module">
-    const AGENT_ID = 'cmfk2a6ko0w5htglbf0n10833';
+    import Chatbox from 'https://cdn.jsdelivr.net/npm/@chatvolt/embeds@latest/dist/chatbox/index.js';
+    // inicia a bolha flutuante
+    await Chatbox.initBubble({
+      agentId: 'cmfk2a6ko0w5htglbf0n10833',
+      // opcional:
+      // position: 'right', // 'left' ou 'right'
+      // theme: { primaryColor: '#C62828' }
+    });
 
-    async function tryImport(url) {
-      console.log('[ChatVolt] tentando importar:', url);
-      try {
-        const m = await import(url);
-        console.log('[ChatVolt] import OK:', url);
-        return m;
-      } catch (e) {
-        console.error('[ChatVolt] falhou import:', url, e);
-        return null;
-      }
-    }
-
-    // 1) tenta carregar local (publique em /public/vendor/chatvolt/index.js)
-    let mod = await tryImport('/vendor/chatvolt/index.js');
-
-    // 2) fallbacks
-    if (!mod) {
-      const urls = [
-        'https://cdn.jsdelivr.net/npm/@chatvolt/embeds@latest/dist/chatbox/index.js',
-        'https://unpkg.com/@chatvolt/embeds@latest/dist/chatbox/index.js',
-        'https://esm.sh/@chatvolt/embeds@latest/dist/chatbox/index.js'
-      ];
-      for (const u of urls) {
-        mod = await tryImport(u);
-        if (mod) break;
-      }
-    }
-
-    async function wireBtnFallback(msg) {
-      const old = document.getElementById('btn-ia');
-      if (!old) return;
-      const clone = old.cloneNode(true);
-      old.replaceWith(clone);
-      clone.addEventListener('click', () => alert(msg));
-    }
-
-    if (!mod || !mod.default || !mod.default.initBubble) {
-      console.error('[ChatVolt] não foi possível carregar o módulo do widget.');
-      wireBtnFallback('IA indisponível (falha ao carregar o widget).');
-    } else {
-      try {
-        const widget = await mod.default.initBubble({ agentId: AGENT_ID });
-        console.log('[ChatVolt] bubble iniciado:', !!widget);
-
-        // botão “IA” abre a bolha
-        const old = document.getElementById('btn-ia');
-        if (old) {
-          const clone = old.cloneNode(true);
-          old.replaceWith(clone);
-          clone.addEventListener('click', () => {
-            document.querySelector('chatbox-bubble')?.click();
-          });
-          console.log('[ChatVolt] botão IA conectado.');
-        }
-      } catch (e) {
-        console.error('[ChatVolt] initBubble falhou:', e);
-        wireBtnFallback('IA indisponível (erro ao iniciar o widget).');
-      }
-    }
+    // botão “IA” abre a bolha
+    document.getElementById('btn-ia')?.addEventListener('click', () => {
+      document.querySelector('chatbox-bubble')?.click();
+    });
   </script>
   <!-- ===== /ChatVolt ===== -->
 
