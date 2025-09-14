@@ -41,6 +41,11 @@
 
   <link rel="icon" href="/assets/favicon.ico" />
   <link rel="stylesheet" href="./assets/style.css?v=14" />
+
+  <!-- Garante que a bolha do ChatVolt fique sempre visível -->
+  <style>
+    chatbox-bubble { z-index: 2147483647 !important; }
+  </style>
 </head>
 <body>
   <!-- Header -->
@@ -208,7 +213,7 @@
     .replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)+/g,'');
   const BRL = (v) => Number(v||0).toLocaleString('pt-BR', { style:'currency', currency:'BRL' });
 
-  // imagem segura (corrige caminhos e garante placeholder)
+  // imagem segura
   function safeImg(u){
     let s = String(u || '').trim();
     if (!s) return 'https://placehold.co/600x400?text=Du+Doces';
@@ -517,7 +522,7 @@
     start();
   }
 
-  // Banners: embutido -> /assets/banners.json -> GitHub raw -> default
+  // Banners
   async function loadBanners(){
     const ts = Date.now();
     try {
@@ -603,19 +608,36 @@
     applyFilters();
   }
 
-  // ===== ChatVolt embed (bubble) =====
+  // ===== ChatVolt embed (bubble) — robusto com logs =====
   (async () => {
     try {
+      console.log("[ChatVolt] carregando módulo…");
       const mod = await import('https://cdn.jsdelivr.net/npm/@chatvolt/embeds@latest/dist/chatbox/index.js');
-      // Agent ID real do seu projeto ChatVolt
-      mod.default.initBubble({ agentId: 'cmfk2a6ko0w5htglbf0n10833' });
-      // Botão IA abre o bubble
-      on($('#btn-ia'), 'click', () => {
-        document.querySelector('chatbox-bubble')?.click();
-      });
+      console.log("[ChatVolt] módulo importado:", !!mod);
+
+      const widget = await mod.default.initBubble({ agentId: 'cmfk2a6ko0w5htglbf0n10833' });
+      console.log("[ChatVolt] bubble iniciado:", !!widget);
+
+      // limpa handlers antigos do botão e conecta ao bubble
+      const old = document.getElementById('btn-ia');
+      if (old) {
+        const clone = old.cloneNode(true);
+        old.replaceWith(clone);
+        clone.addEventListener('click', () => {
+          document.querySelector('chatbox-bubble')?.click();
+        });
+        console.log("[ChatVolt] botão IA conectado.");
+      }
     } catch (e) {
-      console.warn('Falha ao carregar ChatVolt:', e);
-      on($('#btn-ia'),'click', ()=>alert('IA indisponível no momento.'));
+      console.error("[ChatVolt] falhou:", e);
+      const old = document.getElementById('btn-ia');
+      if (old) {
+        const clone = old.cloneNode(true);
+        old.replaceWith(clone);
+        clone.addEventListener('click', () => {
+          alert('IA indisponível no momento. Tente recarregar a página.');
+        });
+      }
     }
   })();
 
@@ -636,15 +658,5 @@
   <!-- ===== /JS EMBUTIDO ===== -->
 
   <noscript>Ative o JavaScript para ver os produtos e o carrossel.</noscript>
-
-  <!-- Alternativa A (se preferir o snippet type=module, comente o bloco acima e descomente abaixo)
-  <script type="module">
-    import Chatbox from 'https://cdn.jsdelivr.net/npm/@chatvolt/embeds@latest/dist/chatbox/index.js';
-    const widget = await Chatbox.initBubble({ agentId: 'cmfk2a6ko0w5htglbf0n10833' });
-    document.getElementById('btn-ia')?.addEventListener('click', () => {
-      document.querySelector('chatbox-bubble')?.click();
-    });
-  </script>
-  -->
 </body>
 </html>
