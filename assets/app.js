@@ -387,7 +387,7 @@ function initCarousel(root, { autoplay = 5000, pauseOnHover = true } = {}) {
 // Banners (aceita src | image | url e href | link) em carrossel
 async function loadBanners(){
   try{
-    const data = await fetch('./assets/banners.json').then(r=>r.json());
+    const data = await fetch(`./assets/banners.json?ts=${Date.now()}`).then(r=>r.json());
     const items = Array.isArray(data) ? data : (data.banners || []);
 
     const slides = (items||[]).map((b,i)=>{
