@@ -2,14 +2,13 @@
 const $ = (s)=>document.querySelector(s);
 const on = (el,ev,fn)=>el && el.addEventListener(ev,fn);
 
-// === API base (auto: dev vs prod) ===
+// === API base (dev vs prod) ===
 const API_BASE = (() => {
   const PROD = "https://du-doces-backend-production.up.railway.app";
   const DEV  = "http://localhost:8080";
   const h = location.hostname;
-  if (["localhost","127.0.0.1"].includes(h)) return DEV;
-  // qualquer domínio vercel/app/produção cai no PROD
-  return PROD;
+  if (h === "localhost" || h === "127.0.0.1") return DEV;
+  return PROD; // no Vercel/qualquer domínio -> PROD
 })();
 
 // utils
@@ -67,7 +66,7 @@ function normalizeProduct(p){
   const priceVal  = (p?.precoCentavos != null) ? (p.precoCentavos/100) : (p?.price ?? p?.preco ?? p?.valor ?? 0);
   const imgUrl    = p?.imageUrl ?? p?.image ?? p?.img ?? 'https://picsum.photos/seed/du-doces/600/400';
   return {
-    id:    String(p?.id ?? p?.codigo ?? crypto.randomUUID()),
+    id:    p?.id ?? p?.codigo ?? crypto.randomUUID(),
     name:  p?.name ?? p?.nome ?? p?.titulo ?? 'Produto',
     brand: String(brandName),
     brandKey: slug(brandName),
@@ -81,21 +80,21 @@ function normalizeProduct(p){
 function render(list){
   if(!list.length){
     grid.innerHTML = `<p style="opacity:.7">Nenhum produto encontrado.</p>`;
-  } else {
-    grid.innerHTML = list.map(p=>`
-      <article class="card">
-        <img src="${p.img}" alt="${p.name}" onerror="this.src='https://via.placeholder.com/300x300?text=Produto'">
-        <div class="p16">
-          <div class="title">${p.name}</div>
-          <div class="brand">${p.brand}</div>
-          <div class="row">
-            <strong>${BRL(p.price)}</strong>
-            <button class="btn btn-outline" data-add="${p.id}">Adicionar</button>
-          </div>
-        </div>
-      </article>
-    `).join('');
+    return;
   }
+  grid.innerHTML = list.map(p=>`
+    <article class="card">
+      <img src="${p.img}" alt="${p.name}" onerror="this.src='https://via.placeholder.com/300x300?text=Produto'">
+      <div class="p16">
+        <div class="title">${p.name}</div>
+        <div class="brand">${p.brand}</div>
+        <div class="row">
+          <strong>${BRL(p.price)}</strong>
+          <button class="btn btn-outline" data-add="${p.id}">Adicionar</button>
+        </div>
+      </div>
+    </article>
+  `).join('');
 }
 
 // ---- Filters ----
@@ -127,16 +126,30 @@ function applyFilters(){
 // ==== CARRINHO (localStorage) ====
 const CART_KEY = "du_cart";
 const Cart = {
-  load() { try { return JSON.parse(localStorage.getItem(CART_KEY) || "[]"); } catch { return []; } },
-  save(items) { localStorage.setItem(CART_KEY, JSON.stringify(items)); updateCartUI(); },
+  load() {
+    try { return JSON.parse(localStorage.getItem(CART_KEY) || "[]"); }
+    catch { return []; }
+  },
+  save(items) {
+    localStorage.setItem(CART_KEY, JSON.stringify(items));
+    updateCartUI();
+  },
   add(prod, qty = 1) {
     const items = Cart.load();
     const idx = items.findIndex((i) => i.id === prod.id);
     if (idx >= 0) items[idx].qty += qty;
-    else items.push({ id: prod.id, name: prod.name, price: Number(prod.price), image: prod.img, qty });
+    else items.push({
+      id: prod.id,
+      name: prod.name,
+      price: Number(prod.price),
+      image: prod.img,
+      qty,
+    });
     Cart.save(items);
   },
-  remove(id) { Cart.save(Cart.load().filter((i) => i.id !== id)); },
+  remove(id) {
+    Cart.save(Cart.load().filter((i) => i.id !== id));
+  },
   setQty(id, qty) {
     const n = Math.max(1, Number(qty||1));
     const items = Cart.load();
@@ -145,9 +158,15 @@ const Cart = {
     it.qty = n;
     Cart.save(items);
   },
-  clear() { Cart.save([]); },
-  total() { return Cart.load().reduce((s,i)=>s+i.price*i.qty,0); },
-  count() { return Cart.load().reduce((s,i)=>s+i.qty,0); },
+  clear() {
+    Cart.save([]);
+  },
+  total() {
+    return Cart.load().reduce((sum, i) => sum + i.price * i.qty, 0);
+  },
+  count() {
+    return Cart.load().reduce((sum, i) => sum + i.qty, 0);
+  },
 };
 
 // Drawer carrinho
@@ -159,9 +178,13 @@ function updateCartUI() {
   const items = Cart.load();
   $('#cart-count').textContent = String(Cart.count());
   $('#cart-total').textContent = BRL(Cart.total());
+
   const wrap = $('#cart-items');
   if (!wrap) return;
-  if (!items.length) { wrap.innerHTML = `<p style="opacity:.7">Seu carrinho está vazio.</p>`; return; }
+  if (!items.length) {
+    wrap.innerHTML = `<p style="opacity:.7">Seu carrinho está vazio.</p>`;
+    return;
+  }
   wrap.innerHTML = items.map(i => `
     <div class="cart-row">
       <img class="cart-thumb" src="${i.image}" alt="${i.name}" />
@@ -190,17 +213,19 @@ document.addEventListener('click', (e)=>{
     activeBrand = null;
     otherBrandsSelected.clear();
     document.querySelectorAll('[data-other-brand].active').forEach(c=>c.classList.remove('active'));
-    applyFilters(); return;
+    applyFilters();
+    return;
   }
 
   if(chip?.dataset.brand){
     document.querySelectorAll('#brandsBar .chip').forEach(c=>c.classList.remove('active'));
     chip.classList.add('active');
-    activeBrand = chip.dataset.brand;
+    activeBrand = chip.dataset.brand; // slug
     activeCat = 'tudo';
     otherBrandsSelected.clear();
     document.querySelectorAll('[data-other-brand].active').forEach(c=>c.classList.remove('active'));
-    applyFilters(); return;
+    applyFilters();
+    return;
   }
 
   if(chip?.dataset.otherBrand){
@@ -209,13 +234,17 @@ document.addEventListener('click', (e)=>{
     if(chip.classList.contains('active')) otherBrandsSelected.add(key);
     else otherBrandsSelected.delete(key);
     activeBrand = null;
-    applyFilters(); return;
+    applyFilters();
+    return;
   }
 
   if(e.target.matches('[data-add]')){
     const id = e.target.getAttribute('data-add');
     const prod = PRODUCTS.find(p => p.id === id);
-    if (prod) { Cart.add(prod, 1); openCart(); }
+    if (prod) {
+      Cart.add(prod, 1);
+      openCart();
+    }
     return;
   }
 
@@ -223,22 +252,35 @@ document.addEventListener('click', (e)=>{
   if (e.target.matches('#cart-close')) { closeCart(); return; }
   if (e.target.id === 'cartDrawer' && e.target.classList.contains('drawer')) { closeCart(); return; }
 
-  if (e.target.matches('.rm')) { Cart.remove(e.target.dataset.id); return; }
+  if (e.target.matches('.rm')) {
+    Cart.remove(e.target.dataset.id);
+    return;
+  }
   if (e.target.matches('.inc')) {
     const id = e.target.dataset.id;
-    const items = Cart.load(); const it = items.find(i=>i.id===id);
-    Cart.setQty(id, (it?.qty||1) + 1); return;
+    const items = Cart.load();
+    const it = items.find(i=>i.id===id);
+    Cart.setQty(id, (it?.qty||1) + 1);
+    return;
   }
   if (e.target.matches('.dec')) {
     const id = e.target.dataset.id;
-    const items = Cart.load(); const it = items.find(i=>i.id===id);
-    Cart.setQty(id, Math.max(1, (it?.qty||1) - 1)); return;
+    const items = Cart.load();
+    const it = items.find(i=>i.id===id);
+    Cart.setQty(id, Math.max(1, (it?.qty||1) - 1));
+    return;
   }
 });
 
 document.addEventListener('input', (e)=>{
-  if(e.target === sortSel || e.target === promoOnly){ applyFilters(); }
-  if (e.target.matches('.q')) { Cart.setQty(e.target.dataset.id, Number(e.target.value||1)); }
+  if(e.target === sortSel || e.target === promoOnly){
+    applyFilters();
+  }
+  if (e.target.matches('.q')) {
+    const id = e.target.dataset.id;
+    const qty = Number(e.target.value||1);
+    Cart.setQty(id, qty);
+  }
 });
 
 on(btnClear,'click', ()=>{
@@ -294,16 +336,15 @@ function initCarousel(root, { autoplay = 5000, pauseOnHover = true } = {}) {
     `<button class="carousel-dot" data-i="${i}" aria-label="Ir para slide ${i+1}"></button>`
   ).join('');
   const dots = Array.from(dotsWrap.children);
-  let idx = 0, timer;
 
-  function activate(i){ dots.forEach((d,j)=>d.classList.toggle('active', j===i)); }
-  function goTo(i, smooth=true){
+  let idx = 0, timer;
+  function activate(i) { dots.forEach((d, j) => d.classList.toggle('active', j === i)); }
+  function goTo(i, smooth = true) {
     idx = (i + slides.length) % slides.length;
     const x = root.clientWidth * idx;
     track.scrollTo({ left: x, behavior: smooth ? 'smooth' : 'instant' });
     activate(idx);
   }
-
   prevBtn?.addEventListener('click', () => goTo(idx - 1));
   nextBtn?.addEventListener('click', () => goTo(idx + 1));
   dots.forEach(d => d.addEventListener('click', () => goTo(+d.dataset.i)));
@@ -312,77 +353,69 @@ function initCarousel(root, { autoplay = 5000, pauseOnHover = true } = {}) {
     const near = Math.round(track.scrollLeft / w);
     if (near !== idx) { idx = near; activate(idx); }
   }, { passive: true });
-
   root.tabIndex = 0;
   root.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowRight') goTo(idx + 1);
     if (e.key === 'ArrowLeft')  goTo(idx - 1);
   });
-
-  function start(){ if (autoplay > 0) timer = setInterval(()=>goTo(idx+1), autoplay); }
-  function stop(){ clearInterval(timer); }
-  if (pauseOnHover){ root.addEventListener('mouseenter', stop); root.addEventListener('mouseleave', start); }
+  function start() { if (autoplay > 0) timer = setInterval(() => goTo(idx + 1), autoplay); }
+  function stop()  { clearInterval(timer); }
+  if (pauseOnHover) { root.addEventListener('mouseenter', stop); root.addEventListener('mouseleave', start); }
   window.addEventListener('resize', () => goTo(idx, false));
-
-  goTo(0, false); start();
+  goTo(0, false);
+  start();
 }
 
-// === BANNERS (sem depender do Vercel) ===
-const DEFAULT_BANNERS = [
-  { src: "https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?q=80&w=1600&auto=format&fit=crop", href: "#" },
-  { src: "https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=1600&auto=format&fit=crop" },
-  { src: "https://images.unsplash.com/photo-1452251889946-8ff5ea7b27ab?q=80&w=1600&auto=format&fit=crop" }
-];
-
-// troque o caminho abaixo para o seu repo se quiser usar o GitHub como 2ª fonte
-const GH_RAW_BANNERS = "https://raw.githubusercontent.com/pahen77/Du-Doces/main/assets/banners.json";
-
-async function fetchJsonSafe(url){
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  return res.json();
-}
-
+// Banners: local -> GitHub raw -> default
 async function loadBanners(){
-  let items = DEFAULT_BANNERS;
-  try {
-    // 1) tenta local (se existir no deploy)
-    items = await fetchJsonSafe(`/assets/banners.json?ts=${Date.now()}`);
-  } catch {
-    try {
-      // 2) tenta GitHub raw
-      items = await fetchJsonSafe(`${GH_RAW_BANNERS}?ts=${Date.now()}`);
-    } catch {
-      // 3) fica no DEFAULT_BANNERS
-    }
+  const ts = Date.now();
+  async function fetchJson(url){
+    const r = await fetch(url, { cache:'no-store' });
+    if(!r.ok) throw new Error(`HTTP ${r.status}`);
+    return r.json();
   }
+  try{
+    let items;
+    try {
+      items = await fetchJson(`/assets/banners.json?ts=${ts}`);
+    } catch (e1) {
+      try {
+        items = await fetchJson(`https://raw.githubusercontent.com/pahen77/Du-Doces/main/assets/banners.json?ts=${ts}`);
+      } catch (e2) {
+        items = [
+          { src: "https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?q=80&w=1600&auto=format&fit=crop" },
+          { src: "https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=1600&auto=format&fit=crop" },
+          { src: "https://images.unsplash.com/photo-1452251889946-8ff5ea7b27ab?q=80&w=1600&auto=format&fit=crop" }
+        ];
+      }
+    }
 
-  const slides = (items||[]).map((b,i)=>{
-    const src  = typeof b === 'string' ? b : (b.src || b.image || b.url || '');
-    const href = typeof b === 'object' ? (b.href || b.link || null) : null;
-    const alt  = typeof b === 'object' ? (b.alt  || `banner ${i+1}`) : `banner ${i+1}`;
-    const img  = `<img src="${src}" loading="lazy" alt="${alt}" onerror="this.style.display='none'">`;
-    return `<div class="carousel-slide">${href ? `<a href="${href}">${img}</a>` : img}</div>`;
-  }).join('');
+    const slides = (items||[]).map((b,i)=>{
+      const src  = typeof b === 'string' ? b : (b.src || b.image || b.url || '');
+      const href = typeof b === 'object' ? (b.href || b.link || null) : null;
+      const alt  = typeof b === 'object' ? (b.alt  || `banner ${i+1}`) : `banner ${i+1}`;
+      const img  = `<img src="${src}" loading="lazy" alt="${alt}" onerror="this.style.display='none'">`;
+      return `<div class="carousel-slide">${href ? `<a href="${href}">${img}</a>` : img}</div>`;
+    }).join('');
 
-  const html = `
-    <div class="carousel" id="hero-carousel" aria-roledescription="carousel">
-      <div class="carousel-track">${slides}</div>
-      <div class="carousel-nav">
-        <button class="carousel-btn prev" aria-label="Anterior">‹</button>
-        <button class="carousel-btn next" aria-label="Próximo">›</button>
-      </div>
-      <div class="carousel-dots" aria-label="Slides"></div>
-    </div>`;
-  $('#banners').innerHTML = html;
-
-  initCarousel($('#hero-carousel'), { autoplay: 4500, pauseOnHover: true });
+    $('#banners').innerHTML = `
+      <div class="carousel" id="hero-carousel" aria-roledescription="carousel">
+        <div class="carousel-track">${slides}</div>
+        <div class="carousel-nav">
+          <button class="carousel-btn prev" aria-label="Anterior">‹</button>
+          <button class="carousel-btn next" aria-label="Próximo">›</button>
+        </div>
+        <div class="carousel-dots" aria-label="Slides"></div>
+      </div>`;
+    initCarousel($('#hero-carousel'), { autoplay: 4500, pauseOnHover: true });
+  }catch(e){
+    console.error('Erro ao montar banners:', e);
+  }
 }
 
-// === Produtos ===
+// Data (usa /products do backend; fallback para JSON local)
 async function loadData(){
   try{
-    // CORRETO: /products (não /produtos)
     const res = await fetch(`${API_BASE}/products`);
     if(!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
@@ -393,18 +426,16 @@ async function loadData(){
     const allBrands = [...new Set(PRODUCTS.map(p => p.brand).filter(Boolean))];
     const others = allBrands.filter(b => !mainSet.has(slug(b)));
     mountOtherBrands({ others });
-
-  }catch(err){
-    console.warn('[products] falhou na API, usando fallback local:', err?.message || err);
+  }catch(e){
+    console.warn('API falhou, usando JSON local. Detalhe:', e?.message || e);
     try{
       const [prods, brands] = await Promise.all([
-        fetch('./assets/products.json').then(r=>r.json()),
-        fetch('./assets/brands.json').then(r=>r.json()).catch(()=>null)
+        fetch(`./assets/products.json?ts=${Date.now()}`).then(r=>r.json()),
+        fetch(`./assets/brands.json?ts=${Date.now()}`).then(r=>r.json()).catch(()=>null)
       ]);
       PRODUCTS = (Array.isArray(prods)?prods:[]).map(normalizeProduct);
       mountOtherBrands(brands);
     }catch{
-      // fallback mínimo hardcoded
       PRODUCTS = [
         { id:1, name:"Bala Hortelã", brand:"Arcor", cat:"bala", price:2.99, promo:true,  img:"https://picsum.photos/seed/bala/600/400" },
         { id:2, name:"Chocolate Ao Leite 90g", brand:"Nestle", cat:"chocolate", price:7.49, promo:false, img:"https://picsum.photos/seed/choc/600/400" },
