@@ -232,3 +232,26 @@ body.dark .carousel-btn:hover { background: rgba(255,255,255,.35); }
 
 /* Banners usando carousel */
 .banners .carousel { box-shadow: 0 6px 18px rgba(0,0,0,.06); }
+/* ==== Carousel (banners) ==== */
+.carousel{ position:relative; width:100%; height:180px; border-radius:16px; overflow:hidden; background:#fafafa; }
+@media (min-width:900px){ .carousel{ height:260px } }
+.carousel-track{ display:flex; gap:0; width:100%; height:100%; overflow:auto; scroll-snap-type:x mandatory; scroll-behavior:smooth; }
+.carousel-track::-webkit-scrollbar{ height:6px }
+.carousel-track::-webkit-scrollbar-thumb{ background:#eee; border-radius:999px }
+.carousel-slide{ flex:0 0 100%; width:100%; height:100%; scroll-snap-align:start; position:relative }
+.carousel-slide img{ width:100%; height:100%; object-fit:cover; display:block }
+
+.carousel-nav .carousel-btn{
+  position:absolute; top:50%; transform:translateY(-50%);
+  width:36px; height:36px; border-radius:999px; border:0;
+  background:rgba(255,255,255,.85); color:#333; cursor:pointer;
+  display:grid; place-items:center; box-shadow:0 2px 8px rgba(0,0,0,.15);
+}
+.carousel-btn.prev{ left:12px } .carousel-btn.next{ right:12px }
+.carousel-btn:hover{ background:#fff }
+
+.carousel-dots{ position:absolute; left:0; right:0; bottom:10px; display:flex; justify-content:center; gap:6px; }
+.carousel-dot{
+  width:8px; height:8px; border-radius:50%; border:0; background:rgba(255,255,255,.6); cursor:pointer;
+}
+.carousel-dot.active{ background:#fff }

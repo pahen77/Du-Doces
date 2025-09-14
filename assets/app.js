@@ -4,13 +4,11 @@ const on = (el,ev,fn)=>el && el.addEventListener(ev,fn);
 
 // === API base (auto: dev vs prod) ===
 const API_BASE = (() => {
-  const PROD = "https://du-doces-backend-production.up.railway.app"; // backend no Railway
+  const PROD = "https://du-doces-backend-production.up.railway.app";
   const DEV  = "http://localhost:8080";
   const h = location.hostname;
-  // se estiver no Vercel (seu domínio) -> PROD; se localhost -> DEV; senão PROD
-  return (h === "du-doces.vercel.app")
-    ? PROD
-    : (["localhost","127.0.0.1"].includes(h) ? DEV : PROD);
+  // se estiver no seu domínio do Vercel (ou preview) => PROD; se localhost => DEV; senão => PROD
+  return (["localhost","127.0.0.1"].includes(h) ? DEV : PROD);
 })();
 
 // utils
@@ -68,7 +66,7 @@ function normalizeProduct(p){
   const priceVal  = (p?.precoCentavos != null) ? (p.precoCentavos/100) : (p?.price ?? p?.preco ?? p?.valor ?? 0);
   const imgUrl    = p?.imageUrl ?? p?.image ?? p?.img ?? 'https://picsum.photos/seed/du-doces/600/400';
   return {
-    id:    p?.id ?? p?.codigo ?? crypto.randomUUID(),
+    id:    String(p?.id ?? p?.codigo ?? crypto.randomUUID()),
     name:  p?.name ?? p?.nome ?? p?.titulo ?? 'Produto',
     brand: String(brandName),
     brandKey: slug(brandName),
@@ -242,7 +240,7 @@ document.addEventListener('click', (e)=>{
 
   if(e.target.matches('[data-add]')){
     const id = e.target.getAttribute('data-add');
-    const prod = PRODUCTS.find(p => p.id === id);
+    const prod = PRODUCTS.find(p => String(p.id) === String(id));
     if (prod) {
       Cart.add(prod, 1);
       openCart();
@@ -344,9 +342,7 @@ function initCarousel(root, { autoplay = 5000, pauseOnHover = true } = {}) {
 
   let idx = 0, timer;
 
-  function activate(i) {
-    dots.forEach((d, j) => d.classList.toggle('active', j === i));
-  }
+  function activate(i) { dots.forEach((d, j) => d.classList.toggle('active', j === i)); }
 
   function goTo(i, smooth = true) {
     idx = (i + slides.length) % slides.length;
@@ -384,13 +380,19 @@ function initCarousel(root, { autoplay = 5000, pauseOnHover = true } = {}) {
   start();
 }
 
-// Banners (aceita src | image | url e href | link) em carrossel
+// Banners (aceita src | image | url e href | link) em carrossel + fallback
 async function loadBanners(){
+  const fallback = [
+    { src: "https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?q=80&w=1600&auto=format&fit=crop" },
+    { src: "https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=1600&auto=format&fit=crop" },
+    { src: "https://images.unsplash.com/photo-1452251889946-8ff5ea7b27ab?q=80&w=1600&auto=format&fit=crop" }
+  ];
   try{
-    const data = await fetch(`./assets/banners.json?ts=${Date.now()}`).then(r=>r.json());
-    const items = Array.isArray(data) ? data : (data.banners || []);
+    const res = await fetch(`./assets/banners.json?ts=${Date.now()}`);
+    const data = res.ok ? await res.json() : fallback;
+    const items = Array.isArray(data) ? data : (data.banners || fallback);
 
-    const slides = (items||[]).map((b,i)=>{
+    const slides = (items||fallback).map((b,i)=>{
       const src  = typeof b === 'string' ? b : (b.src || b.image || b.url || '');
       const href = typeof b === 'object' ? (b.href || b.link || null) : null;
       const alt  = typeof b === 'object' ? (b.alt  || `banner ${i+1}`) : `banner ${i+1}`;
@@ -411,25 +413,31 @@ async function loadBanners(){
 
     initCarousel($('#hero-carousel'), { autoplay: 4500, pauseOnHover: true });
   }catch{
-    // se falhar, deixa vazio silenciosamente
+    // fallback simples se tudo falhar
+    $('#banners').innerHTML = fallback.map(f=>`
+      <div class="banner"><img src="${f.src}" alt="banner"></div>
+    `).join('');
   }
 }
 
 // Data
 async function loadData(){
   try{
-    const res = await fetch(`${API_BASE}/produtos`);
+    // >>> CORRIGIDO: /products (não /produtos)
+    const res = await fetch(`${API_BASE}/products`);
     if(!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     const items = Array.isArray(data) ? data : (data.items ?? data.data ?? []);
     PRODUCTS = (Array.isArray(items)?items:[]).map(normalizeProduct);
 
+    // outras marcas dinâmico
     const mainSet = new Set(MAIN_BRANDS.map(b=>slug(b)));
     const allBrands = [...new Set(PRODUCTS.map(p => p.brand).filter(Boolean))];
     const others = allBrands.filter(b => !mainSet.has(slug(b)));
     mountOtherBrands({ others });
 
   }catch{
+    // fallback para arquivos locais
     try{
       const [prods, brands] = await Promise.all([
         fetch('./assets/products.json').then(r=>r.json()),
@@ -438,11 +446,7 @@ async function loadData(){
       PRODUCTS = (Array.isArray(prods)?prods:[]).map(normalizeProduct);
       mountOtherBrands(brands);
     }catch{
-      PRODUCTS = [
-        { id:1, name:"Bala Hortelã", brand:"Arcor", cat:"bala", price:2.99, promo:true,  img:"https://picsum.photos/seed/bala/600/400" },
-        { id:2, name:"Chocolate Ao Leite 90g", brand:"Nestle", cat:"chocolate", price:7.49, promo:false, img:"https://picsum.photos/seed/choc/600/400" },
-        { id:3, name:"Refrigerante Lata 350ml", brand:"Coca-Cola", cat:"salgadinho", price:4.99, promo:true,  img:"https://picsum.photos/seed/coke/600/400" }
-      ].map(normalizeProduct);
+      PRODUCTS = [];
       mountOtherBrands(null);
     }
   }
