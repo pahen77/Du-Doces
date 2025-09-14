@@ -19,7 +19,6 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://du-doces.vercel.app/" />
   <meta property="og:locale" content="pt_BR" />
-  <!-- Ajuste este caminho se necessário; recomenda-se ter um JPG 1200x630 em /assets/og.jpg -->
   <meta property="og:image" content="https://du-doces.vercel.app/assets/og.jpg" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
@@ -43,7 +42,7 @@
 
   <!-- Favicon / estilos -->
   <link rel="icon" href="/assets/favicon.ico" />
-  <link rel="stylesheet" href="./assets/style.css?v=8" />
+  <link rel="stylesheet" href="./assets/style.css?v=9" />
 </head>
 <body>
   <!-- Header -->
@@ -69,7 +68,7 @@
     </div>
   </header>
 
-  <!-- Banners (o carrossel é injetado pelo app.js) -->
+  <!-- Banners (carrossel é injetado via app.js) -->
   <section class="banners" id="banners"></section>
 
   <!-- Barra fixa: CATEGORIAS -->
@@ -83,11 +82,13 @@
   </nav>
 
   <main class="page">
+    <!-- Outras marcas -->
     <section class="other-brands-box">
       <h3>Outras marcas</h3>
       <div class="brands-grid" id="otherBrands"></div>
     </section>
 
+    <!-- Filtros -->
     <section class="filters">
       <div class="filters-row">
         <label>
@@ -109,6 +110,7 @@
       </div>
     </section>
 
+    <!-- Grid de produtos -->
     <section class="products" id="productsGrid"></section>
   </main>
 
@@ -184,6 +186,6 @@
   </section>
 
   <!-- JS -->
-  <script src="./assets/app.js?v=8"></script>
+  <script src="./assets/app.js?v=9"></script>
 </body>
 </html>
