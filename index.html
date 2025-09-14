@@ -3,16 +3,13 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-
   <title>DU DOCES — Distribuidora</title>
 
-  <!-- SEO básico -->
   <link rel="canonical" href="https://du-doces.vercel.app/">
   <meta name="description" content="Du Doces Distribuidora — bebidas, chocolates, salgadinhos e mais com entrega rápida." />
   <meta name="robots" content="index,follow" />
   <meta name="theme-color" content="#C62828" />
 
-  <!-- Open Graph -->
   <meta property="og:site_name" content="DU DOCES" />
   <meta property="og:title" content="DU DOCES — Distribuidora" />
   <meta property="og:description" content="As melhores marcas com logística ágil." />
@@ -23,13 +20,11 @@
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
 
-  <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="DU DOCES — Distribuidora" />
   <meta name="twitter:description" content="As melhores marcas com logística ágil." />
   <meta name="twitter:image" content="https://du-doces.vercel.app/assets/og.jpg" />
 
-  <!-- Structured Data (JSON-LD) -->
   <script type="application/ld+json">
   {
     "@context":"https://schema.org",
@@ -40,12 +35,10 @@
   }
   </script>
 
-  <!-- Favicon / estilos -->
   <link rel="icon" href="/assets/favicon.ico" />
-  <link rel="stylesheet" href="./assets/style.css?v=11" />
+  <link rel="stylesheet" href="./assets/style.css?v=10" />
 </head>
 <body>
-  <!-- Header -->
   <header class="topbar">
     <div class="topbar-left">
       <button class="icon-btn" id="btn-menu" aria-label="Abrir menu">
@@ -68,27 +61,22 @@
     </div>
   </header>
 
-  <!-- Banners (carrossel injetado via app.js) -->
   <section class="banners" id="banners"></section>
 
-  <!-- Barra fixa: CATEGORIAS -->
   <nav class="sticky-bar" id="navCats">
     <div class="bar-scroll" id="catsBar"></div>
   </nav>
 
-  <!-- Barra fixa: MARCAS PRINCIPAIS -->
   <nav class="sticky-bar" id="navBrands">
     <div class="bar-scroll" id="brandsBar"></div>
   </nav>
 
   <main class="page">
-    <!-- Outras marcas -->
     <section class="other-brands-box">
       <h3>Outras marcas</h3>
       <div class="brands-grid" id="otherBrands"></div>
     </section>
 
-    <!-- Filtros -->
     <section class="filters">
       <div class="filters-row">
         <label>
@@ -110,14 +98,11 @@
       </div>
     </section>
 
-    <!-- Grid de produtos -->
     <section class="products" id="productsGrid"></section>
   </main>
 
-  <!-- Bolha IA -->
   <button class="fab-ia" id="btn-ia" title="IA">IA</button>
 
-  <!-- Rodapé -->
   <footer class="footer">
     <div class="footer-inner">
       <p>Du Doces Distribuidora LTDA — todos os direitos reservados</p>
@@ -125,7 +110,6 @@
     <div class="footer-accent"></div>
   </footer>
 
-  <!-- Drawer (menu) -->
   <aside class="drawer" id="drawer" aria-hidden="true">
     <div class="drawer-panel">
       <button class="icon-btn close" id="close-drawer" aria-label="Fechar">✕</button>
@@ -138,7 +122,6 @@
     </div>
   </aside>
 
-  <!-- Drawer (carrinho) -->
   <aside class="drawer" id="cartDrawer" aria-hidden="true">
     <div class="drawer-panel">
       <button class="icon-btn close" id="cart-close" aria-label="Fechar">✕</button>
@@ -156,36 +139,6 @@
     </div>
   </aside>
 
-  <!-- Modais -->
-  <section class="modal" id="modal-about" aria-hidden="true">
-    <div class="modal-dialog">
-      <header>
-        <h3>Sobre nós</h3>
-        <button class="icon-btn modal-close" data-close>✕</button>
-      </header>
-      <div class="modal-body">
-        <p>A Du Doces Distribuidora traz as melhores marcas com logística ágil e atendimento próximo.</p>
-      </div>
-      <footer><button class="btn btn-light" data-close>Fechar</button></footer>
-    </div>
-  </section>
-
-  <section class="modal" id="modal-contact" aria-hidden="true">
-    <div class="modal-dialog">
-      <header>
-        <h3>Contatos</h3>
-        <button class="icon-btn modal-close" data-close>✕</button>
-      </header>
-      <div class="modal-body">
-        <p>Email: atendimento@dudoces.com.br</p>
-        <p>WhatsApp: (11) 99999-0000</p>
-        <p>Endereço: Rua Exemplo, 123 — Campinas/SP</p>
-      </div>
-      <footer><button class="btn btn-light" data-close>Fechar</button></footer>
-    </div>
-  </section>
-
-  <!-- JS -->
-  <script src="./assets/app.js?v=11"></script>
+  <script src="./assets/app.js?v=10"></script>
 </body>
 </html>
