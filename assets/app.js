@@ -1,41 +1,41 @@
-// helpers
+// ===== helpers =====
 const $ = (s)=>document.querySelector(s);
 const on = (el,ev,fn)=>el && el.addEventListener(ev,fn);
 
-// === API base (auto: dev vs prod) ===
-const API_BASE = (() => {
-  const PROD = "https://du-doces-backend-production.up.railway.app";
-  const DEV  = "http://localhost:8080";
-  const h = location.hostname;
-  // se estiver no seu domínio do Vercel (ou preview) => PROD; se localhost => DEV; senão => PROD
-  return (["localhost","127.0.0.1"].includes(h) ? DEV : PROD);
-})();
+// ===== API base (dev vs prod) =====
+const PROD_BACKEND = "https://du-doces-backend-production.up.railway.app";
+const DEV_BACKEND  = "http://localhost:8080";
+const isLocal = ["localhost","127.0.0.1"].includes(location.hostname);
+const API_BASE = isLocal ? DEV_BACKEND : PROD_BACKEND;
+console.log("[APP] API_BASE =", API_BASE);
 
-// utils
+// ===== utils =====
 const slug = (s) => String(s||"")
   .toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')
   .replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)+/g,'');
+
 const BRL = (v) => Number(v||0).toLocaleString('pt-BR', { style:'currency', currency:'BRL' });
 
-// state
+// ===== state =====
 let PRODUCTS = [];
 let activeCat = 'tudo';
 let activeBrand = null;
 let otherBrandsSelected = new Set();
 
-// elements
+// ===== elements =====
 const grid = $('#productsGrid');
 const sortSel = $('#sort');
 const promoOnly = $('#promoOnly');
 const btnClear = $('#btn-clear');
 
-// ---- Layout dynamic mount ----
+// ===== Layout dynamic mount =====
 const CATS = [
   { key:'tudo',       label:'Tudo' },
   { key:'bebida',     label:'Bebida' },
   { key:'salgadinho', label:'Salgadinho' },
   { key:'chocolate',  label:'Chocolate' },
   { key:'utilidades', label:'Utilidades' },
+  // há itens "padaria" na API; se quiser mostrar: { key:'padaria', label:'Padaria' },
 ];
 const MAIN_BRANDS = ['Coca-Cola','Fanta','Nestle','Arcor','OZ','LA','BALY'];
 
@@ -59,7 +59,7 @@ function mountOtherBrands(brandsJson){
   `).join('');
 }
 
-// ---- Render grid ----
+// ===== Render grid =====
 function normalizeProduct(p){
   const brandName = p?.brand?.name ?? p?.brand ?? p?.marca ?? "";
   const catName   = p?.category?.name ?? p?.category ?? p?.categoria ?? p?.cat ?? "";
@@ -97,7 +97,7 @@ function render(list){
   `).join('');
 }
 
-// ---- Filters ----
+// ===== Filters =====
 function applyFilters(){
   let list = [...PRODUCTS];
 
@@ -123,33 +123,19 @@ function applyFilters(){
   render(list);
 }
 
-// ==== CARRINHO (localStorage) ====
+// ===== Carrinho (localStorage) =====
 const CART_KEY = "du_cart";
 const Cart = {
-  load() {
-    try { return JSON.parse(localStorage.getItem(CART_KEY) || "[]"); }
-    catch { return []; }
-  },
-  save(items) {
-    localStorage.setItem(CART_KEY, JSON.stringify(items));
-    updateCartUI();
-  },
+  load() { try { return JSON.parse(localStorage.getItem(CART_KEY) || "[]"); } catch { return []; } },
+  save(items) { localStorage.setItem(CART_KEY, JSON.stringify(items)); updateCartUI(); },
   add(prod, qty = 1) {
     const items = Cart.load();
     const idx = items.findIndex((i) => i.id === prod.id);
     if (idx >= 0) items[idx].qty += qty;
-    else items.push({
-      id: prod.id,
-      name: prod.name,
-      price: Number(prod.price),
-      image: prod.img,
-      qty,
-    });
+    else items.push({ id: prod.id, name: prod.name, price: Number(prod.price), image: prod.img, qty });
     Cart.save(items);
   },
-  remove(id) {
-    Cart.save(Cart.load().filter((i) => i.id !== id));
-  },
+  remove(id) { Cart.save(Cart.load().filter((i) => i.id !== id)); },
   setQty(id, qty) {
     const n = Math.max(1, Number(qty||1));
     const items = Cart.load();
@@ -158,15 +144,9 @@ const Cart = {
     it.qty = n;
     Cart.save(items);
   },
-  clear() {
-    Cart.save([]);
-  },
-  total() {
-    return Cart.load().reduce((sum, i) => sum + i.price * i.qty, 0);
-  },
-  count() {
-    return Cart.load().reduce((sum, i) => sum + i.qty, 0);
-  },
+  clear() { Cart.save([]); },
+  total() { return Cart.load().reduce((s, i) => s + i.price * i.qty, 0); },
+  count() { return Cart.load().reduce((s, i) => s + i.qty, 0); },
 };
 
 // Drawer carrinho
@@ -202,7 +182,7 @@ function updateCartUI() {
   `).join('');
 }
 
-// ---- Events ----
+// ===== Events =====
 document.addEventListener('click', (e)=>{
   const chip = e.target.closest('.chip');
 
@@ -240,7 +220,7 @@ document.addEventListener('click', (e)=>{
 
   if(e.target.matches('[data-add]')){
     const id = e.target.getAttribute('data-add');
-    const prod = PRODUCTS.find(p => String(p.id) === String(id));
+    const prod = PRODUCTS.find(p => p.id === id);
     if (prod) {
       Cart.add(prod, 1);
       openCart();
@@ -252,35 +232,24 @@ document.addEventListener('click', (e)=>{
   if (e.target.matches('#cart-close')) { closeCart(); return; }
   if (e.target.id === 'cartDrawer' && e.target.classList.contains('drawer')) { closeCart(); return; }
 
-  if (e.target.matches('.rm')) {
-    Cart.remove(e.target.dataset.id);
-    return;
-  }
+  if (e.target.matches('.rm')) { Cart.remove(e.target.dataset.id); return; }
   if (e.target.matches('.inc')) {
     const id = e.target.dataset.id;
-    const items = Cart.load();
-    const it = items.find(i=>i.id===id);
+    const it = Cart.load().find(i=>i.id===id);
     Cart.setQty(id, (it?.qty||1) + 1);
     return;
   }
   if (e.target.matches('.dec')) {
     const id = e.target.dataset.id;
-    const items = Cart.load();
-    const it = items.find(i=>i.id===id);
+    const it = Cart.load().find(i=>i.id===id);
     Cart.setQty(id, Math.max(1, (it?.qty||1) - 1));
     return;
   }
 });
 
 document.addEventListener('input', (e)=>{
-  if(e.target === sortSel || e.target === promoOnly){
-    applyFilters();
-  }
-  if (e.target.matches('.q')) {
-    const id = e.target.dataset.id;
-    const qty = Number(e.target.value||1);
-    Cart.setQty(id, qty);
-  }
+  if(e.target === sortSel || e.target === promoOnly){ applyFilters(); }
+  if (e.target.matches('.q')) { Cart.setQty(e.target.dataset.id, Number(e.target.value||1)); }
 });
 
 on(btnClear,'click', ()=>{
@@ -323,8 +292,7 @@ function setTheme(mode){
 on($('#toggle-dark'),'click', ()=> setTheme(document.body.classList.contains('dark')?'light':'dark'));
 setTheme(localStorage.getItem('theme') || 'light');
 
-/* ===================== CARROSSEL ===================== */
-// helper genérico de carrossel (setas, dots, swipe, autoplay)
+/* ============ CARROSSEL ============ */
 function initCarousel(root, { autoplay = 5000, pauseOnHover = true } = {}) {
   const track = root.querySelector('.carousel-track');
   const slides = Array.from(root.querySelectorAll('.carousel-slide'));
@@ -334,15 +302,13 @@ function initCarousel(root, { autoplay = 5000, pauseOnHover = true } = {}) {
 
   if (!track || !slides.length) return;
 
-  // dots
   dotsWrap.innerHTML = slides.map((_, i) =>
     `<button class="carousel-dot" data-i="${i}" aria-label="Ir para slide ${i+1}"></button>`
   ).join('');
   const dots = Array.from(dotsWrap.children);
 
   let idx = 0, timer;
-
-  function activate(i) { dots.forEach((d, j) => d.classList.toggle('active', j === i)); }
+  const activate = (i) => dots.forEach((d, j) => d.classList.toggle('active', j === i));
 
   function goTo(i, smooth = true) {
     idx = (i + slides.length) % slides.length;
@@ -351,109 +317,109 @@ function initCarousel(root, { autoplay = 5000, pauseOnHover = true } = {}) {
     activate(idx);
   }
 
-  // nav
   prevBtn?.addEventListener('click', () => goTo(idx - 1));
   nextBtn?.addEventListener('click', () => goTo(idx + 1));
   dots.forEach(d => d.addEventListener('click', () => goTo(+d.dataset.i)));
 
-  // sync ao arrastar
   track.addEventListener('scroll', () => {
     const w = root.clientWidth || 1;
     const near = Math.round(track.scrollLeft / w);
     if (near !== idx) { idx = near; activate(idx); }
   }, { passive: true });
 
-  // teclado
   root.tabIndex = 0;
   root.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowRight') goTo(idx + 1);
     if (e.key === 'ArrowLeft')  goTo(idx - 1);
   });
 
-  // autoplay
-  function start() { if (autoplay > 0) timer = setInterval(() => goTo(idx + 1), autoplay); }
-  function stop()  { clearInterval(timer); }
+  function start(){ if (autoplay > 0) timer = setInterval(() => goTo(idx + 1), autoplay); }
+  function stop(){ clearInterval(timer); }
   if (pauseOnHover) { root.addEventListener('mouseenter', stop); root.addEventListener('mouseleave', start); }
   window.addEventListener('resize', () => goTo(idx, false));
 
-  goTo(0, false);
-  start();
+  goTo(0, false); start();
 }
 
-// Banners (aceita src | image | url e href | link) em carrossel + fallback
+// Banners com fallback embutido
+const DEFAULT_BANNERS = [
+  { src: "https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?q=80&w=1600&auto=format&fit=crop", href: "#" },
+  { src: "https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=1600&auto=format&fit=crop" },
+  { src: "https://images.unsplash.com/photo-1452251889946-8ff5ea7b27ab?q=80&w=1600&auto=format&fit=crop" }
+];
+
 async function loadBanners(){
-  const fallback = [
-    { src: "https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?q=80&w=1600&auto=format&fit=crop" },
-    { src: "https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=1600&auto=format&fit=crop" },
-    { src: "https://images.unsplash.com/photo-1452251889946-8ff5ea7b27ab?q=80&w=1600&auto=format&fit=crop" }
-  ];
+  let items = [];
   try{
     const res = await fetch(`./assets/banners.json?ts=${Date.now()}`);
-    const data = res.ok ? await res.json() : fallback;
-    const items = Array.isArray(data) ? data : (data.banners || fallback);
-
-    const slides = (items||fallback).map((b,i)=>{
-      const src  = typeof b === 'string' ? b : (b.src || b.image || b.url || '');
-      const href = typeof b === 'object' ? (b.href || b.link || null) : null;
-      const alt  = typeof b === 'object' ? (b.alt  || `banner ${i+1}`) : `banner ${i+1}`;
-      const img  = `<img src="${src}" loading="lazy" alt="${alt}" onerror="this.style.display='none'">`;
-      return `<div class="carousel-slide">${href ? `<a href="${href}">${img}</a>` : img}</div>`;
-    }).join('');
-
-    const html = `
-      <div class="carousel" id="hero-carousel" aria-roledescription="carousel">
-        <div class="carousel-track">${slides}</div>
-        <div class="carousel-nav">
-          <button class="carousel-btn prev" aria-label="Anterior">‹</button>
-          <button class="carousel-btn next" aria-label="Próximo">›</button>
-        </div>
-        <div class="carousel-dots" aria-label="Slides"></div>
-      </div>`;
-    $('#banners').innerHTML = html;
-
-    initCarousel($('#hero-carousel'), { autoplay: 4500, pauseOnHover: true });
-  }catch{
-    // fallback simples se tudo falhar
-    $('#banners').innerHTML = fallback.map(f=>`
-      <div class="banner"><img src="${f.src}" alt="banner"></div>
-    `).join('');
+    if (!res.ok) throw new Error(`banners.json ${res.status}`);
+    items = await res.json();
+    console.log("[APP] banners.json ok");
+  }catch(err){
+    console.warn("[APP] banners.json não encontrado, usando fallback embutido.", err?.message || err);
+    items = DEFAULT_BANNERS;
   }
+
+  const slides = (items||[]).map((b,i)=>{
+    const src  = typeof b === 'string' ? b : (b.src || b.image || b.url || '');
+    const href = typeof b === 'object' ? (b.href || b.link || null) : null;
+    const alt  = typeof b === 'object' ? (b.alt  || `banner ${i+1}`) : `banner ${i+1}`;
+    const img  = `<img src="${src}" loading="lazy" alt="${alt}" onerror="this.style.display='none'">`;
+    return `<div class="carousel-slide">${href ? `<a href="${href}">${img}</a>` : img}</div>`;
+  }).join('');
+
+  const html = `
+    <div class="carousel" id="hero-carousel" aria-roledescription="carousel">
+      <div class="carousel-track">${slides}</div>
+      <div class="carousel-nav">
+        <button class="carousel-btn prev" aria-label="Anterior">‹</button>
+        <button class="carousel-btn next" aria-label="Próximo">›</button>
+      </div>
+      <div class="carousel-dots" aria-label="Slides"></div>
+    </div>`;
+  $('#banners').innerHTML = html;
+
+  initCarousel($('#hero-carousel'), { autoplay: 4500, pauseOnHover: true });
 }
 
-// Data
+// ===== Data =====
 async function loadData(){
   try{
-    // >>> CORRIGIDO: /products (não /produtos)
+    // >>> CORRIGIDO: /products (backend em inglês)
     const res = await fetch(`${API_BASE}/products`);
     if(!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     const items = Array.isArray(data) ? data : (data.items ?? data.data ?? []);
     PRODUCTS = (Array.isArray(items)?items:[]).map(normalizeProduct);
+    console.log(`[APP] produtos carregados: ${PRODUCTS.length}`);
 
-    // outras marcas dinâmico
     const mainSet = new Set(MAIN_BRANDS.map(b=>slug(b)));
     const allBrands = [...new Set(PRODUCTS.map(p => p.brand).filter(Boolean))];
     const others = allBrands.filter(b => !mainSet.has(slug(b)));
     mountOtherBrands({ others });
 
-  }catch{
-    // fallback para arquivos locais
+  }catch(err){
+    console.warn("[APP] Falhou API, tentando assets locais.", err?.message || err);
     try{
       const [prods, brands] = await Promise.all([
-        fetch('./assets/products.json').then(r=>r.json()),
-        fetch('./assets/brands.json').then(r=>r.json()).catch(()=>null)
+        fetch(`./assets/products.json?ts=${Date.now()}`).then(r=>r.json()),
+        fetch(`./assets/brands.json?ts=${Date.now()}`).then(r=>r.json()).catch(()=>null)
       ]);
       PRODUCTS = (Array.isArray(prods)?prods:[]).map(normalizeProduct);
       mountOtherBrands(brands);
     }catch{
-      PRODUCTS = [];
+      PRODUCTS = [
+        { id:1, name:"Bala Hortelã", brand:"Arcor", cat:"bala", price:2.99, promo:true,  img:"https://picsum.photos/seed/bala/600/400" },
+        { id:2, name:"Chocolate Ao Leite 90g", brand:"Nestle", cat:"chocolate", price:7.49, promo:false, img:"https://picsum.photos/seed/choc/600/400" },
+        { id:3, name:"Refrigerante Lata 350ml", brand:"Coca-Cola", cat:"salgadinho", price:4.99, promo:true,  img:"https://picsum.photos/seed/coke/600/400" }
+      ].map(normalizeProduct);
       mountOtherBrands(null);
     }
   }
   applyFilters();
 }
 
-// boot
+// ===== boot =====
 document.addEventListener('DOMContentLoaded', ()=>{
   mountBars();
   loadBanners();
