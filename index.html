@@ -3,18 +3,18 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>DU DOCES â€” Distribuidora</title>
+  <title>DU DOCES — Distribuidora</title>
 
   <!-- SEO -->
   <link rel="canonical" href="https://du-doces.vercel.app/">
-  <meta name="description" content="Du Doces Distribuidora â€” bebidas, chocolates, salgadinhos e mais com entrega rÃ¡pida." />
+  <meta name="description" content="Du Doces Distribuidora — bebidas, chocolates, salgadinhos e mais com entrega rápida." />
   <meta name="robots" content="index,follow" />
   <meta name="theme-color" content="#C62828" />
 
   <!-- OG -->
   <meta property="og:site_name" content="DU DOCES" />
-  <meta property="og:title" content="DU DOCES â€” Distribuidora" />
-  <meta property="og:description" content="As melhores marcas com logÃ­stica Ã¡gil." />
+  <meta property="og:title" content="DU DOCES — Distribuidora" />
+  <meta property="og:description" content="As melhores marcas com logística ágil." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://du-doces.vercel.app/" />
   <meta property="og:locale" content="pt_BR" />
@@ -24,8 +24,8 @@
 
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="DU DOCES â€” Distribuidora" />
-  <meta name="twitter:description" content="As melhores marcas com logÃ­stica Ã¡gil." />
+  <meta name="twitter:title" content="DU DOCES — Distribuidora" />
+  <meta name="twitter:description" content="As melhores marcas com logística ágil." />
   <meta name="twitter:image" content="https://du-doces.vercel.app/assets/og.jpg" />
 
   <!-- JSON-LD -->
@@ -88,16 +88,16 @@
         <label>
           <span class="lbl">Ordenar</span>
           <select id="sort" class="select">
-            <option value="relevance">RelevÃ¢ncia</option>
-            <option value="price-asc">PreÃ§o: menor â†’ maior</option>
-            <option value="price-desc">PreÃ§o: maior â†’ menor</option>
-            <option value="name-asc">Nome: A â†’ Z</option>
+            <option value="relevance">Relevância</option>
+            <option value="price-asc">Preço: menor &rarr; maior</option>
+            <option value="price-desc">Preço: maior &rarr; menor</option>
+            <option value="name-asc">Nome: A &rarr; Z</option>
           </select>
         </label>
 
         <label class="chk">
           <input type="checkbox" id="promoOnly" />
-          <span>Somente promoÃ§Ãµes</span>
+          <span>Somente promoções</span>
         </label>
 
         <button class="btn btn-outline" id="btn-clear">Limpar</button>
@@ -110,10 +110,10 @@
   <!-- IA -->
   <button class="fab-ia" id="btn-ia" title="IA">IA</button>
 
-  <!-- RodapÃ© -->
+  <!-- Rodapé -->
   <footer class="footer">
     <div class="footer-inner">
-      <p>Du Doces Distribuidora LTDA â€” todos os direitos reservados</p>
+      <p>Du Doces Distribuidora LTDA — todos os direitos reservados</p>
     </div>
     <div class="footer-accent"></div>
   </footer>
@@ -121,11 +121,11 @@
   <!-- Drawer menu -->
   <aside class="drawer" id="drawer" aria-hidden="true">
     <div class="drawer-panel">
-      <button class="icon-btn close" id="close-drawer" aria-label="Fechar">âœ•</button>
+      <button class="icon-btn close" id="close-drawer" aria-label="Fechar">✕</button>
       <div class="drawer-header"><strong>Menu</strong></div>
       <nav class="drawer-nav">
-        <button class="link-like" id="toggle-dark">ðŸŒ™ Modo escuro</button>
-        <button class="link-like" data-open="about">Sobre nÃ³s</button>
+        <button class="link-like" id="toggle-dark">🌙 Modo escuro</button>
+        <button class="link-like" data-open="about">Sobre nós</button>
         <button class="link-like" data-open="contact">Contatos</button>
       </nav>
     </div>
@@ -134,7 +134,7 @@
   <!-- Drawer carrinho -->
   <aside class="drawer" id="cartDrawer" aria-hidden="true">
     <div class="drawer-panel">
-      <button class="icon-btn close" id="cart-close" aria-label="Fechar">âœ•</button>
+      <button class="icon-btn close" id="cart-close" aria-label="Fechar">✕</button>
       <div class="drawer-header"><strong>Carrinho</strong></div>
       <div class="drawer-body">
         <div id="cart-items" class="cart-list"></div>
@@ -149,6 +149,35 @@
     </div>
   </aside>
 
+  <!-- Modais -->
+  <section class="modal" id="modal-about" aria-hidden="true">
+    <div class="modal-dialog">
+      <header>
+        <h3>Sobre nós</h3>
+        <button class="icon-btn modal-close" data-close>✕</button>
+      </header>
+      <div class="modal-body">
+        <p>A Du Doces Distribuidora traz as melhores marcas com logística ágil e atendimento próximo.</p>
+      </div>
+      <footer><button class="btn btn-light" data-close>Fechar</button></footer>
+    </div>
+  </section>
+
+  <section class="modal" id="modal-contact" aria-hidden="true">
+    <div class="modal-dialog">
+      <header>
+        <h3>Contatos</h3>
+        <button class="icon-btn modal-close" data-close>✕</button>
+      </header>
+      <div class="modal-body">
+        <p>Email: atendimento@dudoces.com.br</p>
+        <p>WhatsApp: (11) 99999-0000</p>
+        <p>Endereço: Rua Exemplo, 123 — Campinas/SP</p>
+      </div>
+      <footer><button class="btn btn-light" data-close>Fechar</button></footer>
+    </div>
+  </section>
+
   <!-- Banners embutidos -->
   <script id="banners-data" type="application/json">
   [
@@ -158,7 +187,7 @@
   ]
   </script>
 
-  <!-- ===== JS EMBUTIDO (era o assets/app.js) ===== -->
+  <!-- ===== JS EMBUTIDO ===== -->
   <script>
   // helpers
   const $ = (s)=>document.querySelector(s);
@@ -178,6 +207,17 @@
     .toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')
     .replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)+/g,'');
   const BRL = (v) => Number(v||0).toLocaleString('pt-BR', { style:'currency', currency:'BRL' });
+
+  // imagem segura (corrige caminhos e garante placeholder)
+  function safeImg(u){
+    let s = String(u || '').trim();
+    if (!s) return 'https://placehold.co/600x400?text=Du+Doces';
+    if (s.startsWith('/images/')) s = s.replace('/images/', '/assets/images/');
+    if (s.startsWith('images/'))  s = s.replace('images/',  '/assets/images/');
+    if (s.endsWith('/assets/images/padaria.png')) s = '/assets/images/padaria.svg';
+    if (/^https?:\/\//i.test(s) || s.startsWith('/')) return s;
+    return 'https://placehold.co/600x400?text=Du+Doces';
+  }
 
   // state
   let PRODUCTS = [];
@@ -226,7 +266,7 @@
     const brandName = p?.brand?.name ?? p?.brand ?? p?.marca ?? "";
     const catName   = p?.category?.name ?? p?.category ?? p?.categoria ?? p?.cat ?? "";
     const priceVal  = (p?.precoCentavos != null) ? (p.precoCentavos/100) : (p?.price ?? p?.preco ?? p?.valor ?? 0);
-    const imgUrl    = p?.imageUrl ?? p?.image ?? p?.img ?? 'https://picsum.photos/seed/du-doces/600/400';
+    const rawImg    = p?.imageUrl ?? p?.image ?? p?.img ?? '';
     return {
       id:    p?.id ?? p?.codigo ?? crypto.randomUUID(),
       name:  p?.name ?? p?.nome ?? p?.titulo ?? 'Produto',
@@ -235,7 +275,7 @@
       cat:   slug(catName),
       price: Number(priceVal),
       promo: Boolean(p?.promo ?? p?.promocao ?? p?.em_promocao ?? false),
-      img:   imgUrl
+      img:   safeImg(rawImg),
     };
   }
 
@@ -300,18 +340,10 @@
       const items = Cart.load();
       const idx = items.findIndex((i) => i.id === prod.id);
       if (idx >= 0) items[idx].qty += qty;
-      else items.push({
-        id: prod.id,
-        name: prod.name,
-        price: Number(prod.price),
-        image: prod.img,
-        qty,
-      });
+      else items.push({ id: prod.id, name: prod.name, price: Number(prod.price), image: prod.img, qty });
       Cart.save(items);
     },
-    remove(id) {
-      Cart.save(Cart.load().filter((i) => i.id !== id));
-    },
+    remove(id) { Cart.save(Cart.load().filter((i) => i.id !== id)); },
     setQty(id, qty) {
       const n = Math.max(1, Number(qty||1));
       const items = Cart.load();
@@ -335,15 +367,15 @@
     $('#cart-total').textContent = BRL(Cart.total());
     const wrap = $('#cart-items');
     if (!wrap) return;
-    if (!items.length) { wrap.innerHTML = `<p style="opacity:.7">Seu carrinho estÃ¡ vazio.</p>`; return; }
+    if (!items.length) { wrap.innerHTML = `<p style="opacity:.7">Seu carrinho está vazio.</p>`; return; }
     wrap.innerHTML = items.map(i => `
       <div class="cart-row">
-        <img class="cart-thumb" src="${i.image}" alt="${i.name}" />
+        <img class="cart-thumb" src="${safeImg(i.image)}" alt="${i.name}" onerror="this.src='https://placehold.co/80x80?text=?'"/>
         <div class="cart-info">
           <div class="name">${i.name}</div>
-          <div class="price">${BRL(i.price)} <small>Ã— ${i.qty} = ${BRL(i.price*i.qty)}</small></div>
+          <div class="price">${BRL(i.price)} <small>&times; ${i.qty} = ${BRL(i.price*i.qty)}</small></div>
           <div class="qty">
-            <button class="btn-ico dec" data-id="${i.id}">âˆ’</button>
+            <button class="btn-ico dec" data-id="${i.id}">−</button>
             <input class="q" data-id="${i.id}" type="number" min="1" value="${i.qty}" />
             <button class="btn-ico inc" data-id="${i.id}">+</button>
           </div>
@@ -436,15 +468,7 @@
   document.querySelectorAll('.modal').forEach(m=>{ on(m,'click', (e)=>{ if(e.target.classList.contains('modal')) m.classList.remove('open'); }); });
 
   // IA
-  on($('#btn-ia'),'click', ()=>alert('IA: conectar ChatVolt aqui. ðŸ˜‰'));
-
-  // dark mode
-  function setTheme(mode){
-    if(mode==='dark'){ document.body.classList.add('dark'); localStorage.setItem('theme','dark'); }
-    else{ document.body.classList.remove('dark'); localStorage.setItem('theme','light'); }
-  }
-  on($('#toggle-dark'),'click', ()=> setTheme(document.body.classList.contains('dark')?'light':'dark'));
-  setTheme(localStorage.getItem('theme') || 'light');
+  on($('#btn-ia'),'click', ()=>alert('IA: conectar ChatVolt aqui. 😉'));
 
   /* ===== CARROSSEL ===== */
   function initCarousel(root, { autoplay = 5000, pauseOnHover = true } = {}) {
@@ -489,7 +513,7 @@
     start();
   }
 
-  // Banners: embutido -> /assets/banners.json -> GitHub raw -> fallback
+  // Banners: embutido -> /assets/banners.json -> GitHub raw -> default
   async function loadBanners(){
     const ts = Date.now();
     try {
@@ -498,7 +522,7 @@
         const items = JSON.parse(el.textContent);
         return mountCarousel(items);
       }
-    } catch (e) { console.warn('Banners embutidos invÃ¡lidos:', e); }
+    } catch (e) { console.warn('Banners embutidos inválidos:', e); }
 
     try{
       const r = await fetch(`/assets/banners.json?ts=${ts}`, { cache:'no-store' });
@@ -532,8 +556,8 @@
         <div class="carousel" id="hero-carousel" aria-roledescription="carousel">
           <div class="carousel-track">${slides}</div>
           <div class="carousel-nav">
-            <button class="carousel-btn prev" aria-label="Anterior">â€¹</button>
-            <button class="carousel-btn next" aria-label="PrÃ³ximo">â€º</button>
+            <button class="carousel-btn prev" aria-label="Anterior"><</button>
+            <button class="carousel-btn next" aria-label="Próximo">></button>
           </div>
           <div class="carousel-dots" aria-label="Slides"></div>
         </div>`;
@@ -565,9 +589,9 @@
         mountOtherBrands(brands);
       }catch{
         PRODUCTS = [
-          { id:1, name:"Bala HortelÃ£", brand:"Arcor", cat:"bala", price:2.99, promo:true,  img:"https://picsum.photos/seed/bala/600/400" },
-          { id:2, name:"Chocolate Ao Leite 90g", brand:"Nestle", cat:"chocolate", price:7.49, promo:false, img:"https://picsum.photos/seed/choc/600/400" },
-          { id:3, name:"Refrigerante Lata 350ml", brand:"Coca-Cola", cat:"salgadinho", price:4.99, promo:true,  img:"https://picsum.photos/seed/coke/600/400" }
+          { id:1, name:"Bala Hortelã", brand:"Arcor", cat:"bala", price:2.99, promo:true,  img:"" },
+          { id:2, name:"Chocolate Ao Leite 90g", brand:"Nestle", cat:"chocolate", price:7.49, promo:false, img:"" },
+          { id:3, name:"Refrigerante Lata 350ml", brand:"Coca-Cola", cat:"salgadinho", price:4.99, promo:true,  img:"" }
         ].map(normalizeProduct);
         mountOtherBrands(null);
       }
@@ -586,10 +610,11 @@
   // carrinho actions
   on($('#cart-clear'), 'click', ()=> Cart.clear());
   on($('#cart-checkout'), 'click', ()=>{
-    alert('Checkout bÃ¡sico entra na Semana 3 ðŸ˜‰\nResumo: ' + Cart.count() + ' item(ns) â€” ' + $('#cart-total').textContent);
+    alert('Checkout básico entra na Semana 3 😉\nResumo: ' + Cart.count() + ' item(ns) — ' + $('#cart-total').textContent);
   });
   </script>
   <!-- ===== /JS EMBUTIDO ===== -->
 
+  <noscript>Ative o JavaScript para ver os produtos e o carrossel.</noscript>
 </body>
 </html>
