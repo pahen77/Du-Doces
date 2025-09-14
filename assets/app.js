@@ -10,7 +10,7 @@ const API_BASE = (() => {
   const DEV  = "http://localhost:8080";
   const h = location.hostname;
   if (h === "localhost" || h === "127.0.0.1") return DEV;
-  return PROD; // no Vercel/qualquer domÃ­nio -> PROD
+  return PROD; // no Vercel/qualquer domínio -> PROD
 })();
 
 // utils
@@ -20,7 +20,7 @@ const slug = (s) => String(s||"")
 
 const BRL = (v) => Number(v||0).toLocaleString('pt-BR', { style:'currency', currency:'BRL' });
 
-// corrige caminhos/zebra e dÃ¡ placeholder estÃ¡vel
+// corrige caminhos relativos e dá placeholder estável
 function safeImg(u){
   let s = String(u || '').trim();
   if (!s) return 'https://placehold.co/600x400?text=Du+Doces';
@@ -29,16 +29,10 @@ function safeImg(u){
   if (s.startsWith('/images/')) s = s.replace('/images/', '/assets/images/');
   if (s.startsWith('images/'))  s = s.replace('images/',  '/assets/images/');
 
-  // legado padaria.png -> nosso SVG novo
-  if (s.endsWith('/assets/images/padaria.png')) s = '/assets/images/padaria.svg';
-
-  // trocar domÃ­nio de placeholder (evita bloqueio DNS)
-  s = s.replace('placehold.co', 'placehold.co');
-
-  // jÃ¡ Ã© http(s) ou comeÃ§a com / -> ok
+  // permitir http(s) absolutos e caminhos absolutos do site
   if (/^https?:\/\//i.test(s) || s.startsWith('/')) return s;
 
-  // nada vÃ¡lido â†’ placeholder confiÃ¡vel
+  // nada válido -> placeholder confiável
   return 'https://placehold.co/600x400?text=Du+Doces';
 }
 
@@ -208,7 +202,7 @@ function updateCartUI() {
   const wrap = $('#cart-items');
   if (!wrap) return;
   if (!items.length) {
-    wrap.innerHTML = `<p style="opacity:.7">Seu carrinho estÃ¡ vazio.</p>`;
+    wrap.innerHTML = `<p style="opacity:.7">Seu carrinho está vazio.</p>`;
     return;
   }
   wrap.innerHTML = items.map(i => `
@@ -217,9 +211,9 @@ function updateCartUI() {
            onerror="this.src='https://placehold.co/80x80?text=?'"/>
       <div class="cart-info">
         <div class="name">${i.name}</div>
-        <div class="price">${BRL(i.price)} <small>Ã— ${i.qty} = ${BRL(i.price*i.qty)}</small></div>
+        <div class="price">${BRL(i.price)} <small>× ${i.qty} = ${BRL(i.price*i.qty)}</small></div>
         <div class="qty">
-          <button class="btn-ico dec" data-id="${i.id}">âˆ’</button>
+          <button class="btn-ico dec" data-id="${i.id}">−</button>
           <input class="q" data-id="${i.id}" type="number" min="1" value="${i.qty}" />
           <button class="btn-ico inc" data-id="${i.id}">+</button>
         </div>
@@ -340,7 +334,7 @@ document.querySelectorAll('.modal').forEach(m=>{
 });
 
 // IA (placeholder)
-on($('#btn-ia'),'click', ()=>alert('IA: conectar ChatVolt aqui. ðŸ˜‰'));
+on($('#btn-ia'),'click', ()=>alert('IA: conectar ChatVolt aqui. 😉'));
 
 // Modo escuro
 function setTheme(mode){
@@ -410,14 +404,14 @@ async function loadBanners(){
       <div class="carousel" id="hero-carousel" aria-roledescription="carousel">
         <div class="carousel-track">${slides}</div>
         <div class="carousel-nav">
-          <button class="carousel-btn prev" aria-label="Anterior">â€¹</button>
-          <button class="carousel-btn next" aria-label="PrÃ³ximo">â€º</button>
+          <button class="carousel-btn prev" aria-label="Anterior">&lsaquo;</button>
+          <button class="carousel-btn next" aria-label="Próximo">&rsaquo;</button>
         </div>
         <div class="carousel-dots" aria-label="Slides"></div>
       </div>`;
     initCarousel($('#hero-carousel'), { autoplay: 4500, pauseOnHover: true });
   }catch{
-    // fallback silencioso se nÃ£o tiver banners.json
+    // sem banners.json: segue sem carrossel
   }
 }
 
@@ -445,7 +439,7 @@ async function loadData(){
       mountOtherBrands(brands);
     }catch{
       PRODUCTS = [
-        { id:1, name:"Bala HortelÃ£",            brand:"Arcor",     cat:"bala",       price:2.99, promo:true,  img:"" },
+        { id:1, name:"Bala Hortelã",            brand:"Arcor",     cat:"bala",       price:2.99, promo:true,  img:"" },
         { id:2, name:"Chocolate Ao Leite 90g",  brand:"Nestle",    cat:"chocolate",  price:7.49, promo:false, img:"" },
         { id:3, name:"Refrigerante Lata 350ml", brand:"Coca-Cola", cat:"salgadinho", price:4.99, promo:true,  img:"" }
       ].map(normalizeProduct);
@@ -463,10 +457,10 @@ document.addEventListener('DOMContentLoaded', ()=>{
   loadData();
 });
 
-// aÃ§Ãµes do drawer do carrinho
+// ações do drawer do carrinho
 on($('#cart-clear'), 'click', ()=> Cart.clear());
 on($('#cart-checkout'), 'click', ()=>{
-  alert('Checkout bÃ¡sico entra na Semana 3 ðŸ˜‰\nResumo: ' + Cart.count() + ' item(ns) â€” ' + $('#cart-total').textContent);
+  alert('Checkout básico entra na Semana 3 😉\nResumo: ' + Cart.count() + ' item(ns) — ' + $('#cart-total').textContent);
 });
 
 // ================== fim ==================
