@@ -478,7 +478,7 @@
   document.querySelectorAll('[data-open]').forEach(btn=>{
     on(btn,'click', ()=>{ $('#drawer').classList.remove('open'); $('#modal-'+btn.getAttribute('data-open'))?.classList.add('open'); });
   });
-  document.querySelectorAll('[data-close]').forEach(btn=>{ on(btn,'click', ()=>btn.closest('.modal').classList.remove('open'); }); });
+  document.querySelectorAll('[data-close]').forEach(btn=>{ on(btn,'click', ()=>btn.closest('.modal').classList.remove('open')); });
   document.querySelectorAll('.modal').forEach(m=>{ on(m,'click', (e)=>{ if(e.target.classList.contains('modal')) m.classList.remove('open'); }); });
 
   /* ===== CARROSSEL ===== */
