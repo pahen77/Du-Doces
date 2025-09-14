@@ -1,3 +1,5 @@
+// ================== assets/app.js (COMPLETO) ==================
+
 // helpers
 const $ = (s)=>document.querySelector(s);
 const on = (el,ev,fn)=>el && el.addEventListener(ev,fn);
@@ -15,9 +17,32 @@ const API_BASE = (() => {
 const slug = (s) => String(s||"")
   .toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')
   .replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)+/g,'');
+
 const BRL = (v) => Number(v||0).toLocaleString('pt-BR', { style:'currency', currency:'BRL' });
 
-// state
+// corrige caminhos/zebra e dá placeholder estável
+function safeImg(u){
+  let s = String(u || '').trim();
+  if (!s) return 'https://placehold.co/600x400?text=Du+Doces';
+
+  // caminhos relativos antigos -> assets
+  if (s.startsWith('/images/')) s = s.replace('/images/', '/assets/images/');
+  if (s.startsWith('images/'))  s = s.replace('images/',  '/assets/images/');
+
+  // legado padaria.png -> nosso SVG novo
+  if (s.endsWith('/assets/images/padaria.png')) s = '/assets/images/padaria.svg';
+
+  // trocar domínio de placeholder (evita bloqueio DNS)
+  s = s.replace('via.placeholder.com', 'placehold.co');
+
+  // já é http(s) ou começa com / -> ok
+  if (/^https?:\/\//i.test(s) || s.startsWith('/')) return s;
+
+  // nada válido → placeholder confiável
+  return 'https://placehold.co/600x400?text=Du+Doces';
+}
+
+// ---------------- state ----------------
 let PRODUCTS = [];
 let activeCat = 'tudo';
 let activeBrand = null;
@@ -64,7 +89,7 @@ function normalizeProduct(p){
   const brandName = p?.brand?.name ?? p?.brand ?? p?.marca ?? "";
   const catName   = p?.category?.name ?? p?.category ?? p?.categoria ?? p?.cat ?? "";
   const priceVal  = (p?.precoCentavos != null) ? (p.precoCentavos/100) : (p?.price ?? p?.preco ?? p?.valor ?? 0);
-  const imgUrl    = p?.imageUrl ?? p?.image ?? p?.img ?? 'https://picsum.photos/seed/du-doces/600/400';
+  const rawImg    = p?.imageUrl ?? p?.image ?? p?.img ?? '';
   return {
     id:    p?.id ?? p?.codigo ?? crypto.randomUUID(),
     name:  p?.name ?? p?.nome ?? p?.titulo ?? 'Produto',
@@ -73,7 +98,7 @@ function normalizeProduct(p){
     cat:   slug(catName),
     price: Number(priceVal),
     promo: Boolean(p?.promo ?? p?.promocao ?? p?.em_promocao ?? false),
-    img:   imgUrl
+    img:   safeImg(rawImg),
   };
 }
 
@@ -84,7 +109,8 @@ function render(list){
   }
   grid.innerHTML = list.map(p=>`
     <article class="card">
-      <img src="${p.img}" alt="${p.name}" onerror="this.src='https://via.placeholder.com/300x300?text=Produto'">
+      <img src="${p.img}" alt="${p.name}"
+           onerror="this.src='https://placehold.co/300x300?text=Produto'">
       <div class="p16">
         <div class="title">${p.name}</div>
         <div class="brand">${p.brand}</div>
@@ -187,7 +213,8 @@ function updateCartUI() {
   }
   wrap.innerHTML = items.map(i => `
     <div class="cart-row">
-      <img class="cart-thumb" src="${i.image}" alt="${i.name}" />
+      <img class="cart-thumb" src="${safeImg(i.image)}" alt="${i.name}"
+           onerror="this.src='https://placehold.co/80x80?text=?'"/>
       <div class="cart-info">
         <div class="name">${i.name}</div>
         <div class="price">${BRL(i.price)} <small>× ${i.qty} = ${BRL(i.price*i.qty)}</small></div>
@@ -366,43 +393,11 @@ function initCarousel(root, { autoplay = 5000, pauseOnHover = true } = {}) {
   start();
 }
 
-// Banners: embutido -> /assets/banners.json -> GitHub raw -> fallback
+// Banners (carrossel)
 async function loadBanners(){
-  const ts = Date.now();
-
-  // 1) embutido no HTML
-  try {
-    const el = document.getElementById('banners-data');
-    if (el && el.textContent?.trim()) {
-      const items = JSON.parse(el.textContent);
-      return mountCarousel(items);
-    }
-  } catch (e) { console.warn('Banners embutidos inválidos:', e); }
-
-  // 2) arquivo local
   try{
-    const r = await fetch(`/assets/banners.json?ts=${ts}`, { cache:'no-store' });
-    if (!r.ok) throw new Error(r.status);
-    const items = await r.json();
-    return mountCarousel(items);
-  }catch{}
-
-  // 3) GitHub raw
-  try{
-    const r = await fetch(`https://raw.githubusercontent.com/pahen77/Du-Doces/main/assets/banners.json?ts=${ts}`, { cache:'no-store' });
-    if (!r.ok) throw new Error(r.status);
-    const items = await r.json();
-    return mountCarousel(items);
-  }catch{}
-
-  // 4) fallback
-  return mountCarousel([
-    { src: "https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?q=80&w=1600&auto=format&fit=crop" },
-    { src: "https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=1600&auto=format&fit=crop" },
-    { src: "https://images.unsplash.com/photo-1452251889946-8ff5ea7b27ab?q=80&w=1600&auto=format&fit=crop" }
-  ]);
-
-  function mountCarousel(items){
+    const data = await fetch(`./assets/banners.json?ts=${Date.now()}`, { cache:'no-store' }).then(r=>r.json());
+    const items = Array.isArray(data) ? data : (data.banners || []);
     const slides = (items||[]).map((b,i)=>{
       const src  = typeof b === 'string' ? b : (b.src || b.image || b.url || '');
       const href = typeof b === 'object' ? (b.href || b.link || null) : null;
@@ -421,13 +416,15 @@ async function loadBanners(){
         <div class="carousel-dots" aria-label="Slides"></div>
       </div>`;
     initCarousel($('#hero-carousel'), { autoplay: 4500, pauseOnHover: true });
+  }catch{
+    // fallback silencioso se não tiver banners.json
   }
 }
 
-// Data (usa /products; fallback para JSON local)
+// -------- Data (API + fallbacks) --------
 async function loadData(){
   try{
-    const res = await fetch(`${API_BASE}/products`, { cache:'no-store' });
+    const res = await fetch(`${API_BASE}/products`);
     if(!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     const items = Array.isArray(data) ? data : (data.items ?? data.data ?? []);
@@ -448,9 +445,9 @@ async function loadData(){
       mountOtherBrands(brands);
     }catch{
       PRODUCTS = [
-        { id:1, name:"Bala Hortelã", brand:"Arcor", cat:"bala", price:2.99, promo:true,  img:"https://picsum.photos/seed/bala/600/400" },
-        { id:2, name:"Chocolate Ao Leite 90g", brand:"Nestle", cat:"chocolate", price:7.49, promo:false, img:"https://picsum.photos/seed/choc/600/400" },
-        { id:3, name:"Refrigerante Lata 350ml", brand:"Coca-Cola", cat:"salgadinho", price:4.99, promo:true,  img:"https://picsum.photos/seed/coke/600/400" }
+        { id:1, name:"Bala Hortelã",            brand:"Arcor",     cat:"bala",       price:2.99, promo:true,  img:"" },
+        { id:2, name:"Chocolate Ao Leite 90g",  brand:"Nestle",    cat:"chocolate",  price:7.49, promo:false, img:"" },
+        { id:3, name:"Refrigerante Lata 350ml", brand:"Coca-Cola", cat:"salgadinho", price:4.99, promo:true,  img:"" }
       ].map(normalizeProduct);
       mountOtherBrands(null);
     }
@@ -458,7 +455,7 @@ async function loadData(){
   applyFilters();
 }
 
-// boot
+// ---------- boot ----------
 document.addEventListener('DOMContentLoaded', ()=>{
   mountBars();
   loadBanners();
@@ -471,3 +468,5 @@ on($('#cart-clear'), 'click', ()=> Cart.clear());
 on($('#cart-checkout'), 'click', ()=>{
   alert('Checkout básico entra na Semana 3 😉\nResumo: ' + Cart.count() + ' item(ns) — ' + $('#cart-total').textContent);
 });
+
+// ================== fim ==================
