@@ -325,18 +325,94 @@ function setTheme(mode){
 on($('#toggle-dark'),'click', ()=> setTheme(document.body.classList.contains('dark')?'light':'dark'));
 setTheme(localStorage.getItem('theme') || 'light');
 
-// Banners
+/* ===================== CARROSSEL ===================== */
+// helper genérico de carrossel (setas, dots, swipe, autoplay)
+function initCarousel(root, { autoplay = 5000, pauseOnHover = true } = {}) {
+  const track = root.querySelector('.carousel-track');
+  const slides = Array.from(root.querySelectorAll('.carousel-slide'));
+  const dotsWrap = root.querySelector('.carousel-dots');
+  const prevBtn = root.querySelector('.prev');
+  const nextBtn = root.querySelector('.next');
+
+  if (!track || !slides.length) return;
+
+  // dots
+  dotsWrap.innerHTML = slides.map((_, i) =>
+    `<button class="carousel-dot" data-i="${i}" aria-label="Ir para slide ${i+1}"></button>`
+  ).join('');
+  const dots = Array.from(dotsWrap.children);
+
+  let idx = 0, timer;
+
+  function activate(i) {
+    dots.forEach((d, j) => d.classList.toggle('active', j === i));
+  }
+
+  function goTo(i, smooth = true) {
+    idx = (i + slides.length) % slides.length;
+    const x = root.clientWidth * idx;
+    track.scrollTo({ left: x, behavior: smooth ? 'smooth' : 'instant' });
+    activate(idx);
+  }
+
+  // nav
+  prevBtn?.addEventListener('click', () => goTo(idx - 1));
+  nextBtn?.addEventListener('click', () => goTo(idx + 1));
+  dots.forEach(d => d.addEventListener('click', () => goTo(+d.dataset.i)));
+
+  // sync ao arrastar
+  track.addEventListener('scroll', () => {
+    const w = root.clientWidth || 1;
+    const near = Math.round(track.scrollLeft / w);
+    if (near !== idx) { idx = near; activate(idx); }
+  }, { passive: true });
+
+  // teclado
+  root.tabIndex = 0;
+  root.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') goTo(idx + 1);
+    if (e.key === 'ArrowLeft')  goTo(idx - 1);
+  });
+
+  // autoplay
+  function start() { if (autoplay > 0) timer = setInterval(() => goTo(idx + 1), autoplay); }
+  function stop()  { clearInterval(timer); }
+  if (pauseOnHover) { root.addEventListener('mouseenter', stop); root.addEventListener('mouseleave', start); }
+  window.addEventListener('resize', () => goTo(idx, false));
+
+  goTo(0, false);
+  start();
+}
+
+// Banners (aceita src | image | url e href | link) em carrossel
 async function loadBanners(){
   try{
     const data = await fetch('./assets/banners.json').then(r=>r.json());
-    const html = (data||[]).map(b=>{
-      const src = typeof b === 'string' ? b : (b.src||'');
-      const href = typeof b === 'object' && b.href ? b.href : null;
-      const img = `<img src="${src}" loading="lazy" alt="banner">`;
-      return `<div class="banner">${href ? `<a href="${href}">${img}</a>` : img}</div>`;
+    const items = Array.isArray(data) ? data : (data.banners || []);
+
+    const slides = (items||[]).map((b,i)=>{
+      const src  = typeof b === 'string' ? b : (b.src || b.image || b.url || '');
+      const href = typeof b === 'object' ? (b.href || b.link || null) : null;
+      const alt  = typeof b === 'object' ? (b.alt  || `banner ${i+1}`) : `banner ${i+1}`;
+      const img  = `<img src="${src}" loading="lazy" alt="${alt}" onerror="this.style.display='none'">`;
+      return `<div class="carousel-slide">${href ? `<a href="${href}">${img}</a>` : img}</div>`;
     }).join('');
+
+    const html = `
+      <div class="carousel" id="hero-carousel" aria-roledescription="carousel">
+        <div class="carousel-track">${slides}</div>
+        <div class="carousel-nav">
+          <button class="carousel-btn prev" aria-label="Anterior">‹</button>
+          <button class="carousel-btn next" aria-label="Próximo">›</button>
+        </div>
+        <div class="carousel-dots" aria-label="Slides"></div>
+      </div>`;
     $('#banners').innerHTML = html;
-  }catch{}
+
+    initCarousel($('#hero-carousel'), { autoplay: 4500, pauseOnHover: true });
+  }catch{
+    // se falhar, deixa vazio silenciosamente
+  }
 }
 
 // Data
