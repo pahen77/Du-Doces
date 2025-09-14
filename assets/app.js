@@ -366,30 +366,43 @@ function initCarousel(root, { autoplay = 5000, pauseOnHover = true } = {}) {
   start();
 }
 
-// Banners: local -> GitHub raw -> default
+// Banners: embutido -> /assets/banners.json -> GitHub raw -> fallback
 async function loadBanners(){
   const ts = Date.now();
-  async function fetchJson(url){
-    const r = await fetch(url, { cache:'no-store' });
-    if(!r.ok) throw new Error(`HTTP ${r.status}`);
-    return r.json();
-  }
-  try{
-    let items;
-    try {
-      items = await fetchJson(`/assets/banners.json?ts=${ts}`);
-    } catch (e1) {
-      try {
-        items = await fetchJson(`https://raw.githubusercontent.com/pahen77/Du-Doces/main/assets/banners.json?ts=${ts}`);
-      } catch (e2) {
-        items = [
-          { src: "https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?q=80&w=1600&auto=format&fit=crop" },
-          { src: "https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=1600&auto=format&fit=crop" },
-          { src: "https://images.unsplash.com/photo-1452251889946-8ff5ea7b27ab?q=80&w=1600&auto=format&fit=crop" }
-        ];
-      }
-    }
 
+  // 1) embutido no HTML
+  try {
+    const el = document.getElementById('banners-data');
+    if (el && el.textContent?.trim()) {
+      const items = JSON.parse(el.textContent);
+      return mountCarousel(items);
+    }
+  } catch (e) { console.warn('Banners embutidos inválidos:', e); }
+
+  // 2) arquivo local
+  try{
+    const r = await fetch(`/assets/banners.json?ts=${ts}`, { cache:'no-store' });
+    if (!r.ok) throw new Error(r.status);
+    const items = await r.json();
+    return mountCarousel(items);
+  }catch{}
+
+  // 3) GitHub raw
+  try{
+    const r = await fetch(`https://raw.githubusercontent.com/pahen77/Du-Doces/main/assets/banners.json?ts=${ts}`, { cache:'no-store' });
+    if (!r.ok) throw new Error(r.status);
+    const items = await r.json();
+    return mountCarousel(items);
+  }catch{}
+
+  // 4) fallback
+  return mountCarousel([
+    { src: "https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?q=80&w=1600&auto=format&fit=crop" },
+    { src: "https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=1600&auto=format&fit=crop" },
+    { src: "https://images.unsplash.com/photo-1452251889946-8ff5ea7b27ab?q=80&w=1600&auto=format&fit=crop" }
+  ]);
+
+  function mountCarousel(items){
     const slides = (items||[]).map((b,i)=>{
       const src  = typeof b === 'string' ? b : (b.src || b.image || b.url || '');
       const href = typeof b === 'object' ? (b.href || b.link || null) : null;
@@ -408,15 +421,13 @@ async function loadBanners(){
         <div class="carousel-dots" aria-label="Slides"></div>
       </div>`;
     initCarousel($('#hero-carousel'), { autoplay: 4500, pauseOnHover: true });
-  }catch(e){
-    console.error('Erro ao montar banners:', e);
   }
 }
 
-// Data (usa /products do backend; fallback para JSON local)
+// Data (usa /products; fallback para JSON local)
 async function loadData(){
   try{
-    const res = await fetch(`${API_BASE}/products`);
+    const res = await fetch(`${API_BASE}/products`, { cache:'no-store' });
     if(!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     const items = Array.isArray(data) ? data : (data.items ?? data.data ?? []);

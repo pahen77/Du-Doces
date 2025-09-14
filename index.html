@@ -5,11 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>DU DOCES — Distribuidora</title>
 
+  <!-- SEO -->
   <link rel="canonical" href="https://du-doces.vercel.app/">
   <meta name="description" content="Du Doces Distribuidora — bebidas, chocolates, salgadinhos e mais com entrega rápida." />
   <meta name="robots" content="index,follow" />
   <meta name="theme-color" content="#C62828" />
 
+  <!-- OG -->
   <meta property="og:site_name" content="DU DOCES" />
   <meta property="og:title" content="DU DOCES — Distribuidora" />
   <meta property="og:description" content="As melhores marcas com logística ágil." />
@@ -20,11 +22,13 @@
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
 
+  <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="DU DOCES — Distribuidora" />
   <meta name="twitter:description" content="As melhores marcas com logística ágil." />
   <meta name="twitter:image" content="https://du-doces.vercel.app/assets/og.jpg" />
 
+  <!-- JSON-LD -->
   <script type="application/ld+json">
   {
     "@context":"https://schema.org",
@@ -36,9 +40,10 @@
   </script>
 
   <link rel="icon" href="/assets/favicon.ico" />
-  <link rel="stylesheet" href="./assets/style.css?v=10" />
+  <link rel="stylesheet" href="./assets/style.css?v=12" />
 </head>
 <body>
+  <!-- Header -->
   <header class="topbar">
     <div class="topbar-left">
       <button class="icon-btn" id="btn-menu" aria-label="Abrir menu">
@@ -61,12 +66,13 @@
     </div>
   </header>
 
+  <!-- Banners (o carrossel é montado via JS) -->
   <section class="banners" id="banners"></section>
 
+  <!-- Barras fixas -->
   <nav class="sticky-bar" id="navCats">
     <div class="bar-scroll" id="catsBar"></div>
   </nav>
-
   <nav class="sticky-bar" id="navBrands">
     <div class="bar-scroll" id="brandsBar"></div>
   </nav>
@@ -101,8 +107,10 @@
     <section class="products" id="productsGrid"></section>
   </main>
 
+  <!-- IA -->
   <button class="fab-ia" id="btn-ia" title="IA">IA</button>
 
+  <!-- Rodapé -->
   <footer class="footer">
     <div class="footer-inner">
       <p>Du Doces Distribuidora LTDA — todos os direitos reservados</p>
@@ -110,6 +118,7 @@
     <div class="footer-accent"></div>
   </footer>
 
+  <!-- Drawer menu -->
   <aside class="drawer" id="drawer" aria-hidden="true">
     <div class="drawer-panel">
       <button class="icon-btn close" id="close-drawer" aria-label="Fechar">✕</button>
@@ -122,6 +131,7 @@
     </div>
   </aside>
 
+  <!-- Drawer carrinho -->
   <aside class="drawer" id="cartDrawer" aria-hidden="true">
     <div class="drawer-panel">
       <button class="icon-btn close" id="cart-close" aria-label="Fechar">✕</button>
@@ -139,6 +149,16 @@
     </div>
   </aside>
 
-  <script src="./assets/app.js?v=10"></script>
+  <!-- Banners embutidos (não depende de arquivo externo) -->
+  <script id="banners-data" type="application/json">
+  [
+    { "src": "https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?q=80&w=1600&auto=format&fit=crop", "href": "#" },
+    { "src": "https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=1600&auto=format&fit=crop" },
+    { "src": "https://images.unsplash.com/photo-1452251889946-8ff5ea7b27ab?q=80&w=1600&auto=format&fit=crop" }
+  ]
+  </script>
+
+  <!-- JS (cache-busting no ?v=) -->
+  <script src="./assets/app.js?v=12"></script>
 </body>
 </html>
