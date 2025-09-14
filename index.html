@@ -40,7 +40,7 @@
   </script>
 
   <link rel="icon" href="/assets/favicon.ico" />
-  <link rel="stylesheet" href="./assets/style.css?v=13" />
+  <link rel="stylesheet" href="./assets/style.css?v=14" />
 </head>
 <body>
   <!-- Header -->
@@ -238,8 +238,10 @@
     { key:'salgadinho', label:'Salgadinho' },
     { key:'chocolate',  label:'Chocolate' },
     { key:'utilidades', label:'Utilidades' },
+    { key:'pipoca',     label:'Pipoca' },
+    { key:'pacoca',     label:'Paçoca' }
   ];
-  const MAIN_BRANDS = ['Coca-Cola','Fanta','Nestle','Arcor','OZ','LA','BALY'];
+  const MAIN_BRANDS = ['Coca-Cola','Fanta','Nestle','Arcor','OZ','Lacta','Baly','Santa Helena','Tang'];
 
   function mountBars(){
     $('#catsBar').innerHTML = CATS.map((c,i)=>`
@@ -267,6 +269,8 @@
     const catName   = p?.category?.name ?? p?.category ?? p?.categoria ?? p?.cat ?? "";
     const priceVal  = (p?.precoCentavos != null) ? (p.precoCentavos/100) : (p?.price ?? p?.preco ?? p?.valor ?? 0);
     const rawImg    = p?.imageUrl ?? p?.image ?? p?.img ?? '';
+    const packType  = p?.pack_type ?? p?.packType ?? p?.unidade ?? p?.embalagem ?? '';
+    const packSize  = p?.pack_size ?? p?.packSize ?? p?.qtd_por_fardo ?? p?.qtd ?? null;
     return {
       id:    p?.id ?? p?.codigo ?? crypto.randomUUID(),
       name:  p?.name ?? p?.nome ?? p?.titulo ?? 'Produto',
@@ -276,6 +280,8 @@
       price: Number(priceVal),
       promo: Boolean(p?.promo ?? p?.promocao ?? p?.em_promocao ?? false),
       img:   safeImg(rawImg),
+      packType: packType,
+      packSize: packSize
     };
   }
 
@@ -294,6 +300,7 @@
             <strong>${BRL(p.price)}</strong>
             <button class="btn btn-outline" data-add="${p.id}">Adicionar</button>
           </div>
+          ${p.packType ? `<div class="meta">Emb.: ${p.packType}${p.packSize?` — ${p.packSize} un`:''}</div>`:''}
         </div>
       </article>
     `).join('');
@@ -467,9 +474,6 @@
   document.querySelectorAll('[data-close]').forEach(btn=>{ on(btn,'click', ()=>btn.closest('.modal').classList.remove('open')); });
   document.querySelectorAll('.modal').forEach(m=>{ on(m,'click', (e)=>{ if(e.target.classList.contains('modal')) m.classList.remove('open'); }); });
 
-  // IA
-  on($('#btn-ia'),'click', ()=>alert('IA: conectar ChatVolt aqui. 😉'));
-
   /* ===== CARROSSEL ===== */
   function initCarousel(root, { autoplay = 5000, pauseOnHover = true } = {}) {
     const track = root.querySelector('.carousel-track');
@@ -599,6 +603,22 @@
     applyFilters();
   }
 
+  // ===== ChatVolt embed (bubble) =====
+  (async () => {
+    try {
+      const mod = await import('https://cdn.jsdelivr.net/npm/@chatvolt/embeds@latest/dist/chatbox/index.js');
+      // Agent ID real do seu projeto ChatVolt
+      mod.default.initBubble({ agentId: 'cmfk2a6ko0w5htglbf0n10833' });
+      // Botão IA abre o bubble
+      on($('#btn-ia'), 'click', () => {
+        document.querySelector('chatbox-bubble')?.click();
+      });
+    } catch (e) {
+      console.warn('Falha ao carregar ChatVolt:', e);
+      on($('#btn-ia'),'click', ()=>alert('IA indisponível no momento.'));
+    }
+  })();
+
   // boot
   document.addEventListener('DOMContentLoaded', ()=>{
     mountBars();
@@ -616,5 +636,15 @@
   <!-- ===== /JS EMBUTIDO ===== -->
 
   <noscript>Ative o JavaScript para ver os produtos e o carrossel.</noscript>
+
+  <!-- Alternativa A (se preferir o snippet type=module, comente o bloco acima e descomente abaixo)
+  <script type="module">
+    import Chatbox from 'https://cdn.jsdelivr.net/npm/@chatvolt/embeds@latest/dist/chatbox/index.js';
+    const widget = await Chatbox.initBubble({ agentId: 'cmfk2a6ko0w5htglbf0n10833' });
+    document.getElementById('btn-ia')?.addEventListener('click', () => {
+      document.querySelector('chatbox-bubble')?.click();
+    });
+  </script>
+  -->
 </body>
 </html>
