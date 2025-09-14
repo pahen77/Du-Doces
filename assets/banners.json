@@ -1,5 +1,5 @@
 [
-  { "image": "https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?q=80&w=1600&auto=format&fit=crop", "href": "#" },
-  { "image": "https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=1600&auto=format&fit=crop" },
-  { "image": "https://images.unsplash.com/photo-1452251889946-8ff5ea7b27ab?q=80&w=1600&auto=format&fit=crop" }
+  { "src": "https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?q=80&w=1600&auto=format&fit=crop", "href": "#" },
+  { "src": "https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=1600&auto=format&fit=crop" },
+  { "src": "https://images.unsplash.com/photo-1452251889946-8ff5ea7b27ab?q=80&w=1600&auto=format&fit=crop" }
 ]
