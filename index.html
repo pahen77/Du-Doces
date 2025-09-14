@@ -1,20 +1,20 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-br">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>DU DOCES — Distribuidora</title>
+  <title>DU DOCES â€” Distribuidora</title>
 
   <!-- SEO -->
   <link rel="canonical" href="https://du-doces.vercel.app/">
-  <meta name="description" content="Du Doces Distribuidora — bebidas, chocolates, salgadinhos e mais com entrega rápida." />
+  <meta name="description" content="Du Doces Distribuidora â€” bebidas, chocolates, salgadinhos e mais com entrega rÃ¡pida." />
   <meta name="robots" content="index,follow" />
   <meta name="theme-color" content="#C62828" />
 
   <!-- OG -->
   <meta property="og:site_name" content="DU DOCES" />
-  <meta property="og:title" content="DU DOCES — Distribuidora" />
-  <meta property="og:description" content="As melhores marcas com logística ágil." />
+  <meta property="og:title" content="DU DOCES â€” Distribuidora" />
+  <meta property="og:description" content="As melhores marcas com logÃ­stica Ã¡gil." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://du-doces.vercel.app/" />
   <meta property="og:locale" content="pt_BR" />
@@ -24,8 +24,8 @@
 
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="DU DOCES — Distribuidora" />
-  <meta name="twitter:description" content="As melhores marcas com logística ágil." />
+  <meta name="twitter:title" content="DU DOCES â€” Distribuidora" />
+  <meta name="twitter:description" content="As melhores marcas com logÃ­stica Ã¡gil." />
   <meta name="twitter:image" content="https://du-doces.vercel.app/assets/og.jpg" />
 
   <!-- JSON-LD -->
@@ -88,16 +88,16 @@
         <label>
           <span class="lbl">Ordenar</span>
           <select id="sort" class="select">
-            <option value="relevance">Relevância</option>
-            <option value="price-asc">Preço: menor → maior</option>
-            <option value="price-desc">Preço: maior → menor</option>
-            <option value="name-asc">Nome: A → Z</option>
+            <option value="relevance">RelevÃ¢ncia</option>
+            <option value="price-asc">PreÃ§o: menor â†’ maior</option>
+            <option value="price-desc">PreÃ§o: maior â†’ menor</option>
+            <option value="name-asc">Nome: A â†’ Z</option>
           </select>
         </label>
 
         <label class="chk">
           <input type="checkbox" id="promoOnly" />
-          <span>Somente promoções</span>
+          <span>Somente promoÃ§Ãµes</span>
         </label>
 
         <button class="btn btn-outline" id="btn-clear">Limpar</button>
@@ -110,10 +110,10 @@
   <!-- IA -->
   <button class="fab-ia" id="btn-ia" title="IA">IA</button>
 
-  <!-- Rodapé -->
+  <!-- RodapÃ© -->
   <footer class="footer">
     <div class="footer-inner">
-      <p>Du Doces Distribuidora LTDA — todos os direitos reservados</p>
+      <p>Du Doces Distribuidora LTDA â€” todos os direitos reservados</p>
     </div>
     <div class="footer-accent"></div>
   </footer>
@@ -121,11 +121,11 @@
   <!-- Drawer menu -->
   <aside class="drawer" id="drawer" aria-hidden="true">
     <div class="drawer-panel">
-      <button class="icon-btn close" id="close-drawer" aria-label="Fechar">✕</button>
+      <button class="icon-btn close" id="close-drawer" aria-label="Fechar">âœ•</button>
       <div class="drawer-header"><strong>Menu</strong></div>
       <nav class="drawer-nav">
-        <button class="link-like" id="toggle-dark">🌙 Modo escuro</button>
-        <button class="link-like" data-open="about">Sobre nós</button>
+        <button class="link-like" id="toggle-dark">ðŸŒ™ Modo escuro</button>
+        <button class="link-like" data-open="about">Sobre nÃ³s</button>
         <button class="link-like" data-open="contact">Contatos</button>
       </nav>
     </div>
@@ -134,7 +134,7 @@
   <!-- Drawer carrinho -->
   <aside class="drawer" id="cartDrawer" aria-hidden="true">
     <div class="drawer-panel">
-      <button class="icon-btn close" id="cart-close" aria-label="Fechar">✕</button>
+      <button class="icon-btn close" id="cart-close" aria-label="Fechar">âœ•</button>
       <div class="drawer-header"><strong>Carrinho</strong></div>
       <div class="drawer-body">
         <div id="cart-items" class="cart-list"></div>
@@ -246,7 +246,7 @@
     }
     grid.innerHTML = list.map(p=>`
       <article class="card">
-        <img src="${p.img}" alt="${p.name}" onerror="this.src='https://via.placeholder.com/300x300?text=Produto'">
+        <img src="${p.img}" alt="${p.name}" onerror="this.src='https://placehold.co/300x300?text=Produto'">
         <div class="p16">
           <div class="title">${p.name}</div>
           <div class="brand">${p.brand}</div>
@@ -335,15 +335,15 @@
     $('#cart-total').textContent = BRL(Cart.total());
     const wrap = $('#cart-items');
     if (!wrap) return;
-    if (!items.length) { wrap.innerHTML = `<p style="opacity:.7">Seu carrinho está vazio.</p>`; return; }
+    if (!items.length) { wrap.innerHTML = `<p style="opacity:.7">Seu carrinho estÃ¡ vazio.</p>`; return; }
     wrap.innerHTML = items.map(i => `
       <div class="cart-row">
         <img class="cart-thumb" src="${i.image}" alt="${i.name}" />
         <div class="cart-info">
           <div class="name">${i.name}</div>
-          <div class="price">${BRL(i.price)} <small>× ${i.qty} = ${BRL(i.price*i.qty)}</small></div>
+          <div class="price">${BRL(i.price)} <small>Ã— ${i.qty} = ${BRL(i.price*i.qty)}</small></div>
           <div class="qty">
-            <button class="btn-ico dec" data-id="${i.id}">−</button>
+            <button class="btn-ico dec" data-id="${i.id}">âˆ’</button>
             <input class="q" data-id="${i.id}" type="number" min="1" value="${i.qty}" />
             <button class="btn-ico inc" data-id="${i.id}">+</button>
           </div>
@@ -436,7 +436,7 @@
   document.querySelectorAll('.modal').forEach(m=>{ on(m,'click', (e)=>{ if(e.target.classList.contains('modal')) m.classList.remove('open'); }); });
 
   // IA
-  on($('#btn-ia'),'click', ()=>alert('IA: conectar ChatVolt aqui. 😉'));
+  on($('#btn-ia'),'click', ()=>alert('IA: conectar ChatVolt aqui. ðŸ˜‰'));
 
   // dark mode
   function setTheme(mode){
@@ -498,7 +498,7 @@
         const items = JSON.parse(el.textContent);
         return mountCarousel(items);
       }
-    } catch (e) { console.warn('Banners embutidos inválidos:', e); }
+    } catch (e) { console.warn('Banners embutidos invÃ¡lidos:', e); }
 
     try{
       const r = await fetch(`/assets/banners.json?ts=${ts}`, { cache:'no-store' });
@@ -532,8 +532,8 @@
         <div class="carousel" id="hero-carousel" aria-roledescription="carousel">
           <div class="carousel-track">${slides}</div>
           <div class="carousel-nav">
-            <button class="carousel-btn prev" aria-label="Anterior">‹</button>
-            <button class="carousel-btn next" aria-label="Próximo">›</button>
+            <button class="carousel-btn prev" aria-label="Anterior">â€¹</button>
+            <button class="carousel-btn next" aria-label="PrÃ³ximo">â€º</button>
           </div>
           <div class="carousel-dots" aria-label="Slides"></div>
         </div>`;
@@ -565,7 +565,7 @@
         mountOtherBrands(brands);
       }catch{
         PRODUCTS = [
-          { id:1, name:"Bala Hortelã", brand:"Arcor", cat:"bala", price:2.99, promo:true,  img:"https://picsum.photos/seed/bala/600/400" },
+          { id:1, name:"Bala HortelÃ£", brand:"Arcor", cat:"bala", price:2.99, promo:true,  img:"https://picsum.photos/seed/bala/600/400" },
           { id:2, name:"Chocolate Ao Leite 90g", brand:"Nestle", cat:"chocolate", price:7.49, promo:false, img:"https://picsum.photos/seed/choc/600/400" },
           { id:3, name:"Refrigerante Lata 350ml", brand:"Coca-Cola", cat:"salgadinho", price:4.99, promo:true,  img:"https://picsum.photos/seed/coke/600/400" }
         ].map(normalizeProduct);
@@ -586,7 +586,7 @@
   // carrinho actions
   on($('#cart-clear'), 'click', ()=> Cart.clear());
   on($('#cart-checkout'), 'click', ()=>{
-    alert('Checkout básico entra na Semana 3 😉\nResumo: ' + Cart.count() + ' item(ns) — ' + $('#cart-total').textContent);
+    alert('Checkout bÃ¡sico entra na Semana 3 ðŸ˜‰\nResumo: ' + Cart.count() + ' item(ns) â€” ' + $('#cart-total').textContent);
   });
   </script>
   <!-- ===== /JS EMBUTIDO ===== -->

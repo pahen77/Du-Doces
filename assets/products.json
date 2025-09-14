@@ -1,12 +1,12 @@
-[
+﻿[
   { "id": 101, "name": "Bala Pipper Dura",              "brand": "santafe",  "category": "balas",       "price": 6.95,  "unit": "pacote",  "best": 30, "stock": 50 },
-  { "id": 102, "name": "Bala Pipper Mastigável",         "brand": "santafe",  "category": "balas",       "price": 5.95,  "unit": "pacote",  "best": 28, "stock": 60, "promo": true, "oldPrice": 6.50 },
+  { "id": 102, "name": "Bala Pipper MastigÃ¡vel",         "brand": "santafe",  "category": "balas",       "price": 5.95,  "unit": "pacote",  "best": 28, "stock": 60, "promo": true, "oldPrice": 6.50 },
   { "id": 103, "name": "Bala de Mel",                    "brand": "dori",     "category": "balas",       "price": 8.99,  "unit": "pacote",  "best": 18, "stock": 40 },
   { "id": 104, "name": "Bala Gengibre e Mel",            "brand": "soberana", "category": "balas",       "price": 7.95,  "unit": "pacote",  "best": 14, "stock": 35 },
   { "id": 105, "name": "Bala de Mel",                    "brand": "arcor",    "category": "balas",       "price": 15.50, "unit": "pacote",  "best": 12, "stock": 25 },
   { "id": 106, "name": "Bala de Banana",                 "brand": "primor",   "category": "balas",       "price": 15.75, "unit": "pacote",  "best": 10, "stock": 20 },
   { "id": 107, "name": "Bala Chita Sortida",             "brand": "chita",    "category": "balas",       "price": 7.60,  "unit": "pacote",  "best": 16, "stock": 30 },
-  { "id": 108, "name": "Lâmpada 9W",                     "brand": "ourolux",  "category": "outros",      "price": 2.99,  "unit": "unidade", "best": 6,  "stock": 100 },
+  { "id": 108, "name": "LÃ¢mpada 9W",                     "brand": "ourolux",  "category": "outros",      "price": 2.99,  "unit": "unidade", "best": 6,  "stock": 100 },
 
   { "id": 109, "name": "Suflair unidade",                "brand": "nestle",   "category": "chocolates",  "price": 4.99,  "unit": "unidade", "best": 40, "stock": 80 },
   { "id": 110, "name": "Suflair caixa",                  "brand": "nestle",   "category": "chocolates",  "price": 99.50, "unit": "caixa",   "best": 15, "stock": 15 },
@@ -25,7 +25,7 @@
   { "id": 122, "name": "Baralho Copag caixa",            "brand": "copag",    "category": "outros",      "price": 138.00,"unit": "caixa",   "best": 5,  "stock": 8 },
 
   { "id": 123, "name": "Trident caixa Menta",            "brand": "trident",  "category": "chicletes",   "price": 35.70, "unit": "caixa",   "best": 38, "stock": 30 },
-  { "id": 124, "name": "Trident caixa Hortelã",          "brand": "trident",  "category": "chicletes",   "price": 35.70, "unit": "caixa",   "best": 34, "stock": 28 },
+  { "id": 124, "name": "Trident caixa HortelÃ£",          "brand": "trident",  "category": "chicletes",   "price": 35.70, "unit": "caixa",   "best": 34, "stock": 28 },
   { "id": 125, "name": "Trident caixa Tutti Frutti",     "brand": "trident",  "category": "chicletes",   "price": 35.70, "unit": "caixa",   "best": 33, "stock": 26 },
   { "id": 126, "name": "Trident caixa Blueberry",        "brand": "trident",  "category": "chicletes",   "price": 35.70, "unit": "caixa",   "best": 31, "stock": 24 },
   { "id": 127, "name": "Trident caixa Intense",          "brand": "trident",  "category": "chicletes",   "price": 35.70, "unit": "caixa",   "best": 30, "stock": 22 },
