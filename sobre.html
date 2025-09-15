@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sobre nós — Du Doces</title>
+  <style>
+    :root{
+      --brand:#C62828;
+      --brand-600:#b02121;
+      --bg:#ffffff;
+      --fg:#1f1f1f;
+      --border:#e9e9e9;
+    }
+    *{ box-sizing:border-box; }
+    html,body{ margin:0; padding:0; background:var(--bg); color:var(--fg); font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial,"Noto Sans"; }
+    header{ position:sticky; top:0; z-index:10; background:var(--brand); color:#fff; }
+    .topbar{ max-width:600px; margin:0 auto; padding:12px 16px; display:flex; justify-content:space-between; align-items:center; }
+    .logo{ font-weight:900; font-size:24px; letter-spacing:1px; }
+    .logo span{ color:#fff; font-weight:800; }
+    .backlink{ color:#fff; text-decoration:none; font-weight:600; }
+    main{ max-width:700px; margin:40px auto; padding:0 16px 40px; }
+    h1{ margin-top:0; font-size:32px; font-weight:900; color:var(--brand); }
+    p{ font-size:16px; line-height:1.6; margin:12px 0; }
+    .addresses{ margin-top:20px; background:#f8f8f8; border:1px solid var(--border); border-radius:12px; padding:16px; }
+    .address{ margin-bottom:12px; }
+    .footer{ margin-top:40px; text-align:center; font-size:14px; color:#666; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="topbar">
+      <a href="index.html" class="backlink">← Voltar</a>
+      <div class="logo" aria-label="DU DOCES">
+        DU <span>DOCES</span>
+      </div>
+      <span></span>
+    </div>
+  </header>
+  <main>
+    <h1>Sobre nós</h1>
+    <p>
+      A Du&nbsp;Doces é uma distribuidora especializada em bebidas, chocolates, salgadinhos e diversos doces
+      para suas festas, empresas e dia a dia. Atendemos tanto no varejo quanto no atacado, sempre com produtos
+      das melhores marcas e preços competitivos.
+    </p>
+    <p>
+      Nossa missão é oferecer variedade e conveniência, com atendimento de qualidade e entrega rápida em Campinas
+      e região. Seja para abastecer seu comércio ou matar aquela vontade de doce, conte com a Du&nbsp;Doces!
+    </p>
+    <div class="addresses">
+      <h2 style="margin-top:0;font-size:20px;color:var(--brand);">Lojas físicas</h2>
+      <div class="address">
+        <strong>Loja 1:</strong> Av. Das Amoreiras, 1810 – São&nbsp;Bernardo, Campinas/SP
+      </div>
+      <div class="address">
+        <strong>Loja 2:</strong> Rua Regente Feijó, 780 – Centro, Campinas/SP
+      </div>
+      <p style="margin:8px 0 0;font-size:14px;color:#555;">Entre em contato pelo telefone (19) 3272‑8460 ou via WhatsApp (19) 99588‑3674.</p>
+    </div>
+  </main>
+  <div class="footer">
+    © <span id="year"></span> Du&nbsp;Doces&nbsp;LTDA – Todos os direitos reservados
+  </div>
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

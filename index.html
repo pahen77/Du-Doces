@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-br">
 <head>
   <meta charset="utf-8" />
@@ -42,6 +42,19 @@
     *{box-sizing:border-box}
     html,body{margin:0;padding:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial,"Noto Sans","Apple Color Emoji","Segoe UI Emoji";}
 
+    /* gradient overlay at bottom of page */
+    body::after{
+      content:'';
+      position:fixed;
+      left:0;
+      right:0;
+      bottom:0;
+      height:120px;
+      background:linear-gradient(to bottom, rgba(255,255,255,0) 0%, var(--brand) 100%);
+      pointer-events:none;
+      z-index:-1;
+    }
+
     /* Header */
     header{
       position:sticky; top:0; z-index:50;
@@ -49,8 +62,14 @@
       backdrop-filter:saturate(150%) blur(6px);
     }
     .topbar{
-      max-width:1100px; margin:0 auto; padding:10px 16px;
-      display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:12px;
+      /* widen the layout to use more horizontal space */
+      max-width:1300px;
+      margin:0 auto;
+      padding:10px 16px;
+      display:grid;
+      grid-template-columns:1fr auto 1fr;
+      align-items:center;
+      gap:12px;
     }
     .logo{
       text-align:center; font-weight:900; letter-spacing:1px; user-select:none;
@@ -79,7 +98,13 @@
       background:var(--bg); border-bottom:1px solid var(--border);
     }
     .categories{
-      max-width:1100px; margin:0 auto; padding:8px 16px; display:flex; gap:8px; overflow:auto;
+      /* allow categories bar to stretch wider */
+      max-width:1300px;
+      margin:0 auto;
+      padding:8px 16px;
+      display:flex;
+      gap:8px;
+      overflow:auto;
       scrollbar-width:thin;
     }
     .chip{
@@ -89,10 +114,22 @@
     }
     .chip.active, .chip:hover{ background:var(--brand); border-color:var(--brand); color:#fff}
 
-    main{max-width:1100px;margin:18px auto;padding:0 16px;display:flex;flex-direction:column;gap:28px}
+    main{
+      /* widen main content area */
+      max-width:1300px;
+      margin:18px auto;
+      padding:0 16px;
+      display:flex;
+      flex-direction:column;
+      gap:28px;
+    }
 
     /* Marcas principais */
-    .brands{ display:grid;grid-template-columns:repeat(6,1fr); gap:12px; }
+    .brands{
+      display:grid;
+      grid-template-columns:repeat(6,1fr);
+      gap:12px;
+    }
     @media (max-width:900px){ .brands{grid-template-columns:repeat(3,1fr)} }
     @media (max-width:520px){ .brands{grid-template-columns:repeat(2,1fr)} }
     .brand-card{
@@ -112,8 +149,12 @@
 
     /* Produtos */
     .section h2{margin:0 0 6px 0; font-size:22px}
-    .grid{ display:grid; grid-template-columns:repeat(5,1fr); gap:14px; }
-    @media (max-width:1100px){ .grid{grid-template-columns:repeat(4,1fr)} }
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(5,1fr);
+      gap:14px;
+    }
+    @media (max-width:1300px){ .grid{grid-template-columns:repeat(4,1fr);} }
     @media (max-width:900px){ .grid{grid-template-columns:repeat(3,1fr)} }
     @media (max-width:600px){ .grid{grid-template-columns:repeat(2,1fr)} }
 
@@ -150,7 +191,17 @@
     .subtotal{ font-size:18px; font-weight:900 }
 
     /* Footer */
-    footer{ margin-top:40px; border-top:1px solid var(--border); padding:20px; text-align:center; color:var(--muted)}
+    footer{
+      margin-top:40px;
+      border-top:1px solid var(--border);
+      padding:20px;
+      text-align:center;
+      /* gradient background matching our brand */
+      background: linear-gradient(90deg, var(--brand), var(--brand-600));
+      color:#fff;
+      font-weight:600;
+      font-size:14px;
+    }
     a{color:inherit}
   </style>
 </head>
@@ -169,6 +220,12 @@
       </div>
 
       <div class="right-actions">
+        <!-- login icon linking to login page -->
+        <a href="login.html" id="loginIcon" class="iconbtn" title="Login">
+          <span class="icon" aria-hidden="true">👤</span>
+          <span>Login</span>
+        </a>
+        <!-- CEP input moved next to cart for better alignment -->
         <input id="cep" type="text" placeholder="CEP" inputmode="numeric" maxlength="9" class="btn" style="width:120px" />
         <button id="btn-cart" class="iconbtn" title="Carrinho">
           <span class="icon">🛒</span><span>Carrinho</span>
@@ -192,6 +249,18 @@
 
   <main>
     <!-- Marcas principais (SEPARADAS das categorias) -->
+    <!-- Banner Section -->
+    <section class="banner-section" style="width:100%;">
+      <!-- Decorative hero banner illustrating candies and our brand colors -->
+      <div style="position:relative;border-radius:16px;overflow:hidden;">
+        <img src="813c2c10-4590-4178-8712-d0cc18fdec8b.png" alt="Banner Du Doces" style="width:100%;height:280px;object-fit:cover;">
+        <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.35);"></div>
+        <div style="position:absolute;left:20px;bottom:20px;color:#fff;">
+          <h2 style="margin:0;font-size:32px;font-weight:900;">Bem-vindo à Du Doces!</h2>
+          <p style="margin:4px 0 0;font-size:16px;max-width:500px;">As melhores marcas de bebidas, chocolates, salgadinhos e muito mais com entrega rápida em Campinas.</p>
+        </div>
+      </div>
+    </section>
     <section class="section" id="marcas">
       <h2>Marcas Principais</h2>
       <div class="brands" id="brands">
@@ -233,7 +302,7 @@
   </main>
 
   <footer>
-    © <span id="year"></span> DU DOCES — Distribuidora • Feito com ❤️
+    © <span id="year"></span> Du&nbsp;Doces&nbsp;LTDA – Todos os direitos reservados
   </footer>
 
   <!-- Drawer Menu (3 barras) -->
@@ -245,8 +314,8 @@
         <button class="btn" data-close>Fechar</button>
       </div>
       <div class="list">
-        <a href="#" id="sobre">Sobre nós</a>
-        <a href="#" id="contato">Contato</a>
+        <a href="sobre.html" id="sobre">Sobre nós</a>
+        <a href="tel:+551932728460" id="contato">Contato</a>
         <a href="#" id="toggle-dark">Modo escuro</a>
         <a href="#" id="abrir-chat">Atendimento por IA</a>
       </div>
@@ -337,6 +406,16 @@
     });
 
     // ================== DADOS REAIS – DU DOCES ==================
+    // Mapeamento de ícones para as categorias (para usar em cards e carrinho)
+    const ICON_BY_CAT = {
+      bebidas: '🥤',
+      chiclete: '🍬',
+      bala: '🍭',
+      chocolate: '🍫',
+      bolacha: '🍪',
+      salgadinho: '🍿',
+      utilidades: '🧰'
+    };
     const PRODUCTS = [
       // Águas (Bebidas)
       {id:101, name:'Água LA 510ml', brand:'LA', price:0.75, cat:'bebidas', size:'510ml', unitType:'unidade'},
@@ -411,8 +490,6 @@
     const grid = document.getElementById('grid');
     const titleCat = document.getElementById('titulo-categoria');
     const result = document.getElementById('result');
-    const brandsEl = document.getElementById('brands');
-    const clearBrandLink = document.getElementById('clearBrand');
     const cartCount = document.getElementById('cartCount');
     const cartListEl = document.getElementById('cartList');
     const subtotalEl = document.getElementById('subtotal');
@@ -438,10 +515,21 @@
     function cardHTML(p){
       const isFardo = p.unitType === 'fardo';
       const meta = [p.brand||'', p.size||'', p.flavor||''].filter(Boolean).join(' • ');
+      // emoji icons for each category to replace placeholder image
+      const iconByCat = {
+        bebidas: '🥤',
+        chiclete: '🍬',
+        bala: '🍭',
+        chocolate: '🍫',
+        bolacha: '🍪',
+        salgadinho: '🍿',
+        utilidades: '🧰'
+      };
+      const emoji = iconByCat[p.cat] || '🛍️';
       return `
         <div class="card">
-          <div class="thumb">
-            FOTO
+          <div class="thumb" style="font-size:40px;color:var(--brand);">
+            ${emoji}
             ${isFardo ? `<span class="badge">${p.packQty ? ('FARDO c/'+p.packQty) : 'FARDO'}</span>`:''}
           </div>
           <div class="card-body">
@@ -548,7 +636,15 @@
       currentBrand = b.dataset.brand;
       brandsEl.querySelectorAll('.brand-card').forEach(x=> x.classList.toggle('active', x===b));
       updateClearBrandLink();
-      render();
+      // if current category has no products for selected brand, switch to first available category for that brand
+      const itemsForBrand = PRODUCTS.filter(p => p.brand && p.brand.toLowerCase() === currentBrand.toLowerCase());
+      const catsForBrand = [...new Set(itemsForBrand.map(p => p.cat))];
+      if (catsForBrand.length && !catsForBrand.includes(currentCat)) {
+        currentCat = catsForBrand[0];
+        // update active chip visually
+        document.querySelectorAll('.chip').forEach(c => c.classList.toggle('active', c.dataset.cat === currentCat));
+      }
+      render(currentCat);
     });
     const clearBrandLink = document.getElementById('clearBrand');
     clearBrandLink.addEventListener('click', (e)=>{
@@ -641,9 +737,13 @@
       cartListEl.innerHTML = cart.map(it=>{
         const meta = [it.brand, it.size, it.flavor].filter(Boolean).join(' • ');
         const perUnit = it.unitType==='fardo' ? `<div class="hint">≈ R$ ${formatBR(it.unitPrice)} / un</div>` : '';
+        // choose emoji according to category
+        const icon = ICON_BY_CAT[it.cat] || '🛍️';
         return `
           <div class="cart-item">
-            <div style="width:48px;height:48px;background:var(--chip);border:1px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--muted)">FOTO</div>
+            <div style="width:48px;height:48px;background:var(--chip);border:1px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:28px;color:var(--brand);">
+              ${icon}
+            </div>
             <div>
               <div class="cart-name">${it.name}</div>
               <div class="cart-meta">${meta}</div>
