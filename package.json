@@ -1,24 +1,12 @@
-﻿{
-  "name": "du-doces",
-  "version": "0.0.1",
-  "private": true,
-  "type": "module",
+{
   "scripts": {
-    "dev": "vite",
-    "build": "node node_modules/vite/bin/vite.js build",
-    "preview": "vite preview"
+    "dev": "node server.js",
+    "start": "node server.js",
+    "seed": "node prisma/seed.js",
+    "postinstall": "prisma generate",
+    "prestart": "prisma migrate deploy && prisma db seed"
   },
-  "dependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
-  },
-  "devDependencies": {
-    "@types/react": "^18.2.15",
-    "@types/react-dom": "^18.2.7",
-    "autoprefixer": "^10.4.19",
-    "postcss": "^8.4.38",
-    "tailwindcss": "^3.4.7",
-    "vite": "^5.0.0"
+  "prisma": {
+    "seed": "node prisma/seed.js"
   }
 }
-

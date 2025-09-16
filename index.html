@@ -316,6 +316,8 @@
       <div class="list">
         <a href="sobre.html" id="sobre">Sobre nós</a>
         <a href="tel:+551932728460" id="contato">Contato</a>
+        <!-- botão para abrir a lista de desejos -->
+        <a href="#" id="open-favorites">Favoritos</a>
         <a href="#" id="toggle-dark">Modo escuro</a>
         <a href="#" id="abrir-chat">Atendimento por IA</a>
       </div>
@@ -337,6 +339,19 @@
       </div>
       <button id="checkout" class="btn primary" style="width:100%;height:44px;">Finalizar pedido</button>
       <div class="hint">* Valores e disponibilidade podem variar. Frete calculado pelo CEP.</div>
+    </aside>
+  </div>
+
+  <!-- Drawer Favoritos (Lista de desejos) -->
+  <div class="drawer" id="drawerFavorites">
+    <div class="backdrop" data-close></div>
+    <aside class="panel">
+      <div class="cart-row">
+        <h3>Lista de desejos</h3>
+        <button class="btn" data-close>Fechar</button>
+      </div>
+      <div id="favoritesList"></div>
+      <div class="hint" style="margin-top:auto;">* Itens adicionados serão salvos para sua próxima visita.</div>
     </aside>
   </div>
 
@@ -390,6 +405,16 @@
     document.getElementById('btn-cart').addEventListener('click', ()=> drawerCart.classList.add('open'));
     drawerCart.querySelectorAll('[data-close]').forEach(el=> el.addEventListener('click', ()=> drawerCart.classList.remove('open')));
 
+    // ===== FAVORITOS drawer
+    const drawerFavorites = document.getElementById('drawerFavorites');
+    document.getElementById('open-favorites')?.addEventListener('click', (e)=>{
+      e.preventDefault();
+      renderFavorites();
+      drawerFavorites.classList.add('open');
+      drawerMenu.classList.remove('open');
+    });
+    drawerFavorites?.querySelectorAll('[data-close]').forEach(el => el.addEventListener('click', ()=> drawerFavorites.classList.remove('open')));
+
     // ===== Modo escuro
     const toggleDark = document.getElementById('toggle-dark');
     const applyTheme = () => {
@@ -418,67 +443,67 @@
     };
     const PRODUCTS = [
       // Águas (Bebidas)
-      {id:101, name:'Água LA 510ml', brand:'LA', price:0.75, cat:'bebidas', size:'510ml', unitType:'unidade'},
-      {id:102, name:'Água LA 510ml (Fardo c/12)', brand:'LA', price:9.00, cat:'bebidas', size:'510ml', unitType:'fardo', packQty:12},
+      {id:101, name:'Água LA 510ml', brand:'LA', price:0.75, cat:'bebidas', size:'510ml', unitType:'unidade', image:'e4800e7b-82a0-4a18-9b5c-2cf13f038d9b.png'},
+      {id:102, name:'Água LA 510ml (Fardo c/12)', brand:'LA', price:9.00, cat:'bebidas', size:'510ml', unitType:'fardo', packQty:12, image:'e4800e7b-82a0-4a18-9b5c-2cf13f038d9b.png'},
 
       // Colas (Utilidades)
-      {id:201, name:'ThreeBond Cola', brand:'ThreeBond', price:1.99, cat:'utilidades', unitType:'unidade'},
-      {id:202, name:'SuperBond Cola', brand:'SuperBond', price:4.95, cat:'utilidades', unitType:'unidade'},
+      {id:201, name:'ThreeBond Cola', brand:'ThreeBond', price:1.99, cat:'utilidades', unitType:'unidade', image:'52c1c6ac-d898-4059-86dd-bfed079f0623.png'},
+      {id:202, name:'SuperBond Cola', brand:'SuperBond', price:4.95, cat:'utilidades', unitType:'unidade', image:'52c1c6ac-d898-4059-86dd-bfed079f0623.png'},
 
       // Pipocas OZ (Salgadinhos)
-      {id:301, name:'Pipoca OZ 40g Doce', brand:'OZ', flavor:'Doce', size:'40g', price:0.70, cat:'salgadinho', unitType:'unidade'},
-      {id:302, name:'Pipoca OZ 40g Salgada', brand:'OZ', flavor:'Salgada', size:'40g', price:0.70, cat:'salgadinho', unitType:'unidade'},
-      {id:303, name:'Pipoca OZ 40g Doce (Fardo c/30)', brand:'OZ', flavor:'Doce', size:'40g', price:21.00, cat:'salgadinho', unitType:'fardo', packQty:30},
-      {id:304, name:'Pipoca OZ 40g Salgada (Fardo c/30)', brand:'OZ', flavor:'Salgada', size:'40g', price:21.00, cat:'salgadinho', unitType:'fardo', packQty:30},
-      {id:305, name:'Pipoca OZ 12g Doce (Cx c/50)', brand:'OZ', flavor:'Doce', size:'12g', price:16.50, cat:'salgadinho', unitType:'fardo', packQty:50},
+      {id:301, name:'Pipoca OZ 40g Doce', brand:'OZ', flavor:'Doce', size:'40g', price:0.70, cat:'salgadinho', unitType:'unidade', image:'1002aafb-b8bb-4d2a-9a60-a662cb4aba77.png'},
+      {id:302, name:'Pipoca OZ 40g Salgada', brand:'OZ', flavor:'Salgada', size:'40g', price:0.70, cat:'salgadinho', unitType:'unidade', image:'1002aafb-b8bb-4d2a-9a60-a662cb4aba77.png'},
+      {id:303, name:'Pipoca OZ 40g Doce (Fardo c/30)', brand:'OZ', flavor:'Doce', size:'40g', price:21.00, cat:'salgadinho', unitType:'fardo', packQty:30, image:'1002aafb-b8bb-4d2a-9a60-a662cb4aba77.png'},
+      {id:304, name:'Pipoca OZ 40g Salgada (Fardo c/30)', brand:'OZ', flavor:'Salgada', size:'40g', price:21.00, cat:'salgadinho', unitType:'fardo', packQty:30, image:'1002aafb-b8bb-4d2a-9a60-a662cb4aba77.png'},
+      {id:305, name:'Pipoca OZ 12g Doce (Cx c/50)', brand:'OZ', flavor:'Doce', size:'12g', price:16.50, cat:'salgadinho', unitType:'fardo', packQty:50, image:'1002aafb-b8bb-4d2a-9a60-a662cb4aba77.png'},
 
       // Refrigerantes Coca / Fanta (Bebidas)
-      {id:401, name:'Coca-Cola 350ml lata', brand:'Coca-Cola', size:'350ml', price:3.25, cat:'bebidas', unitType:'unidade'},
-      {id:402, name:'Coca-Cola 200ml PET', brand:'Coca-Cola', size:'200ml', price:1.65, cat:'bebidas', unitType:'unidade'},
-      {id:403, name:'Coca-Cola Zero 200ml PET', brand:'Coca-Cola', size:'200ml', flavor:'Zero', price:1.65, cat:'bebidas', unitType:'unidade'},
-      {id:404, name:'Coca-Cola 200ml PET (Fardo c/12)', brand:'Coca-Cola', size:'200ml', price:19.80, cat:'bebidas', unitType:'fardo', packQty:12},
-      {id:405, name:'Coca-Cola Zero 200ml PET (Fardo c/12)', brand:'Coca-Cola', size:'200ml', flavor:'Zero', price:19.80, cat:'bebidas', unitType:'fardo', packQty:12},
+      {id:401, name:'Coca-Cola 350ml lata', brand:'Coca-Cola', size:'350ml', price:3.25, cat:'bebidas', unitType:'unidade', image:'bf2accbf-8b57-47d5-a42d-d5784079dfe5.png'},
+      {id:402, name:'Coca-Cola 200ml PET', brand:'Coca-Cola', size:'200ml', price:1.65, cat:'bebidas', unitType:'unidade', image:'bf2accbf-8b57-47d5-a42d-d5784079dfe5.png'},
+      {id:403, name:'Coca-Cola Zero 200ml PET', brand:'Coca-Cola', size:'200ml', flavor:'Zero', price:1.65, cat:'bebidas', unitType:'unidade', image:'bf2accbf-8b57-47d5-a42d-d5784079dfe5.png'},
+      {id:404, name:'Coca-Cola 200ml PET (Fardo c/12)', brand:'Coca-Cola', size:'200ml', price:19.80, cat:'bebidas', unitType:'fardo', packQty:12, image:'bf2accbf-8b57-47d5-a42d-d5784079dfe5.png'},
+      {id:405, name:'Coca-Cola Zero 200ml PET (Fardo c/12)', brand:'Coca-Cola', size:'200ml', flavor:'Zero', price:19.80, cat:'bebidas', unitType:'fardo', packQty:12, image:'bf2accbf-8b57-47d5-a42d-d5784079dfe5.png'},
 
-      {id:406, name:'Coca-Cola 220ml lata', brand:'Coca-Cola', size:'220ml', price:2.15, cat:'bebidas', unitType:'unidade'},
-      {id:407, name:'Coca-Cola Zero 220ml lata', brand:'Coca-Cola', size:'220ml', flavor:'Zero', price:2.15, cat:'bebidas', unitType:'unidade'},
-      {id:408, name:'Coca-Cola 220ml lata (Fardo c/12)', brand:'Coca-Cola', size:'220ml', price:25.80, cat:'bebidas', unitType:'fardo', packQty:12},
-      {id:409, name:'Coca-Cola Zero 220ml lata (Fardo c/12)', brand:'Coca-Cola', size:'220ml', flavor:'Zero', price:25.80, cat:'bebidas', unitType:'fardo', packQty:12},
+      {id:406, name:'Coca-Cola 220ml lata', brand:'Coca-Cola', size:'220ml', price:2.15, cat:'bebidas', unitType:'unidade', image:'bf2accbf-8b57-47d5-a42d-d5784079dfe5.png'},
+      {id:407, name:'Coca-Cola Zero 220ml lata', brand:'Coca-Cola', size:'220ml', flavor:'Zero', price:2.15, cat:'bebidas', unitType:'unidade', image:'bf2accbf-8b57-47d5-a42d-d5784079dfe5.png'},
+      {id:408, name:'Coca-Cola 220ml lata (Fardo c/12)', brand:'Coca-Cola', size:'220ml', price:25.80, cat:'bebidas', unitType:'fardo', packQty:12, image:'bf2accbf-8b57-47d5-a42d-d5784079dfe5.png'},
+      {id:409, name:'Coca-Cola Zero 220ml lata (Fardo c/12)', brand:'Coca-Cola', size:'220ml', flavor:'Zero', price:25.80, cat:'bebidas', unitType:'fardo', packQty:12, image:'bf2accbf-8b57-47d5-a42d-d5784079dfe5.png'},
 
-      {id:410, name:'Fanta Laranja 220ml lata', brand:'Fanta', size:'220ml', flavor:'Laranja', price:1.99, cat:'bebidas', unitType:'unidade'},
-      {id:411, name:'Fanta Uva 220ml lata', brand:'Fanta', size:'220ml', flavor:'Uva', price:1.99, cat:'bebidas', unitType:'unidade'},
-      {id:412, name:'Fanta Laranja 220ml lata (Fardo c/6)', brand:'Fanta', size:'220ml', flavor:'Laranja', price:11.94, cat:'bebidas', unitType:'fardo', packQty:6},
-      {id:413, name:'Fanta Uva 220ml lata (Fardo c/6)', brand:'Fanta', size:'220ml', flavor:'Uva', price:11.94, cat:'bebidas', unitType:'fardo', packQty:6},
+      {id:410, name:'Fanta Laranja 220ml lata', brand:'Fanta', size:'220ml', flavor:'Laranja', price:1.99, cat:'bebidas', unitType:'unidade', image:'bf2accbf-8b57-47d5-a42d-d5784079dfe5.png'},
+      {id:411, name:'Fanta Uva 220ml lata', brand:'Fanta', size:'220ml', flavor:'Uva', price:1.99, cat:'bebidas', unitType:'unidade', image:'bf2accbf-8b57-47d5-a42d-d5784079dfe5.png'},
+      {id:412, name:'Fanta Laranja 220ml lata (Fardo c/6)', brand:'Fanta', size:'220ml', flavor:'Laranja', price:11.94, cat:'bebidas', unitType:'fardo', packQty:6, image:'bf2accbf-8b57-47d5-a42d-d5784079dfe5.png'},
+      {id:413, name:'Fanta Uva 220ml lata (Fardo c/6)', brand:'Fanta', size:'220ml', flavor:'Uva', price:11.94, cat:'bebidas', unitType:'fardo', packQty:6, image:'bf2accbf-8b57-47d5-a42d-d5784079dfe5.png'},
 
       // Energéticos BALY (Bebidas)
-      {id:501, name:'Energético BALY 473ml Morango', brand:'BALY', size:'473ml', flavor:'Morango', price:4.50, cat:'bebidas', unitType:'unidade'},
-      {id:502, name:'Energético BALY 473ml Coco & Açaí', brand:'BALY', size:'473ml', flavor:'Coco & Açaí', price:4.50, cat:'bebidas', unitType:'unidade'},
-      {id:503, name:'Energético BALY 473ml Maçã Verde', brand:'BALY', size:'473ml', flavor:'Maçã Verde', price:4.50, cat:'bebidas', unitType:'unidade'},
-      {id:504, name:'Energético BALY 473ml Tropical', brand:'BALY', size:'473ml', flavor:'Tropical', price:4.50, cat:'bebidas', unitType:'unidade'},
-      {id:505, name:'Energético BALY 473ml Cereja', brand:'BALY', size:'473ml', flavor:'Cereja', price:4.50, cat:'bebidas', unitType:'unidade'},
-      {id:506, name:'Energético BALY 473ml Manga', brand:'BALY', size:'473ml', flavor:'Manga', price:4.50, cat:'bebidas', unitType:'unidade'},
-      {id:507, name:'Energético BALY 473ml Tradicional', brand:'BALY', size:'473ml', flavor:'Tradicional', price:4.50, cat:'bebidas', unitType:'unidade'},
-      {id:508, name:'Energético BALY 473ml Melancia', brand:'BALY', size:'473ml', flavor:'Melancia', price:4.50, cat:'bebidas', unitType:'unidade'},
+      {id:501, name:'Energético BALY 473ml Morango', brand:'BALY', size:'473ml', flavor:'Morango', price:4.50, cat:'bebidas', unitType:'unidade', image:'fdf48756-adc8-4d4b-96ca-da92bf5bce60.png'},
+      {id:502, name:'Energético BALY 473ml Coco & Açaí', brand:'BALY', size:'473ml', flavor:'Coco & Açaí', price:4.50, cat:'bebidas', unitType:'unidade', image:'fdf48756-adc8-4d4b-96ca-da92bf5bce60.png'},
+      {id:503, name:'Energético BALY 473ml Maçã Verde', brand:'BALY', size:'473ml', flavor:'Maçã Verde', price:4.50, cat:'bebidas', unitType:'unidade', image:'fdf48756-adc8-4d4b-96ca-da92bf5bce60.png'},
+      {id:504, name:'Energético BALY 473ml Tropical', brand:'BALY', size:'473ml', flavor:'Tropical', price:4.50, cat:'bebidas', unitType:'unidade', image:'fdf48756-adc8-4d4b-96ca-da92bf5bce60.png'},
+      {id:505, name:'Energético BALY 473ml Cereja', brand:'BALY', size:'473ml', flavor:'Cereja', price:4.50, cat:'bebidas', unitType:'unidade', image:'fdf48756-adc8-4d4b-96ca-da92bf5bce60.png'},
+      {id:506, name:'Energético BALY 473ml Manga', brand:'BALY', size:'473ml', flavor:'Manga', price:4.50, cat:'bebidas', unitType:'unidade', image:'fdf48756-adc8-4d4b-96ca-da92bf5bce60.png'},
+      {id:507, name:'Energético BALY 473ml Tradicional', brand:'BALY', size:'473ml', flavor:'Tradicional', price:4.50, cat:'bebidas', unitType:'unidade', image:'fdf48756-adc8-4d4b-96ca-da92bf5bce60.png'},
+      {id:508, name:'Energético BALY 473ml Melancia', brand:'BALY', size:'473ml', flavor:'Melancia', price:4.50, cat:'bebidas', unitType:'unidade', image:'fdf48756-adc8-4d4b-96ca-da92bf5bce60.png'},
 
       // Chocolates (Chocolate)
-      {id:601, name:'Nestlé Suflair 50g', brand:'Nestlé', size:'50g', price:4.99, cat:'chocolate', unitType:'unidade'},
-      {id:602, name:'Nestlé Suflair 50g (Caixa c/20)', brand:'Nestlé', size:'50g', price:99.50, cat:'chocolate', unitType:'fardo', packQty:20},
-      {id:603, name:'Nestlé KitKat 41,5g', brand:'Nestlé', size:'41,5g', price:2.99, cat:'chocolate', unitType:'unidade'},
-      {id:604, name:'Nestlé KitKat 41,5g (Caixa c/24)', brand:'Nestlé', size:'41,5g', price:71.75, cat:'chocolate', unitType:'fardo', packQty:24},
-      {id:605, name:'Arcor Block 38g', brand:'Arcor', size:'38g', price:1.75, cat:'chocolate', unitType:'unidade'},
-      {id:606, name:'Arcor Block 38g (Caixa c/20)', brand:'Arcor', size:'38g', price:32.50, cat:'chocolate', unitType:'fardo', packQty:20},
+      {id:601, name:'Nestlé Suflair 50g', brand:'Nestlé', size:'50g', price:4.99, cat:'chocolate', unitType:'unidade', image:'95942f91-9ae0-46c9-9873-fa5a059c88ae.png'},
+      {id:602, name:'Nestlé Suflair 50g (Caixa c/20)', brand:'Nestlé', size:'50g', price:99.50, cat:'chocolate', unitType:'fardo', packQty:20, image:'95942f91-9ae0-46c9-9873-fa5a059c88ae.png'},
+      {id:603, name:'Nestlé KitKat 41,5g', brand:'Nestlé', size:'41,5g', price:2.99, cat:'chocolate', unitType:'unidade', image:'95942f91-9ae0-46c9-9873-fa5a059c88ae.png'},
+      {id:604, name:'Nestlé KitKat 41,5g (Caixa c/24)', brand:'Nestlé', size:'41,5g', price:71.75, cat:'chocolate', unitType:'fardo', packQty:24, image:'95942f91-9ae0-46c9-9873-fa5a059c88ae.png'},
+      {id:605, name:'Arcor Block 38g', brand:'Arcor', size:'38g', price:1.75, cat:'chocolate', unitType:'unidade', image:'95942f91-9ae0-46c9-9873-fa5a059c88ae.png'},
+      {id:606, name:'Arcor Block 38g (Caixa c/20)', brand:'Arcor', size:'38g', price:32.50, cat:'chocolate', unitType:'fardo', packQty:20, image:'95942f91-9ae0-46c9-9873-fa5a059c88ae.png'},
 
       // Paçocas (Bala/Amendoim)
-      {id:701, name:'Paçoca Clamel Rolha (Caixa c/100)', brand:'Clamel', price:29.95, cat:'bala', unitType:'fardo', packQty:100},
-      {id:702, name:'Paçoca Moreninha do Rio (Caixa c/50)', brand:'Moreninha do Rio', price:18.50, cat:'bala', unitType:'fardo', packQty:50},
-      {id:703, name:'Paçoca Paçoquita (Caixa c/50)', brand:'Paçoquita', price:24.90, cat:'bala', unitType:'fardo', packQty:50},
+      {id:701, name:'Paçoca Clamel Rolha (Caixa c/100)', brand:'Clamel', price:29.95, cat:'bala', unitType:'fardo', packQty:100, image:'8a541bae-8392-4651-8e27-465668d7b755.png'},
+      {id:702, name:'Paçoca Moreninha do Rio (Caixa c/50)', brand:'Moreninha do Rio', price:18.50, cat:'bala', unitType:'fardo', packQty:50, image:'8a541bae-8392-4651-8e27-465668d7b755.png'},
+      {id:703, name:'Paçoca Paçoquita (Caixa c/50)', brand:'Paçoquita', price:24.90, cat:'bala', unitType:'fardo', packQty:50, image:'8a541bae-8392-4651-8e27-465668d7b755.png'},
 
       // Salgadinhos Fabitos (Salgadinhos)
-      {id:801, name:'Fabitos Churrasco 60g', brand:'Fabitos', size:'60g', flavor:'Churrasco', price:1.65, cat:'salgadinho', unitType:'unidade'},
-      {id:802, name:'Fabitos Cebola 60g', brand:'Fabitos', size:'60g', flavor:'Cebola', price:1.65, cat:'salgadinho', unitType:'unidade'},
-      {id:803, name:'Fabitos Bacon 60g', brand:'Fabitos', size:'60g', flavor:'Bacon', price:1.65, cat:'salgadinho', unitType:'unidade'},
-      {id:804, name:'Fabitos Presunto 60g', brand:'Fabitos', size:'60g', flavor:'Presunto', price:1.65, cat:'salgadinho', unitType:'unidade'},
-      {id:805, name:'Fabitos Pizza 60g', brand:'Fabitos', size:'60g', flavor:'Pizza', price:1.65, cat:'salgadinho', unitType:'unidade'},
-      {id:806, name:'Fabitos Queijo 60g', brand:'Fabitos', size:'60g', flavor:'Queijo', price:1.65, cat:'salgadinho', unitType:'unidade'}
+      {id:801, name:'Fabitos Churrasco 60g', brand:'Fabitos', size:'60g', flavor:'Churrasco', price:1.65, cat:'salgadinho', unitType:'unidade', image:'1002aafb-b8bb-4d2a-9a60-a662cb4aba77.png'},
+      {id:802, name:'Fabitos Cebola 60g', brand:'Fabitos', size:'60g', flavor:'Cebola', price:1.65, cat:'salgadinho', unitType:'unidade', image:'1002aafb-b8bb-4d2a-9a60-a662cb4aba77.png'},
+      {id:803, name:'Fabitos Bacon 60g', brand:'Fabitos', size:'60g', flavor:'Bacon', price:1.65, cat:'salgadinho', unitType:'unidade', image:'1002aafb-b8bb-4d2a-9a60-a662cb4aba77.png'},
+      {id:804, name:'Fabitos Presunto 60g', brand:'Fabitos', size:'60g', flavor:'Presunto', price:1.65, cat:'salgadinho', unitType:'unidade', image:'1002aafb-b8bb-4d2a-9a60-a662cb4aba77.png'},
+      {id:805, name:'Fabitos Pizza 60g', brand:'Fabitos', size:'60g', flavor:'Pizza', price:1.65, cat:'salgadinho', unitType:'unidade', image:'1002aafb-b8bb-4d2a-9a60-a662cb4aba77.png'},
+      {id:806, name:'Fabitos Queijo 60g', brand:'Fabitos', size:'60g', flavor:'Queijo', price:1.65, cat:'salgadinho', unitType:'unidade', image:'1002aafb-b8bb-4d2a-9a60-a662cb4aba77.png'}
     ];
 
     // calcular/preencher unitPrice
@@ -526,10 +551,14 @@
         utilidades: '🧰'
       };
       const emoji = iconByCat[p.cat] || '🛍️';
+      // se tiver imagem, use-a; caso contrário use o emoji
+      const thumbContent = p.image
+        ? `<img src="${p.image}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;" />`
+        : `<span style="font-size:40px;color:var(--brand);">${emoji}</span>`;
       return `
         <div class="card">
-          <div class="thumb" style="font-size:40px;color:var(--brand);">
-            ${emoji}
+          <div class="thumb" style="position:relative; overflow:hidden;">
+            ${thumbContent}
             ${isFardo ? `<span class="badge">${p.packQty ? ('FARDO c/'+p.packQty) : 'FARDO'}</span>`:''}
           </div>
           <div class="card-body">
@@ -544,7 +573,10 @@
               </div>
             </div>
             ${isFardo ? `<div class="unit">≈ R$ ${formatBR(p.unitPrice)} por unidade</div>`:''}
-            <button class="btn primary add" data-add="${p.id}">Adicionar</button>
+            <div class="row" style="justify-content:space-between;align-items:center;margin-top:8px;">
+              <button class="btn primary add" data-add="${p.id}">Adicionar</button>
+              <button class="favorite-btn" data-fav-btn data-id="${p.id}" aria-label="Adicionar aos favoritos" style="font-size:24px;background:none;border:none;cursor:pointer;padding:0;color:var(--brand);">🤍</button>
+            </div>
           </div>
         </div>
       `;
@@ -601,6 +633,18 @@
           if(p){ addToCart(p, q); drawerCart.classList.add('open'); }
         });
       });
+
+      // registrar eventos de favoritos
+      grid.querySelectorAll('[data-fav-btn]').forEach(btn=>{
+        btn.addEventListener('click', (ev)=>{
+          ev.stopPropagation();
+          const id = btn.dataset.id;
+          toggleFavorite(id);
+          updateFavIcons();
+        });
+      });
+      // atualizar ícones conforme estado
+      updateFavIcons();
 
       // ativar chip
       document.querySelectorAll('.chip').forEach(c=>{
@@ -692,6 +736,62 @@
     // ====== Carrinho (com localStorage)
     const CART_KEY = 'du_cart_v1';
     let cart = loadCart();
+
+    // ====== Lista de desejos (Favoritos) ======
+    const FAV_KEY = 'du_fav_v1';
+    let favorites = loadFavorites();
+
+    function loadFavorites(){
+      try { return JSON.parse(localStorage.getItem(FAV_KEY)) || []; }
+      catch(e){ return []; }
+    }
+    function saveFavorites(){ localStorage.setItem(FAV_KEY, JSON.stringify(favorites)); }
+    function isFavorite(id){ return favorites.includes(id); }
+    function toggleFavorite(id){
+      id = Number(id);
+      if(isFavorite(id)){
+        favorites = favorites.filter(f => f !== id);
+      } else {
+        favorites.push(id);
+      }
+      saveFavorites();
+      renderFavorites();
+    }
+    function renderFavorites(){
+      const listEl = document.getElementById('favoritesList');
+      if(!listEl) return;
+      if(!favorites.length){
+        listEl.innerHTML = `<div class="cart-empty">Sua lista de desejos está vazia.</div>`;
+        return;
+      }
+      listEl.innerHTML = favorites.map(id => {
+        const p = PRODUCTS.find(pp => pp.id === id);
+        if(!p) return '';
+        const meta = [p.brand||'', p.size||'', p.flavor||''].filter(Boolean).join(' • ');
+        const icon = ICON_BY_CAT[p.cat] || '🛍️';
+        return `
+          <div class="cart-item">
+            <div style="width:48px;height:48px;background:var(--chip);border:1px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:28px;color:var(--brand);">
+              ${icon}
+            </div>
+            <div>
+              <div class="cart-name">${p.name}</div>
+              <div class="cart-meta">${meta}</div>
+            </div>
+            <div style="text-align:right;">
+              <button class="btn" style="padding:4px 8px" onclick="window.toggleFavorite(${p.id})">Remover</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+    function updateFavIcons(){
+      document.querySelectorAll('[data-fav-btn]').forEach(btn => {
+        const id = Number(btn.dataset.id);
+        btn.textContent = isFavorite(id) ? '❤️' : '🤍';
+      });
+    }
+    window.toggleFavorite = toggleFavorite;
 
     function loadCart(){
       try { return JSON.parse(localStorage.getItem(CART_KEY)) || []; }
