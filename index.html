@@ -111,7 +111,18 @@
       color:rgba(255,255,255,0.7);
     }
     .btn:hover{ transform:translateY(-1px)}
-    .btn.primary{ background:var(--brand); color:#fff; border-color:var(--brand)}
+    /* Primary buttons: exibir em branco com borda vermelha para destacar a logo.
+       No hover, invertemos as cores para reforçar a interação. */
+    .btn.primary{
+      background:#fff;
+      color:var(--brand);
+      border-color:var(--brand);
+    }
+    .btn.primary:hover{
+      background:var(--brand);
+      color:#fff;
+      border-color:var(--brand);
+    }
     .btn.danger{ background:var(--danger); color:#fff; border-color:var(--danger)}
     .iconbtn{
       display:flex;align-items:center;justify-content:center;gap:8px;
@@ -130,6 +141,13 @@
     }
     .iconbtn:hover{ background:rgba(255,255,255,0.2); }
     .icon{width:20px;height:20px;display:inline-block}
+
+    /* Valor do carrinho no cabeçalho: destaque o total em branco e negrito */
+    #cartCount{
+      font-weight:600;
+      font-size:14px;
+      color:#fff;
+    }
 
     /* Promo banner inside hero */
     .promo-banner{
@@ -685,7 +703,10 @@
         card.querySelector('.add')?.addEventListener('click', ()=>{
           const name = card.querySelector('.name')?.textContent || 'Produto';
           const p = PRODUCTS.find(pp=>pp.name===name);
-          if(p){ addToCart(p, q); drawerCart.classList.add('open'); }
+          if(p){
+            addToCart(p, q);
+            // Não abrir automaticamente o carrinho; apenas atualize o total no cabeçalho
+          }
         });
       });
 
@@ -916,7 +937,9 @@
     }
     function cartSubtotal(){ return cart.reduce((acc, it)=> acc + (it.price * it.qty), 0); }
     function renderCart(){
-      cartCount.textContent = cart.length ? `(${cart.length})` : '';
+      // Exibir o valor total ao invés da contagem de itens no cabeçalho
+      const total = cartSubtotal();
+      cartCount.textContent = cart.length ? `R$ ${formatBR(total)}` : 'R$ 0,00';
       if(!cart.length){
         cartListEl.innerHTML = `<div class="cart-empty">Seu carrinho está vazio.</div>`;
         subtotalEl.textContent = '0,00';
