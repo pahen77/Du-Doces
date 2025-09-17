@@ -32,142 +32,46 @@
       --danger:#ef4444;
     }
     .dark{
-      /* Ajustes de contraste no tema escuro: deixamos textos e elementos mais claros
-         para evitar letras pretas sobre fundo escuro. */
       --bg:#0e0e10;
-      --fg:#f7f7f7;
-      --muted:#c4c4c4;
-      --card:#1f1f22;
-      --chip:#25252a;
-      --border:#444;
+      --fg:#f2f2f2;
+      --muted:#b9b9b9;
+      --card:#151517;
+      --chip:#1d1d21;
+      --border:#2a2a2e;
     }
     *{box-sizing:border-box}
     html,body{margin:0;padding:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial,"Noto Sans","Apple Color Emoji","Segoe UI Emoji";}
 
-    /* gradient overlay at bottom of page */
-    body::after{
-      content:'';
-      position:fixed;
-      left:0;
-      right:0;
-      bottom:0;
-      height:120px;
-      background:linear-gradient(to bottom, rgba(255,255,255,0) 0%, var(--brand) 100%);
-      pointer-events:none;
-      z-index:-1;
-    }
-
     /* Header */
     header{
       position:sticky; top:0; z-index:50;
-      background:var(--brand);
-      color:#fff;
-      border-bottom:1px solid var(--brand-600);
+      background:var(--bg); border-bottom:1px solid var(--border);
       backdrop-filter:saturate(150%) blur(6px);
     }
-    /* Topbar: use flexbox to space content */
     .topbar{
-      max-width:1300px;
-      margin:0 auto;
-      padding:10px 16px;
-      display:flex;
-      align-items:center;
-      /* Use flex-start to allow the right-actions to be pushed via margin-left:auto */
-      justify-content:flex-start;
-      gap:12px;
-    }
-    .left-actions{
-      display:flex;
-      align-items:center;
-      gap:10px;
-    }
-    .right-actions{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      margin-left:auto;
+      max-width:1100px; margin:0 auto; padding:10px 16px;
+      display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:12px;
     }
     .logo{
-      flex:1;
       text-align:center; font-weight:900; letter-spacing:1px; user-select:none;
-      font-size:24px; color:#fff;
+      font-size:24px; color:var(--brand);
     }
-    .logo span{ color:#fff; font-weight:900; }
-    /* Buttons */
+    .logo span{ color:var(--fg); font-weight:800; }
+    .left-actions, .right-actions{display:flex;align-items:center;gap:10px}
     .btn{
       appearance:none; border:1px solid var(--border); background:var(--chip);
       color:var(--fg); padding:10px 14px; border-radius:12px; font-weight:600; cursor:pointer;
       transition:.2s transform,.2s background;
     }
-
-    /* Estilo específico para o campo CEP dentro do cabeçalho (fundo vermelho):
-       deixamos o campo semi-transparente e com texto branco para combinar com o cabeçalho */
-    header #cep{
-      background:rgba(255,255,255,0.15);
-      border-color:rgba(255,255,255,0.25);
-      color:#fff;
-    }
-    header #cep::placeholder{
-      color:rgba(255,255,255,0.7);
-    }
     .btn:hover{ transform:translateY(-1px)}
-    /* Primary buttons: exibir em branco com borda vermelha para destacar a logo.
-       No hover, invertemos as cores para reforçar a interação. */
-    .btn.primary{
-      background:#fff;
-      color:var(--brand);
-      border-color:var(--brand);
-    }
-    .btn.primary:hover{
-      background:var(--brand);
-      color:#fff;
-      border-color:var(--brand);
-    }
-
-    /* Botões de data de entrega selecionados */
-    #deliveryDates button.active{
-      background:var(--brand);
-      color:#fff;
-      border-color:var(--brand);
-    }
+    .btn.primary{ background:var(--brand); color:#fff; border-color:var(--brand)}
     .btn.danger{ background:var(--danger); color:#fff; border-color:var(--danger)}
     .iconbtn{
       display:flex;align-items:center;justify-content:center;gap:8px;
-      height:42px; padding:0 12px; border-radius:12px;
-      border:1px solid rgba(255,255,255,0.3);
-      background:rgba(255,255,255,0.1);
-      /* cor do texto adaptada ao tema atual */
-      color:var(--fg);
-      cursor:pointer; font-weight:600;
-      transition:.2s background;
+      height:42px; padding:0 12px; border-radius:12px; border:1px solid var(--border);
+      background:var(--chip); cursor:pointer; font-weight:600;
     }
-
-    /* Quando usada no cabeçalho, garantimos que os ícones fiquem brancos sobre o fundo vermelho */
-    header .iconbtn{
-      color:#fff;
-    }
-    .iconbtn:hover{ background:rgba(255,255,255,0.2); }
     .icon{width:20px;height:20px;display:inline-block}
-
-    /* Valor do carrinho no cabeçalho: destaque o total em branco e negrito */
-    #cartCount{
-      font-weight:600;
-      font-size:14px;
-      color:#fff;
-    }
-
-    /* Promo banner inside hero */
-    .promo-banner{
-      position:absolute;
-      bottom:20px;
-      left:20px;
-      background:rgba(0,0,0,0.6);
-      color:#fff;
-      padding:8px 12px;
-      border-radius:8px;
-      font-size:14px;
-      line-height:1.3;
-    }
 
     /* Sticky categories */
     .categories-wrap{
@@ -175,13 +79,7 @@
       background:var(--bg); border-bottom:1px solid var(--border);
     }
     .categories{
-      /* allow categories bar to stretch wider */
-      max-width:1300px;
-      margin:0 auto;
-      padding:8px 16px;
-      display:flex;
-      gap:8px;
-      overflow:auto;
+      max-width:1100px; margin:0 auto; padding:8px 16px; display:flex; gap:8px; overflow:auto;
       scrollbar-width:thin;
     }
     .chip{
@@ -191,22 +89,10 @@
     }
     .chip.active, .chip:hover{ background:var(--brand); border-color:var(--brand); color:#fff}
 
-    main{
-      /* widen main content area */
-      max-width:1300px;
-      margin:18px auto;
-      padding:0 16px;
-      display:flex;
-      flex-direction:column;
-      gap:28px;
-    }
+    main{max-width:1100px;margin:18px auto;padding:0 16px;display:flex;flex-direction:column;gap:28px}
 
     /* Marcas principais */
-    .brands{
-      display:grid;
-      grid-template-columns:repeat(6,1fr);
-      gap:12px;
-    }
+    .brands{ display:grid;grid-template-columns:repeat(6,1fr); gap:12px; }
     @media (max-width:900px){ .brands{grid-template-columns:repeat(3,1fr)} }
     @media (max-width:520px){ .brands{grid-template-columns:repeat(2,1fr)} }
     .brand-card{
@@ -226,12 +112,8 @@
 
     /* Produtos */
     .section h2{margin:0 0 6px 0; font-size:22px}
-    .grid{
-      display:grid;
-      grid-template-columns:repeat(5,1fr);
-      gap:14px;
-    }
-    @media (max-width:1300px){ .grid{grid-template-columns:repeat(4,1fr);} }
+    .grid{ display:grid; grid-template-columns:repeat(5,1fr); gap:14px; }
+    @media (max-width:1100px){ .grid{grid-template-columns:repeat(4,1fr)} }
     @media (max-width:900px){ .grid{grid-template-columns:repeat(3,1fr)} }
     @media (max-width:600px){ .grid{grid-template-columns:repeat(2,1fr)} }
 
@@ -268,17 +150,7 @@
     .subtotal{ font-size:18px; font-weight:900 }
 
     /* Footer */
-    footer{
-      margin-top:40px;
-      border-top:1px solid var(--border);
-      padding:20px;
-      text-align:center;
-      /* gradient background matching our brand */
-      background: linear-gradient(90deg, var(--brand), var(--brand-600));
-      color:#fff;
-      font-weight:600;
-      font-size:14px;
-    }
+    footer{ margin-top:40px; border-top:1px solid var(--border); padding:20px; text-align:center; color:var(--muted)}
     a{color:inherit}
   </style>
 </head>
@@ -297,14 +169,7 @@
       </div>
 
       <div class="right-actions">
-        <!-- login icon linking to login page -->
-        <a href="login.html" id="loginIcon" class="iconbtn" title="Login">
-          <span class="icon" aria-hidden="true">👤</span>
-          <span>Login</span>
-        </a>
-        <!-- CEP input moved next to cart for better alignment -->
         <input id="cep" type="text" placeholder="CEP" inputmode="numeric" maxlength="9" class="btn" style="width:120px" />
-        <span id="freteVal" class="hint" style="margin-left:8px; display:none;"></span>
         <button id="btn-cart" class="iconbtn" title="Carrinho">
           <span class="icon">🛒</span><span>Carrinho</span>
           <span id="cartCount" class="hint" style="margin-left:4px;"></span>
@@ -314,7 +179,6 @@
 
     <div class="categories-wrap">
       <nav class="categories" id="categories">
-        <button class="chip" data-cat="relevantes">Relevantes</button>
         <button class="chip" data-cat="bebidas">Bebidas</button>
         <button class="chip" data-cat="chiclete">Chiclete</button>
         <button class="chip" data-cat="bala">Bala</button>
@@ -328,19 +192,6 @@
 
   <main>
     <!-- Marcas principais (SEPARADAS das categorias) -->
-    <!-- Banner Section -->
-    <section class="banner-section" style="width:100%;">
-      <!-- Decorative hero banner illustrating candies and our brand colors -->
-      <div style="position:relative;border-radius:16px;overflow:hidden;">
-        <img src="813c2c10-4590-4178-8712-d0cc18fdec8b.png" alt="Banner Du Doces" style="width:100%;height:280px;object-fit:cover;">
-        <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.35);"></div>
-        <div style="position:absolute;left:20px;bottom:20px;color:#fff;">
-          <h2 style="margin:0;font-size:32px;font-weight:900;">Bem-vindo à Du Doces!</h2>
-          <p style="margin:4px 0 8px;font-size:16px;max-width:500px;">As melhores marcas de bebidas, chocolates, salgadinhos e muito mais com entrega rápida em Campinas.</p>
-          <div id="promoBanner" class="promo-banner"></div>
-        </div>
-      </div>
-    </section>
     <section class="section" id="marcas">
       <h2>Marcas Principais</h2>
       <div class="brands" id="brands">
@@ -382,7 +233,7 @@
   </main>
 
   <footer>
-    © <span id="year"></span> Du&nbsp;Doces&nbsp;LTDA – Todos os direitos reservados
+    © <span id="year"></span> DU DOCES — Distribuidora • Feito com ❤️
   </footer>
 
   <!-- Drawer Menu (3 barras) -->
@@ -394,10 +245,8 @@
         <button class="btn" data-close>Fechar</button>
       </div>
       <div class="list">
-        <a href="sobre.html" id="sobre">Sobre nós</a>
-        <a href="tel:+551932728460" id="contato">Contato</a>
-        <!-- botão para abrir a lista de desejos -->
-        <a href="#" id="open-favorites">Favoritos</a>
+        <a href="#" id="sobre">Sobre nós</a>
+        <a href="#" id="contato">Contato</a>
         <a href="#" id="toggle-dark">Modo escuro</a>
         <a href="#" id="abrir-chat">Atendimento por IA</a>
       </div>
@@ -419,51 +268,6 @@
       </div>
       <button id="checkout" class="btn primary" style="width:100%;height:44px;">Finalizar pedido</button>
       <div class="hint">* Valores e disponibilidade podem variar. Frete calculado pelo CEP.</div>
-    </aside>
-  </div>
-
-  <!-- Drawer de Entrega (seleção de modalidade, data e frete) -->
-  <div class="drawer" id="drawerEntrega">
-    <div class="backdrop" data-close></div>
-    <aside class="panel">
-      <div class="cart-row">
-        <h3>Escolher entrega</h3>
-        <button class="btn" data-close>Fechar</button>
-      </div>
-      <div style="flex:1;overflow-y:auto;">
-        <!-- Modalidade -->
-        <p style="margin-bottom:4px;font-weight:600;">Modalidade</p>
-        <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;">
-          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
-            <input type="radio" name="deliveryMode" value="pickup" checked style="accent-color:var(--brand);">
-            Clique & Retire (Grátis)
-          </label>
-          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
-            <input type="radio" name="deliveryMode" value="delivery" style="accent-color:var(--brand);">
-            Delivery Lalamove – <span id="deliveryEstimate">R$ 14,90</span>
-          </label>
-        </div>
-        <!-- Data de entrega -->
-        <p style="margin-bottom:4px;font-weight:600;">Data de entrega</p>
-        <div id="deliveryDates" style="display:flex;gap:8px;overflow-x:auto;scrollbar-width:thin;margin-bottom:16px;"></div>
-      </div>
-      <div class="cart-row">
-        <div class="subtotal">Total (c/ frete): R$ <span id="totalWithFrete">0,00</span></div>
-        <button id="confirmDelivery" class="btn primary" style="width:100%;height:44px;">Confirmar entrega</button>
-      </div>
-    </aside>
-  </div>
-
-  <!-- Drawer Favoritos (Lista de desejos) -->
-  <div class="drawer" id="drawerFavorites">
-    <div class="backdrop" data-close></div>
-    <aside class="panel">
-      <div class="cart-row">
-        <h3>Lista de desejos</h3>
-        <button class="btn" data-close>Fechar</button>
-      </div>
-      <div id="favoritesList"></div>
-      <div class="hint" style="margin-top:auto;">* Itens adicionados serão salvos para sua próxima visita.</div>
     </aside>
   </div>
 
@@ -517,22 +321,6 @@
     document.getElementById('btn-cart').addEventListener('click', ()=> drawerCart.classList.add('open'));
     drawerCart.querySelectorAll('[data-close]').forEach(el=> el.addEventListener('click', ()=> drawerCart.classList.remove('open')));
 
-    // ===== ENTREGA drawer
-    const drawerEntrega = document.getElementById('drawerEntrega');
-    if(drawerEntrega){
-      drawerEntrega.querySelectorAll('[data-close]').forEach(el => el.addEventListener('click', ()=> drawerEntrega.classList.remove('open')));
-    }
-
-    // ===== FAVORITOS drawer
-    const drawerFavorites = document.getElementById('drawerFavorites');
-    document.getElementById('open-favorites')?.addEventListener('click', (e)=>{
-      e.preventDefault();
-      renderFavorites();
-      drawerFavorites.classList.add('open');
-      drawerMenu.classList.remove('open');
-    });
-    drawerFavorites?.querySelectorAll('[data-close]').forEach(el => el.addEventListener('click', ()=> drawerFavorites.classList.remove('open')));
-
     // ===== Modo escuro
     const toggleDark = document.getElementById('toggle-dark');
     const applyTheme = () => {
@@ -549,79 +337,69 @@
     });
 
     // ================== DADOS REAIS – DU DOCES ==================
-    // Mapeamento de ícones para as categorias (para usar em cards e carrinho)
-    const ICON_BY_CAT = {
-      bebidas: '🥤',
-      chiclete: '🍬',
-      bala: '🍭',
-      chocolate: '🍫',
-      bolacha: '🍪',
-      salgadinho: '🍿',
-      utilidades: '🧰'
-    };
     const PRODUCTS = [
       // Águas (Bebidas)
-      {id:101, name:'Água LA 510ml', brand:'LA', price:0.75, cat:'bebidas', size:'510ml', unitType:'unidade', image:'e4800e7b-82a0-4a18-9b5c-2cf13f038d9b.png'},
-      {id:102, name:'Água LA 510ml (Fardo c/12)', brand:'LA', price:9.00, cat:'bebidas', size:'510ml', unitType:'fardo', packQty:12, image:'e4800e7b-82a0-4a18-9b5c-2cf13f038d9b.png'},
+      {id:101, name:'Água LA 510ml', brand:'LA', price:0.75, cat:'bebidas', size:'510ml', unitType:'unidade'},
+      {id:102, name:'Água LA 510ml (Fardo c/12)', brand:'LA', price:9.00, cat:'bebidas', size:'510ml', unitType:'fardo', packQty:12},
 
       // Colas (Utilidades)
-      {id:201, name:'ThreeBond Cola', brand:'ThreeBond', price:1.99, cat:'utilidades', unitType:'unidade', image:'52c1c6ac-d898-4059-86dd-bfed079f0623.png'},
-      {id:202, name:'SuperBond Cola', brand:'SuperBond', price:4.95, cat:'utilidades', unitType:'unidade', image:'52c1c6ac-d898-4059-86dd-bfed079f0623.png'},
+      {id:201, name:'ThreeBond Cola', brand:'ThreeBond', price:1.99, cat:'utilidades', unitType:'unidade'},
+      {id:202, name:'SuperBond Cola', brand:'SuperBond', price:4.95, cat:'utilidades', unitType:'unidade'},
 
       // Pipocas OZ (Salgadinhos)
-      {id:301, name:'Pipoca OZ 40g Doce', brand:'OZ', flavor:'Doce', size:'40g', price:0.70, cat:'salgadinho', unitType:'unidade', image:'1002aafb-b8bb-4d2a-9a60-a662cb4aba77.png'},
-      {id:302, name:'Pipoca OZ 40g Salgada', brand:'OZ', flavor:'Salgada', size:'40g', price:0.70, cat:'salgadinho', unitType:'unidade', image:'1002aafb-b8bb-4d2a-9a60-a662cb4aba77.png'},
-      {id:303, name:'Pipoca OZ 40g Doce (Fardo c/30)', brand:'OZ', flavor:'Doce', size:'40g', price:21.00, cat:'salgadinho', unitType:'fardo', packQty:30, image:'1002aafb-b8bb-4d2a-9a60-a662cb4aba77.png'},
-      {id:304, name:'Pipoca OZ 40g Salgada (Fardo c/30)', brand:'OZ', flavor:'Salgada', size:'40g', price:21.00, cat:'salgadinho', unitType:'fardo', packQty:30, image:'1002aafb-b8bb-4d2a-9a60-a662cb4aba77.png'},
-      {id:305, name:'Pipoca OZ 12g Doce (Cx c/50)', brand:'OZ', flavor:'Doce', size:'12g', price:16.50, cat:'salgadinho', unitType:'fardo', packQty:50, image:'1002aafb-b8bb-4d2a-9a60-a662cb4aba77.png'},
+      {id:301, name:'Pipoca OZ 40g Doce', brand:'OZ', flavor:'Doce', size:'40g', price:0.70, cat:'salgadinho', unitType:'unidade'},
+      {id:302, name:'Pipoca OZ 40g Salgada', brand:'OZ', flavor:'Salgada', size:'40g', price:0.70, cat:'salgadinho', unitType:'unidade'},
+      {id:303, name:'Pipoca OZ 40g Doce (Fardo c/30)', brand:'OZ', flavor:'Doce', size:'40g', price:21.00, cat:'salgadinho', unitType:'fardo', packQty:30},
+      {id:304, name:'Pipoca OZ 40g Salgada (Fardo c/30)', brand:'OZ', flavor:'Salgada', size:'40g', price:21.00, cat:'salgadinho', unitType:'fardo', packQty:30},
+      {id:305, name:'Pipoca OZ 12g Doce (Cx c/50)', brand:'OZ', flavor:'Doce', size:'12g', price:16.50, cat:'salgadinho', unitType:'fardo', packQty:50},
 
       // Refrigerantes Coca / Fanta (Bebidas)
-      {id:401, name:'Coca-Cola 350ml lata', brand:'Coca-Cola', size:'350ml', price:3.25, cat:'bebidas', unitType:'unidade', image:'bf2accbf-8b57-47d5-a42d-d5784079dfe5.png'},
-      {id:402, name:'Coca-Cola 200ml PET', brand:'Coca-Cola', size:'200ml', price:1.65, cat:'bebidas', unitType:'unidade', image:'bf2accbf-8b57-47d5-a42d-d5784079dfe5.png'},
-      {id:403, name:'Coca-Cola Zero 200ml PET', brand:'Coca-Cola', size:'200ml', flavor:'Zero', price:1.65, cat:'bebidas', unitType:'unidade', image:'bf2accbf-8b57-47d5-a42d-d5784079dfe5.png'},
-      {id:404, name:'Coca-Cola 200ml PET (Fardo c/12)', brand:'Coca-Cola', size:'200ml', price:19.80, cat:'bebidas', unitType:'fardo', packQty:12, image:'bf2accbf-8b57-47d5-a42d-d5784079dfe5.png'},
-      {id:405, name:'Coca-Cola Zero 200ml PET (Fardo c/12)', brand:'Coca-Cola', size:'200ml', flavor:'Zero', price:19.80, cat:'bebidas', unitType:'fardo', packQty:12, image:'bf2accbf-8b57-47d5-a42d-d5784079dfe5.png'},
+      {id:401, name:'Coca-Cola 350ml lata', brand:'Coca-Cola', size:'350ml', price:3.25, cat:'bebidas', unitType:'unidade'},
+      {id:402, name:'Coca-Cola 200ml PET', brand:'Coca-Cola', size:'200ml', price:1.65, cat:'bebidas', unitType:'unidade'},
+      {id:403, name:'Coca-Cola Zero 200ml PET', brand:'Coca-Cola', size:'200ml', flavor:'Zero', price:1.65, cat:'bebidas', unitType:'unidade'},
+      {id:404, name:'Coca-Cola 200ml PET (Fardo c/12)', brand:'Coca-Cola', size:'200ml', price:19.80, cat:'bebidas', unitType:'fardo', packQty:12},
+      {id:405, name:'Coca-Cola Zero 200ml PET (Fardo c/12)', brand:'Coca-Cola', size:'200ml', flavor:'Zero', price:19.80, cat:'bebidas', unitType:'fardo', packQty:12},
 
-      {id:406, name:'Coca-Cola 220ml lata', brand:'Coca-Cola', size:'220ml', price:2.15, cat:'bebidas', unitType:'unidade', image:'bf2accbf-8b57-47d5-a42d-d5784079dfe5.png'},
-      {id:407, name:'Coca-Cola Zero 220ml lata', brand:'Coca-Cola', size:'220ml', flavor:'Zero', price:2.15, cat:'bebidas', unitType:'unidade', image:'bf2accbf-8b57-47d5-a42d-d5784079dfe5.png'},
-      {id:408, name:'Coca-Cola 220ml lata (Fardo c/12)', brand:'Coca-Cola', size:'220ml', price:25.80, cat:'bebidas', unitType:'fardo', packQty:12, image:'bf2accbf-8b57-47d5-a42d-d5784079dfe5.png'},
-      {id:409, name:'Coca-Cola Zero 220ml lata (Fardo c/12)', brand:'Coca-Cola', size:'220ml', flavor:'Zero', price:25.80, cat:'bebidas', unitType:'fardo', packQty:12, image:'bf2accbf-8b57-47d5-a42d-d5784079dfe5.png'},
+      {id:406, name:'Coca-Cola 220ml lata', brand:'Coca-Cola', size:'220ml', price:2.15, cat:'bebidas', unitType:'unidade'},
+      {id:407, name:'Coca-Cola Zero 220ml lata', brand:'Coca-Cola', size:'220ml', flavor:'Zero', price:2.15, cat:'bebidas', unitType:'unidade'},
+      {id:408, name:'Coca-Cola 220ml lata (Fardo c/12)', brand:'Coca-Cola', size:'220ml', price:25.80, cat:'bebidas', unitType:'fardo', packQty:12},
+      {id:409, name:'Coca-Cola Zero 220ml lata (Fardo c/12)', brand:'Coca-Cola', size:'220ml', flavor:'Zero', price:25.80, cat:'bebidas', unitType:'fardo', packQty:12},
 
-      {id:410, name:'Fanta Laranja 220ml lata', brand:'Fanta', size:'220ml', flavor:'Laranja', price:1.99, cat:'bebidas', unitType:'unidade', image:'bf2accbf-8b57-47d5-a42d-d5784079dfe5.png'},
-      {id:411, name:'Fanta Uva 220ml lata', brand:'Fanta', size:'220ml', flavor:'Uva', price:1.99, cat:'bebidas', unitType:'unidade', image:'bf2accbf-8b57-47d5-a42d-d5784079dfe5.png'},
-      {id:412, name:'Fanta Laranja 220ml lata (Fardo c/6)', brand:'Fanta', size:'220ml', flavor:'Laranja', price:11.94, cat:'bebidas', unitType:'fardo', packQty:6, image:'bf2accbf-8b57-47d5-a42d-d5784079dfe5.png'},
-      {id:413, name:'Fanta Uva 220ml lata (Fardo c/6)', brand:'Fanta', size:'220ml', flavor:'Uva', price:11.94, cat:'bebidas', unitType:'fardo', packQty:6, image:'bf2accbf-8b57-47d5-a42d-d5784079dfe5.png'},
+      {id:410, name:'Fanta Laranja 220ml lata', brand:'Fanta', size:'220ml', flavor:'Laranja', price:1.99, cat:'bebidas', unitType:'unidade'},
+      {id:411, name:'Fanta Uva 220ml lata', brand:'Fanta', size:'220ml', flavor:'Uva', price:1.99, cat:'bebidas', unitType:'unidade'},
+      {id:412, name:'Fanta Laranja 220ml lata (Fardo c/6)', brand:'Fanta', size:'220ml', flavor:'Laranja', price:11.94, cat:'bebidas', unitType:'fardo', packQty:6},
+      {id:413, name:'Fanta Uva 220ml lata (Fardo c/6)', brand:'Fanta', size:'220ml', flavor:'Uva', price:11.94, cat:'bebidas', unitType:'fardo', packQty:6},
 
       // Energéticos BALY (Bebidas)
-      {id:501, name:'Energético BALY 473ml Morango', brand:'BALY', size:'473ml', flavor:'Morango', price:4.50, cat:'bebidas', unitType:'unidade', image:'fdf48756-adc8-4d4b-96ca-da92bf5bce60.png'},
-      {id:502, name:'Energético BALY 473ml Coco & Açaí', brand:'BALY', size:'473ml', flavor:'Coco & Açaí', price:4.50, cat:'bebidas', unitType:'unidade', image:'fdf48756-adc8-4d4b-96ca-da92bf5bce60.png'},
-      {id:503, name:'Energético BALY 473ml Maçã Verde', brand:'BALY', size:'473ml', flavor:'Maçã Verde', price:4.50, cat:'bebidas', unitType:'unidade', image:'fdf48756-adc8-4d4b-96ca-da92bf5bce60.png'},
-      {id:504, name:'Energético BALY 473ml Tropical', brand:'BALY', size:'473ml', flavor:'Tropical', price:4.50, cat:'bebidas', unitType:'unidade', image:'fdf48756-adc8-4d4b-96ca-da92bf5bce60.png'},
-      {id:505, name:'Energético BALY 473ml Cereja', brand:'BALY', size:'473ml', flavor:'Cereja', price:4.50, cat:'bebidas', unitType:'unidade', image:'fdf48756-adc8-4d4b-96ca-da92bf5bce60.png'},
-      {id:506, name:'Energético BALY 473ml Manga', brand:'BALY', size:'473ml', flavor:'Manga', price:4.50, cat:'bebidas', unitType:'unidade', image:'fdf48756-adc8-4d4b-96ca-da92bf5bce60.png'},
-      {id:507, name:'Energético BALY 473ml Tradicional', brand:'BALY', size:'473ml', flavor:'Tradicional', price:4.50, cat:'bebidas', unitType:'unidade', image:'fdf48756-adc8-4d4b-96ca-da92bf5bce60.png'},
-      {id:508, name:'Energético BALY 473ml Melancia', brand:'BALY', size:'473ml', flavor:'Melancia', price:4.50, cat:'bebidas', unitType:'unidade', image:'fdf48756-adc8-4d4b-96ca-da92bf5bce60.png'},
+      {id:501, name:'Energético BALY 473ml Morango', brand:'BALY', size:'473ml', flavor:'Morango', price:4.50, cat:'bebidas', unitType:'unidade'},
+      {id:502, name:'Energético BALY 473ml Coco & Açaí', brand:'BALY', size:'473ml', flavor:'Coco & Açaí', price:4.50, cat:'bebidas', unitType:'unidade'},
+      {id:503, name:'Energético BALY 473ml Maçã Verde', brand:'BALY', size:'473ml', flavor:'Maçã Verde', price:4.50, cat:'bebidas', unitType:'unidade'},
+      {id:504, name:'Energético BALY 473ml Tropical', brand:'BALY', size:'473ml', flavor:'Tropical', price:4.50, cat:'bebidas', unitType:'unidade'},
+      {id:505, name:'Energético BALY 473ml Cereja', brand:'BALY', size:'473ml', flavor:'Cereja', price:4.50, cat:'bebidas', unitType:'unidade'},
+      {id:506, name:'Energético BALY 473ml Manga', brand:'BALY', size:'473ml', flavor:'Manga', price:4.50, cat:'bebidas', unitType:'unidade'},
+      {id:507, name:'Energético BALY 473ml Tradicional', brand:'BALY', size:'473ml', flavor:'Tradicional', price:4.50, cat:'bebidas', unitType:'unidade'},
+      {id:508, name:'Energético BALY 473ml Melancia', brand:'BALY', size:'473ml', flavor:'Melancia', price:4.50, cat:'bebidas', unitType:'unidade'},
 
       // Chocolates (Chocolate)
-      {id:601, name:'Nestlé Suflair 50g', brand:'Nestlé', size:'50g', price:4.99, cat:'chocolate', unitType:'unidade', image:'95942f91-9ae0-46c9-9873-fa5a059c88ae.png'},
-      {id:602, name:'Nestlé Suflair 50g (Caixa c/20)', brand:'Nestlé', size:'50g', price:99.50, cat:'chocolate', unitType:'fardo', packQty:20, image:'95942f91-9ae0-46c9-9873-fa5a059c88ae.png'},
-      {id:603, name:'Nestlé KitKat 41,5g', brand:'Nestlé', size:'41,5g', price:2.99, cat:'chocolate', unitType:'unidade', image:'95942f91-9ae0-46c9-9873-fa5a059c88ae.png'},
-      {id:604, name:'Nestlé KitKat 41,5g (Caixa c/24)', brand:'Nestlé', size:'41,5g', price:71.75, cat:'chocolate', unitType:'fardo', packQty:24, image:'95942f91-9ae0-46c9-9873-fa5a059c88ae.png'},
-      {id:605, name:'Arcor Block 38g', brand:'Arcor', size:'38g', price:1.75, cat:'chocolate', unitType:'unidade', image:'95942f91-9ae0-46c9-9873-fa5a059c88ae.png'},
-      {id:606, name:'Arcor Block 38g (Caixa c/20)', brand:'Arcor', size:'38g', price:32.50, cat:'chocolate', unitType:'fardo', packQty:20, image:'95942f91-9ae0-46c9-9873-fa5a059c88ae.png'},
+      {id:601, name:'Nestlé Suflair 50g', brand:'Nestlé', size:'50g', price:4.99, cat:'chocolate', unitType:'unidade'},
+      {id:602, name:'Nestlé Suflair 50g (Caixa c/20)', brand:'Nestlé', size:'50g', price:99.50, cat:'chocolate', unitType:'fardo', packQty:20},
+      {id:603, name:'Nestlé KitKat 41,5g', brand:'Nestlé', size:'41,5g', price:2.99, cat:'chocolate', unitType:'unidade'},
+      {id:604, name:'Nestlé KitKat 41,5g (Caixa c/24)', brand:'Nestlé', size:'41,5g', price:71.75, cat:'chocolate', unitType:'fardo', packQty:24},
+      {id:605, name:'Arcor Block 38g', brand:'Arcor', size:'38g', price:1.75, cat:'chocolate', unitType:'unidade'},
+      {id:606, name:'Arcor Block 38g (Caixa c/20)', brand:'Arcor', size:'38g', price:32.50, cat:'chocolate', unitType:'fardo', packQty:20},
 
       // Paçocas (Bala/Amendoim)
-      {id:701, name:'Paçoca Clamel Rolha (Caixa c/100)', brand:'Clamel', price:29.95, cat:'bala', unitType:'fardo', packQty:100, image:'8a541bae-8392-4651-8e27-465668d7b755.png'},
-      {id:702, name:'Paçoca Moreninha do Rio (Caixa c/50)', brand:'Moreninha do Rio', price:18.50, cat:'bala', unitType:'fardo', packQty:50, image:'8a541bae-8392-4651-8e27-465668d7b755.png'},
-      {id:703, name:'Paçoca Paçoquita (Caixa c/50)', brand:'Paçoquita', price:24.90, cat:'bala', unitType:'fardo', packQty:50, image:'8a541bae-8392-4651-8e27-465668d7b755.png'},
+      {id:701, name:'Paçoca Clamel Rolha (Caixa c/100)', brand:'Clamel', price:29.95, cat:'bala', unitType:'fardo', packQty:100},
+      {id:702, name:'Paçoca Moreninha do Rio (Caixa c/50)', brand:'Moreninha do Rio', price:18.50, cat:'bala', unitType:'fardo', packQty:50},
+      {id:703, name:'Paçoca Paçoquita (Caixa c/50)', brand:'Paçoquita', price:24.90, cat:'bala', unitType:'fardo', packQty:50},
 
       // Salgadinhos Fabitos (Salgadinhos)
-      {id:801, name:'Fabitos Churrasco 60g', brand:'Fabitos', size:'60g', flavor:'Churrasco', price:1.65, cat:'salgadinho', unitType:'unidade', image:'1002aafb-b8bb-4d2a-9a60-a662cb4aba77.png'},
-      {id:802, name:'Fabitos Cebola 60g', brand:'Fabitos', size:'60g', flavor:'Cebola', price:1.65, cat:'salgadinho', unitType:'unidade', image:'1002aafb-b8bb-4d2a-9a60-a662cb4aba77.png'},
-      {id:803, name:'Fabitos Bacon 60g', brand:'Fabitos', size:'60g', flavor:'Bacon', price:1.65, cat:'salgadinho', unitType:'unidade', image:'1002aafb-b8bb-4d2a-9a60-a662cb4aba77.png'},
-      {id:804, name:'Fabitos Presunto 60g', brand:'Fabitos', size:'60g', flavor:'Presunto', price:1.65, cat:'salgadinho', unitType:'unidade', image:'1002aafb-b8bb-4d2a-9a60-a662cb4aba77.png'},
-      {id:805, name:'Fabitos Pizza 60g', brand:'Fabitos', size:'60g', flavor:'Pizza', price:1.65, cat:'salgadinho', unitType:'unidade', image:'1002aafb-b8bb-4d2a-9a60-a662cb4aba77.png'},
-      {id:806, name:'Fabitos Queijo 60g', brand:'Fabitos', size:'60g', flavor:'Queijo', price:1.65, cat:'salgadinho', unitType:'unidade', image:'1002aafb-b8bb-4d2a-9a60-a662cb4aba77.png'}
+      {id:801, name:'Fabitos Churrasco 60g', brand:'Fabitos', size:'60g', flavor:'Churrasco', price:1.65, cat:'salgadinho', unitType:'unidade'},
+      {id:802, name:'Fabitos Cebola 60g', brand:'Fabitos', size:'60g', flavor:'Cebola', price:1.65, cat:'salgadinho', unitType:'unidade'},
+      {id:803, name:'Fabitos Bacon 60g', brand:'Fabitos', size:'60g', flavor:'Bacon', price:1.65, cat:'salgadinho', unitType:'unidade'},
+      {id:804, name:'Fabitos Presunto 60g', brand:'Fabitos', size:'60g', flavor:'Presunto', price:1.65, cat:'salgadinho', unitType:'unidade'},
+      {id:805, name:'Fabitos Pizza 60g', brand:'Fabitos', size:'60g', flavor:'Pizza', price:1.65, cat:'salgadinho', unitType:'unidade'},
+      {id:806, name:'Fabitos Queijo 60g', brand:'Fabitos', size:'60g', flavor:'Queijo', price:1.65, cat:'salgadinho', unitType:'unidade'}
     ];
 
     // calcular/preencher unitPrice
@@ -633,11 +411,13 @@
     const grid = document.getElementById('grid');
     const titleCat = document.getElementById('titulo-categoria');
     const result = document.getElementById('result');
+    const brandsEl = document.getElementById('brands');
+    const clearBrandLink = document.getElementById('clearBrand');
     const cartCount = document.getElementById('cartCount');
     const cartListEl = document.getElementById('cartList');
     const subtotalEl = document.getElementById('subtotal');
 
-    let currentCat = null;
+    let currentCat = 'bebidas';
     let currentBrand = null;
     let currentSort = 'none';
 
@@ -650,7 +430,7 @@
         case 'bolacha': return 'Bolacha/Biscoito';
         case 'salgadinho': return 'Salgadinhos';
         case 'utilidades': return 'Utilidades';
-        default: return 'Relevantes';
+        default: return 'Produtos';
       }
     }
     function formatBR(v){ return v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}); }
@@ -658,25 +438,10 @@
     function cardHTML(p){
       const isFardo = p.unitType === 'fardo';
       const meta = [p.brand||'', p.size||'', p.flavor||''].filter(Boolean).join(' • ');
-      // emoji icons for each category to replace placeholder image
-      const iconByCat = {
-        bebidas: '🥤',
-        chiclete: '🍬',
-        bala: '🍭',
-        chocolate: '🍫',
-        bolacha: '🍪',
-        salgadinho: '🍿',
-        utilidades: '🧰'
-      };
-      const emoji = iconByCat[p.cat] || '🛍️';
-      // se tiver imagem, use-a; caso contrário use o emoji
-      const thumbContent = p.image
-        ? `<img src="${p.image}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;" />`
-        : `<span style="font-size:40px;color:var(--brand);">${emoji}</span>`;
       return `
         <div class="card">
-          <div class="thumb" style="position:relative; overflow:hidden;">
-            ${thumbContent}
+          <div class="thumb">
+            FOTO
             ${isFardo ? `<span class="badge">${p.packQty ? ('FARDO c/'+p.packQty) : 'FARDO'}</span>`:''}
           </div>
           <div class="card-body">
@@ -691,10 +456,7 @@
               </div>
             </div>
             ${isFardo ? `<div class="unit">≈ R$ ${formatBR(p.unitPrice)} por unidade</div>`:''}
-            <div class="row" style="justify-content:space-between;align-items:center;margin-top:8px;">
-              <button class="btn primary add" data-add="${p.id}">Adicionar</button>
-              <button class="favorite-btn" data-fav-btn data-id="${p.id}" aria-label="Adicionar aos favoritos" style="font-size:24px;background:none;border:none;cursor:pointer;padding:0;color:var(--brand);">🤍</button>
-            </div>
+            <button class="btn primary add" data-add="${p.id}">Adicionar</button>
           </div>
         </div>
       `;
@@ -706,7 +468,7 @@
 
     function filteredProducts(){
       return PRODUCTS.filter(p=>{
-        const catOK = !currentCat || p.cat === currentCat;
+        const catOK = p.cat === currentCat;
         const brandOK = currentBrand ? (p.brand && p.brand.toLowerCase()===currentBrand.toLowerCase()) : true;
         return catOK && brandOK;
       });
@@ -748,24 +510,9 @@
         card.querySelector('.add')?.addEventListener('click', ()=>{
           const name = card.querySelector('.name')?.textContent || 'Produto';
           const p = PRODUCTS.find(pp=>pp.name===name);
-          if(p){
-            addToCart(p, q);
-            // Não abrir automaticamente o carrinho; apenas atualize o total no cabeçalho
-          }
+          if(p){ addToCart(p, q); drawerCart.classList.add('open'); }
         });
       });
-
-      // registrar eventos de favoritos
-      grid.querySelectorAll('[data-fav-btn]').forEach(btn=>{
-        btn.addEventListener('click', (ev)=>{
-          ev.stopPropagation();
-          const id = btn.dataset.id;
-          toggleFavorite(id);
-          updateFavIcons();
-        });
-      });
-      // atualizar ícones conforme estado
-      updateFavIcons();
 
       // ativar chip
       document.querySelectorAll('.chip').forEach(c=>{
@@ -773,25 +520,23 @@
       });
     }
 
-    // Inicial: a lista será renderizada depois de carregarmos favoritos/carrinho.
-    // Não chamamos render() aqui para evitar erros de inicialização (como acessar
-    // `favorites` antes de sua definição). A renderização inicial ocorrerá
-    // após a leitura dos dados persistidos.
+    // Inicial: 1ª categoria com itens
+    (function initStartCategory(){
+      const pref = ['bebidas','chiclete','bala','chocolate','bolacha','salgadinho','utilidades'];
+      const first = pref.find(cat => PRODUCTS.some(p => p.cat===cat)) || 'bebidas';
+      currentCat = first;
+      document.querySelectorAll('.chip').forEach(c=>{
+        c.classList.toggle('active', c.dataset.cat===first);
+      });
+      render(first);
+    })();
 
     // Navegação pelas categorias
     document.getElementById('categories').addEventListener('click', (e)=>{
       const btn = e.target.closest('.chip');
       if(!btn) return;
       const cat = btn.dataset.cat;
-      if(cat === 'relevantes' || cat === 'all'){
-        currentCat = null;
-        // update chip active states
-        document.querySelectorAll('.chip').forEach(c=> c.classList.remove('active'));
-        btn.classList.add('active');
-        render();
-      } else {
-        render(cat);
-      }
+      render(cat);
       grid.scrollIntoView({behavior:'smooth', block:'start'});
     });
 
@@ -803,15 +548,7 @@
       currentBrand = b.dataset.brand;
       brandsEl.querySelectorAll('.brand-card').forEach(x=> x.classList.toggle('active', x===b));
       updateClearBrandLink();
-      // if current category has no products for selected brand, switch to first available category for that brand
-      const itemsForBrand = PRODUCTS.filter(p => p.brand && p.brand.toLowerCase() === currentBrand.toLowerCase());
-      const catsForBrand = [...new Set(itemsForBrand.map(p => p.cat))];
-      if (catsForBrand.length && !catsForBrand.includes(currentCat)) {
-        currentCat = catsForBrand[0];
-        // update active chip visually
-        document.querySelectorAll('.chip').forEach(c => c.classList.toggle('active', c.dataset.cat === currentCat));
-      }
-      render(currentCat);
+      render();
     });
     const clearBrandLink = document.getElementById('clearBrand');
     clearBrandLink.addEventListener('click', (e)=>{
@@ -823,41 +560,12 @@
     });
     updateClearBrandLink();
 
-    // Promo banners rotativos no hero
-    const promos = [
-      'Água LA 510ml unidade – R$ 0,75 • Fardo c/12 – R$ 9,00',
-      'Energético BALY 473ml – R$ 4,50 (vários sabores)'
-    ];
-    let promoIndex = 0;
-    const promoBannerEl = document.getElementById('promoBanner');
-    function updatePromo(){
-      if(!promoBannerEl) return;
-      promoBannerEl.textContent = promos[promoIndex];
-      promoIndex = (promoIndex + 1) % promos.length;
-    }
-    updatePromo();
-    setInterval(updatePromo, 6000);
-
     // CEP mask
     const cep = document.getElementById('cep');
     cep.addEventListener('input', ()=>{
       let v = cep.value.replace(/\D/g,'').slice(0,8);
       if(v.length > 5) v = v.slice(0,5)+'-'+v.slice(5);
       cep.value = v;
-    });
-    // Mostrar frete fictício ao sair do input (blur)
-    const freteEl = document.getElementById('freteVal');
-    function calcFrete(cepStr){ return 8.0; }
-    cep.addEventListener('blur', ()=>{
-      const digits = cep.value.replace(/\D/g,'');
-      if(digits.length === 8){
-        const cost = calcFrete(digits);
-        freteEl.textContent = `Frete: R$ ${cost.toFixed(2).replace('.',',')}`;
-        freteEl.style.display = 'inline';
-      } else {
-        freteEl.textContent = '';
-        freteEl.style.display = 'none';
-      }
     });
 
     // ====== Botões "Mais barato" ======
@@ -885,67 +593,9 @@
       showResult(p, 'Paçoca mais barata:');
     });
 
-    // ====== Carrinho e Lista de desejos (favoritos) ======
+    // ====== Carrinho (com localStorage)
     const CART_KEY = 'du_cart_v1';
-    const FAV_KEY = 'du_fav_v1';
-    // Declaramos `cart` e `favorites` no topo do script para que estejam
-    // disponíveis antes mesmo das funções usarem estes valores. Caso contrário
-    // acessar `favorites` antes de sua inicialização resulta em erro
-    // (Temporal Dead Zone). Posteriormente, estes arrays serão populados
-    // através de loadCart() e loadFavorites().
-    let cart = [];
-    let favorites = [];
-    function loadFavorites(){
-      try { return JSON.parse(localStorage.getItem(FAV_KEY)) || []; }
-      catch(e){ return []; }
-    }
-    function saveFavorites(){ localStorage.setItem(FAV_KEY, JSON.stringify(favorites)); }
-    function isFavorite(id){ return Array.isArray(favorites) && favorites.includes(Number(id)); }
-    function toggleFavorite(id){
-      id = Number(id);
-      if(isFavorite(id)){
-        favorites = favorites.filter(f => f !== id);
-      } else {
-        favorites.push(id);
-      }
-      saveFavorites();
-      renderFavorites();
-      updateFavIcons();
-    }
-    function renderFavorites(){
-      const listEl = document.getElementById('favoritesList');
-      if(!listEl) return;
-      if(!favorites || !favorites.length){
-        listEl.innerHTML = `<div class="cart-empty">Sua lista de desejos está vazia.</div>`;
-        return;
-      }
-      listEl.innerHTML = favorites.map(id => {
-        const p = PRODUCTS.find(pp => pp.id === id);
-        if(!p) return '';
-        const meta = [p.brand||'', p.size||'', p.flavor||''].filter(Boolean).join(' • ');
-        const icon = ICON_BY_CAT[p.cat] || '🛍️';
-        return `
-          <div class="cart-item">
-            <div style="width:48px;height:48px;background:var(--chip);border:1px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:28px;color:var(--brand);">
-              ${icon}
-            </div>
-            <div>
-              <div class="cart-name">${p.name}</div>
-              <div class="cart-meta">${meta}</div>
-            </div>
-            <div style="text-align:right;">
-              <button class="btn" style="padding:4px 8px" onclick="window.toggleFavorite(${p.id})">Remover</button>
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
-    function updateFavIcons(){
-      document.querySelectorAll('[data-fav-btn]').forEach(btn => {
-        const id = Number(btn.dataset.id);
-        btn.textContent = isFavorite(id) ? '❤️' : '🤍';
-      });
-    }
+    let cart = loadCart();
 
     function loadCart(){
       try { return JSON.parse(localStorage.getItem(CART_KEY)) || []; }
@@ -982,9 +632,7 @@
     }
     function cartSubtotal(){ return cart.reduce((acc, it)=> acc + (it.price * it.qty), 0); }
     function renderCart(){
-      // Exibir o valor total ao invés da contagem de itens no cabeçalho
-      const total = cartSubtotal();
-      cartCount.textContent = cart.length ? `R$ ${formatBR(total)}` : 'R$ 0,00';
+      cartCount.textContent = cart.length ? `(${cart.length})` : '';
       if(!cart.length){
         cartListEl.innerHTML = `<div class="cart-empty">Seu carrinho está vazio.</div>`;
         subtotalEl.textContent = '0,00';
@@ -993,13 +641,9 @@
       cartListEl.innerHTML = cart.map(it=>{
         const meta = [it.brand, it.size, it.flavor].filter(Boolean).join(' • ');
         const perUnit = it.unitType==='fardo' ? `<div class="hint">≈ R$ ${formatBR(it.unitPrice)} / un</div>` : '';
-        // choose emoji according to category
-        const icon = ICON_BY_CAT[it.cat] || '🛍️';
         return `
           <div class="cart-item">
-            <div style="width:48px;height:48px;background:var(--chip);border:1px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:28px;color:var(--brand);">
-              ${icon}
-            </div>
+            <div style="width:48px;height:48px;background:var(--chip);border:1px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--muted)">FOTO</div>
             <div>
               <div class="cart-name">${it.name}</div>
               <div class="cart-meta">${meta}</div>
@@ -1028,106 +672,12 @@
       }
     });
 
-    // Ao clicar em "Finalizar pedido", abra o drawer de entrega em vez de apenas alertar.
-    document.getElementById('checkout').addEventListener('click', (e)=>{
-      e.preventDefault();
-      // Renderiza opções de entrega (datas e frete) e exibe o drawer
-      prepareEntrega();
-      drawerEntrega.classList.add('open');
+    document.getElementById('checkout').addEventListener('click', ()=>{
+      alert('Checkout: em breve conectamos com seu backend/pagamento. Subtotal: R$ ' + formatBR(cartSubtotal()));
     });
-
-    // Carregar dados persistidos (carrinho e lista de desejos) e atualizar a interface
-    cart = loadCart();
-    favorites = loadFavorites();
-    renderFavorites();
-    updateFavIcons();
-    window.toggleFavorite = toggleFavorite;
-
-    // Inicializar categoria 'Relevantes' (mostrar todos os produtos) e ativar chip
-    currentCat = null;
-    const relChipInit = document.querySelector('.chip[data-cat="relevantes"]');
-    if(relChipInit){
-      document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-      relChipInit.classList.add('active');
-    }
-
-    // Renderizar a grade e carrinho depois que estados e favoritos foram carregados
-    render();
 
     // Inicializações finais
     renderCart();
-
-    // ======= Entrega (seleção de data, modalidade e frete) =======
-    function getNextDeliveryDates(num=4){
-      const dates = [];
-      const dias = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
-      const hoje = new Date();
-      for(let i=1;i<=num;i++){
-        const d = new Date(hoje);
-        d.setDate(d.getDate()+i);
-        const day = dias[d.getDay()];
-        const dd = String(d.getDate()).padStart(2,'0');
-        const mm = String(d.getMonth()+1).padStart(2,'0');
-        dates.push({
-          value: d.toISOString().split('T')[0],
-          label: `${day} ${dd}/${mm}`
-        });
-      }
-      return dates;
-    }
-    function prepareEntrega(){
-      const datesEl = document.getElementById('deliveryDates');
-      if(!datesEl) return;
-      // limpar
-      datesEl.innerHTML = '';
-      const dates = getNextDeliveryDates(4);
-      dates.forEach((dt,i)=>{
-        const btn = document.createElement('button');
-        btn.className = 'btn';
-        btn.style.flex = '0 0 auto';
-        btn.textContent = dt.label;
-        btn.dataset.value = dt.value;
-        if(i===0) btn.classList.add('active');
-        btn.addEventListener('click', ()=>{
-          // desativar outros
-          datesEl.querySelectorAll('button').forEach(b=> b.classList.remove('active'));
-          btn.classList.add('active');
-          updateEntregaTotals();
-        });
-        datesEl.appendChild(btn);
-      });
-      // Atualizar estimativa de entrega no texto (opcional)
-      // Atualizar total
-      updateEntregaTotals();
-    }
-    function getSelectedDeliveryMode(){
-      const modeEl = document.querySelector('input[name="deliveryMode"]:checked');
-      return modeEl ? modeEl.value : 'pickup';
-    }
-    function updateEntregaTotals(){
-      const totalEl = document.getElementById('totalWithFrete');
-      let frete = 0;
-      if(getSelectedDeliveryMode() === 'delivery'){
-        // se houver CEP válido, use calcFrete (valor fixo 8); caso contrário, fallback 14.90
-        const cepDigits = cep.value?.replace(/\D/g,'') || '';
-        if(cepDigits.length === 8){ frete = calcFrete(cepDigits); }
-        else frete = 14.90;
-      }
-      // Atualizar texto de estimativa na opção de delivery
-      const deliveryEstEl = document.getElementById('deliveryEstimate');
-      if(deliveryEstEl){ deliveryEstEl.textContent = `R$ ${formatBR(frete || 0)}`; }
-      const total = cartSubtotal() + frete;
-      totalEl.textContent = formatBR(total);
-    }
-    // Quando muda modalidade, atualiza total
-    document.querySelectorAll('input[name="deliveryMode"]').forEach(r=>{
-      r.addEventListener('change', updateEntregaTotals);
-    });
-    // Confirmar entrega
-    document.getElementById('confirmDelivery')?.addEventListener('click', ()=>{
-      drawerEntrega.classList.remove('open');
-      alert('Pedido confirmado! Em breve enviaremos seu pedido. Total: R$ ' + document.getElementById('totalWithFrete').textContent);
-    });
   </script>
 
   <noscript>Ative o JavaScript para usar nosso site e o atendimento por IA.</noscript>
